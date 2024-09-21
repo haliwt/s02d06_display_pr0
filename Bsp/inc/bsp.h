@@ -1,0 +1,118 @@
+#ifndef __BSP_H
+#define __BSP_H
+#include "main.h"
+
+
+#include "usart.h"
+
+
+
+#include "smg.h"
+#include "cmd_link.h"
+#include "run.h"
+#include "key.h"
+#include "led.h"
+#include "bsp_fan.h"
+#include "bsp_display_dynamic.h"
+#include "display.h"
+#include "interrupt_manager.h"
+#include "delay.h"
+#include "bsp_freertos.h"
+
+
+#include "FreeRTOS.h"
+#include "task.h"
+#include "cmsis_os.h"
+
+
+
+#define  USE_FreeRTOS      1
+
+#if USE_FreeRTOS == 1
+	//#include "FreeRTOS.h"
+	///#include "task.h"
+	#define DISABLE_INT()    taskENTER_CRITICAL()
+	#define ENABLE_INT()     taskEXIT_CRITICAL()
+#else
+	/* ����ȫ���жϵĺ� */
+	#define ENABLE_INT()	__set_PRIMASK(0)	/* ʹ��ȫ���ж� */
+	#define DISABLE_INT()	__set_PRIMASK(1)	/* ��ֹȫ���ж� */
+#endif
+
+
+typedef enum{
+
+  WORKS_TIME,
+  TIMER_SUCCESS
+
+}TIMER_STATE;
+
+
+typedef enum power_onoff_state_t{
+
+    power_off= 0,
+    power_on =0x01
+
+
+}power_onoff_stae;
+
+typedef struct _pro_t{
+
+   uint8_t gmouse;
+   uint8_t mode_key_flag;
+   uint8_t wifi_link_net_success;
+   uint8_t disp_rx_cmd_done_flag;
+   uint8_t set_timer_timing_value_success;
+   uint8_t set_timer_timing_doing_value;
+   uint8_t set_temp_value_success;
+   uint8_t set_up_temperature_value;
+   uint8_t manual_turn_off_dry_flag;
+   uint8_t answer_signal_flag;
+   uint8_t set_timer_first_smg_blink_flag;
+
+   uint8_t gTimer_wifi_led_blik_time ;
+   uint8_t gTimer_wifi_led_blink;
+    
+   uint16_t gTimer_4bitsmg_blink_times;
+
+
+
+}pro_run_t;
+
+extern pro_run_t  gpro_t;
+
+
+void bsp_init(void);
+
+void power_on_handler(void);
+
+
+void disp_timer_times_handler(void);
+
+
+void power_off_run_handler(void);
+
+void mode_key_handler(void);
+
+void mouse_on_off_handler(void);
+
+void key_add_fun(void);
+
+void key_dec_fun(void);
+
+void mode_key_fun(void);
+
+void compare_temp_value(void);
+
+void detected_ptc_or_fan_warning_fun(void);
+
+uint8_t bcc_check(const unsigned char *data, int len) ;
+
+
+void receive_data_fromm_display(uint8_t *pdata);
+
+
+
+#endif 
+
+
