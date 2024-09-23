@@ -41,13 +41,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if(htim->Instance==TIM3){  
     tm0++;
 	
-    run_t.gTimer_smg_blink_times++;
+
 	run_t.gTimer_set_temp_times++;
 	run_t.gTimer_time_colon++ ;
     run_t.gTimer_error_digital++;
     gpro_t.gTimer_4bitsmg_blink_times++;
 	
-    if(tm0>999){ //100 *10ms = 1000ms = 1s
+    if(tm0>999){ //1000 *1ms = 1000ms = 1s
 		tm0=0;
 		run_t.gTimer_run_ico++;
 	    run_t.gTimer_colon++;
@@ -55,6 +55,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         run_t.gTimer_compare_temp_value++ ;
 		
 		run_t.gTimer_fan_continue++;
+        run_t.gTimer_smg_blink_times++;
 
 		//--------------//
 
@@ -69,6 +70,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         // process ref
         gpro_t.gTimer_wifi_led_blik_time ++;
         gpro_t.gTimer_wifi_led_blink++;
+           
 
         }
     

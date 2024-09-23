@@ -36,6 +36,14 @@ void SendData_PowerOff(uint8_t index)
 		HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
 	}
 }
+/*********************************************************
+ * 
+ * Function Name:void SendData_Buzzer(void)
+ * Function: 
+ * Input Ref:NO
+ * Return Ref:NO
+ * 
+*********************************************************/
 void SendData_Buzzer(void)
 {
 	
@@ -56,17 +64,13 @@ void SendData_Buzzer(void)
 	}
 	
 }
-/*********************************************************
- * 
- * Function Name:void SendData_Temp_Data(uint8_t tdata)
- * Function:send 
- * 
-*********************************************************/
 
 /*********************************************************
  * 
- * Function Name:void SendData_Temp_Data(uint8_t tdata)
- * Function:send temperature value 
+ * Function Name:void SendData_Set_Command(uint8_t cmd,uint8_t cmddata)
+ * Function: 
+ * Input Ref:cmd- command , dmddata-> command of mode .
+ * Return Ref:NO
  * 
 *********************************************************/
 void SendData_Set_Command(uint8_t cmd,uint8_t cmddata)
@@ -92,8 +96,10 @@ void SendData_Set_Command(uint8_t cmd,uint8_t cmddata)
 }
 /*********************************************************
  * 
- * Function Name:void SendData_Temp_Data(uint8_t tdata)
- * Function:send temperature value 
+ * Function Name:
+ * Function:
+ * Input Ref:NO
+ * Return Ref:NO
  * 
 *********************************************************/
 void SendData_Temp_Data(uint8_t tdata)
@@ -117,71 +123,7 @@ void SendData_Temp_Data(uint8_t tdata)
 		}
 
 }
-/*********************************************************
- * 
- * Function Name:void SendData_Time_Data(uint8_t tdata)
- * Function:send to set  timer timing value
- * 
-*********************************************************/
-void SendData_Time_Data(uint8_t tdata)
-{
 
-        outputBuf[0]='T'; //4D
-		outputBuf[1]='K'; //58
-		outputBuf[2]='T'; //"T"->timer timing
-		outputBuf[3]=tdata; //53	//
-		
-		transferSize=4;
-		if(transferSize)
-		{
-			while(transOngoingFlag);
-			transOngoingFlag=1;
-			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
-		}
-
-}
-/*********************************************************
- * 
- * Function Name:void SendData_Temp_Data(uint8_t tdata)
- * Function:send temperature value 
- * 
-*********************************************************/
-void SendData_Works_Time(uint8_t tdata,uint8_t tdata_2)
-{
-
-        outputBuf[0]='T'; //4D
-		outputBuf[1]='K'; //"T"->temperature
-		outputBuf[2]=tdata; //53	//
-		outputBuf[3]=tdata_2;
-		
-		transferSize=4;
-		if(transferSize)
-		{
-			while(transOngoingFlag);
-			transOngoingFlag=1;
-			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
-		}
-
-}
-
-
-void SendData_Remaining_Time(uint8_t tdata,uint8_t tdata_2)
-{
-
-        outputBuf[0]='T'; //4D
-		outputBuf[1]='R'; //"T"->temperature
-		outputBuf[2]=tdata; //53	//
-		outputBuf[3]=tdata_2;
-		
-		transferSize=4;
-		if(transferSize)
-		{
-			while(transOngoingFlag);
-			transOngoingFlag=1;
-			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
-		}
-
-}
 
 
 

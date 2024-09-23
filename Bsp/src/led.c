@@ -372,16 +372,17 @@ void wifi_icon_fast_blink(void)
 
 
    }
-   else if(run_t.wifi_net_flag==2 && gpro_t.wifi_link_net_success == 0){
+   
+   if(run_t.wifi_net_flag==0 && gpro_t.wifi_link_net_success == 0){
 
-        if(gpro_t.gTimer_wifi_led_blink > 0)
+        if(gpro_t.gTimer_wifi_led_blink > 0){
             gpro_t.gTimer_wifi_led_blink=0;
             LED_WIFI_TOGGLE()  ;
 
-    }
+       }
        
    
-    
+   }
+
+
 }
-
-

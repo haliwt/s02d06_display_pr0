@@ -194,9 +194,9 @@ typedef struct __RUN{
   volatile int8_t timer_dispTime_minutes;
 	
 
-	uint16_t gTimer_usart_error;
-	uint16_t gTimer_error_digital ;
-       uint16_t gTimer_smg_blink_times;
+	uint8_t gTimer_usart_error;
+	uint8_t gTimer_error_digital ;
+   uint8_t gTimer_smg_blink_times;
    
   
 
