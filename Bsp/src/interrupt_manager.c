@@ -31,7 +31,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 /*******************************************************************************
 	*
 	*Function Name:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-	*Function : timing 10ms interrupt call back function 
+	*Function : timing 1ms interrupt call back function 
 	*
 	*
 *******************************************************************************/
