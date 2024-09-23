@@ -236,10 +236,10 @@ void Set_Temperature_Value(void)
 	 if(run_t.set_temperature_special_value ==2 && gpro_t.set_timer_timing_doing_value==0){
 	  	
 	  	
-		  if(run_t.gTimer_set_temp_times < 15 ){ // 4
+		  if(run_t.gTimer_set_temp_times < 150 ){ // 4
 		        TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,1);
           }
-		  else if(run_t.gTimer_set_temp_times > 14 && run_t.gTimer_set_temp_times < 29){
+		  else if(run_t.gTimer_set_temp_times > 149 && run_t.gTimer_set_temp_times < 299){
 		  	
 			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
 
@@ -251,7 +251,7 @@ void Set_Temperature_Value(void)
 		  }
 
 
-           if(counter_times > 3){
+           if(counter_times > 300){
 			 
              counter_times=0;
              run_t.gTimer_compare_temp_value=0;

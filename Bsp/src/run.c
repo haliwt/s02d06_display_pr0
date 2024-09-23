@@ -107,19 +107,16 @@ void Receive_MainBoard_Data_Handler(uint8_t ulid,uint8_t data1,uint8_t data2)
 **********************************************************************/
 void power_on_init(void)
 {
-                
-   static uint8_t hour_decade,hour_unit,minutes_one,minutes_two;
-
-  
-	
-		run_t.gPlasma=1;
+             
+    if(gpro_t.smart_phone_app_power_on_flag == 0){
+        run_t.gPlasma=1;
 		run_t.gDry =1;
         gpro_t.gmouse = 1;
 		gpro_t.mode_key_flag=AI_MODE;
 
   
 
-
+   }
     run_t.time_led_flag=1;
 	Power_ON_Led();
 
@@ -145,20 +142,15 @@ void power_on_init(void)
 		
         
 
-	  hour_decade=0;
-	  hour_unit=0;
-    
-	  minutes_one = 0;
-      minutes_two = 0;
 	  
 	   SMG_POWER_ON(); //WT.EDIT 2023.03.02
       
 
 
-	  run_t.hours_two_unit_bit = hour_unit;
-	  run_t.minutes_one_decade_bit =  minutes_one;
+	  run_t.hours_two_unit_bit = 0;
+	  run_t.minutes_one_decade_bit =  0;
      Display_DHT11_Value();
-	 TM1639_Write_4Bit_Time(hour_decade,run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,minutes_two,0);
+	 TM1639_Write_4Bit_Time(0,run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,0,0);
      
     
 }

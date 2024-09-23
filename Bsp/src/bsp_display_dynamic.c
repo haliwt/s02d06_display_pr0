@@ -292,36 +292,7 @@ void Display_SmgTiming_Value(void)
 
 	}
 
-  
-
-     #if 0
-
-           if(run_t.gTimes_time_seconds > 59){
-    		   run_t.gTimes_time_seconds=0;
-    		 
-    		   run_t.works_dispTime_minutes++; //1 minute 
-    		
-    		   run_t.send_app_wokes_minutes_two++;
-    		   if(run_t.works_dispTime_minutes> 59){ //1 hour
-    		   run_t.works_dispTime_minutes=0;
-    		   run_t.works_dispTime_hours++;
-    		   if(run_t.works_dispTime_hours > 24){
-    		        run_t.works_dispTime_hours =0;
-    		   }
-    	      }
-           }
-  
-         Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
-         Timer_Timing_Donot_Display();
-
-     #endif 
-  
-
 }
-
-
-
-
 /****************************************************************
  * 
  * Function Name:

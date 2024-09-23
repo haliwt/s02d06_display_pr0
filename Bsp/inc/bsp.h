@@ -71,6 +71,7 @@ typedef struct _pro_t{
    uint8_t manual_turn_off_dry_flag;
    uint8_t answer_signal_flag;
    uint8_t set_timer_first_smg_blink_flag;
+   uint8_t smart_phone_app_power_on_flag ;
 
    uint8_t gTimer_wifi_led_blik_time ;
    uint8_t gTimer_wifi_led_blink;

@@ -41,6 +41,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if(htim->Instance==TIM3){  
     tm0++;
 	
+    run_t.gTimer_smg_blink_times++;
 
 	run_t.gTimer_set_temp_times++;
 	run_t.gTimer_time_colon++ ;
@@ -55,7 +56,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         run_t.gTimer_compare_temp_value++ ;
 		
 		run_t.gTimer_fan_continue++;
-        run_t.gTimer_smg_blink_times++;
+       
 
 		//--------------//
 

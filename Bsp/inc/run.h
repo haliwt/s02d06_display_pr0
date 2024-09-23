@@ -156,7 +156,7 @@ typedef struct __RUN{
    uint8_t power_on_recoder_times;
 
    //timer timing 
-   uint8_t gTimer_set_temp_times;
+ 
 
    int8_t temporary_timer_dispTime_hours;
    int8_t temporary_timer_dispTime_minutes;
@@ -185,8 +185,7 @@ typedef struct __RUN{
    uint8_t gTimer_run_ico;
    uint8_t gTimer_fan_continue;
 
- 
- 
+    
    
  
 
@@ -197,6 +196,9 @@ typedef struct __RUN{
 	uint8_t gTimer_usart_error;
 	uint8_t gTimer_error_digital ;
    uint8_t gTimer_smg_blink_times;
+
+    uint16_t gTimer_set_temp_times;
+ 
    
   
 
