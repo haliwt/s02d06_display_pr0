@@ -113,7 +113,7 @@ void freeRTOS_Handler(void)
 static void vTaskRunPro(void *pvParameters)
 {
     BaseType_t xResult;
-	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(100); /* 设置最大等待时间为30ms */
+	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(50); /* 设置最大等待时间为30ms */
 	uint32_t ulValue;
     
     static volatile uint8_t power_on_off_flag,mouse_on_off_flag ;
@@ -208,29 +208,22 @@ static void vTaskRunPro(void *pvParameters)
     }
     else{
 
-              if(decoder_rx_flag == 1){
+      if(decoder_rx_flag == 1){
 
-                   decoder_rx_flag  =0 ;
-                   rx_end_flag = 0;
-                
-                   
-                   gpro_t.disp_rx_cmd_done_flag = 0;
-                
-            
-                   check_code =  bcc_check(gl_tMsg.usData,ulid);
-            
-            
-            
-                   if(check_code == bcc_check_code ){
-            
-                   receive_data_fromm_display(gl_tMsg.usData);
-                   }
-                   
-                   gl_tMsg.usData[0]=0;
+           decoder_rx_flag  =0 ;
+           rx_end_flag = 0;
+        
+          check_code =  bcc_check(gl_tMsg.usData,ulid);
+          if(check_code == bcc_check_code ){
+    
+           receive_data_fromm_display(gl_tMsg.usData);
+           }
+           gpro_t.disp_rx_cmd_done_flag = 0;
+           gl_tMsg.usData[0]=0;
 
-                    
-                  
-               }
+            
+          
+       }
       
 
        if(power_on_off_flag == 1){
