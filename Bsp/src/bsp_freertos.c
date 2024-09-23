@@ -25,21 +25,21 @@
 											函数声明
 ***********************************************************************************************************/
 static void vTaskRunPro(void *pvParameters);
-static void vTaskDecoderPro(void *pvParameters);
+//static void vTaskDecoderPro(void *pvParameters);
 static void vTaskStart(void *pvParameters);
 static void AppTaskCreate (void);
 
 
 
 /* 创建任务通信机制 */
-static void AppObjCreate(void);
+//static void AppObjCreate(void);
 
 
 /***********************************************************************************************************
 											变量声明
 ***********************************************************************************************************/
 static TaskHandle_t xHandleTaskRunPro = NULL;
-static TaskHandle_t xHandleTaskDecoderPro= NULL;
+//static TaskHandle_t xHandleTaskDecoderPro= NULL;
 static TaskHandle_t xHandleTaskStart = NULL;
 
 //static QueueHandle_t xQueue1 = NULL;
@@ -303,7 +303,7 @@ static void vTaskRunPro(void *pvParameters)
 
                     wifi_on_off_flag++;
                     gpro_t.gTimer_wifi_led_blik_time =0;
-                    run_t.wifi_net_flag =1;
+                    run_t.wifi_led_fast_blink_flag =1;
                     
                     SendData_Set_Command(0x05,0x01); //link wifi net 
                
@@ -534,9 +534,9 @@ void AppObjCreate (void)
 *******************************************************************************/
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-     static uint8_t state, rx_mb_data_tag;
+     static uint8_t state;
      BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-     MSG_T *ptMsg;
+
 
 
     if(huart==&huart1) // Motor Board receive data (filter)

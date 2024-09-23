@@ -64,6 +64,7 @@ typedef struct _pro_t{
    uint8_t mode_key_flag;
    uint8_t wifi_link_net_success;
    uint8_t disp_rx_cmd_done_flag;
+   
    uint8_t set_timer_timing_value_success;
    uint8_t set_timer_timing_doing_value;
    uint8_t set_temp_value_success;
@@ -72,6 +73,7 @@ typedef struct _pro_t{
    uint8_t answer_signal_flag;
    uint8_t set_timer_first_smg_blink_flag;
    uint8_t smart_phone_app_power_on_flag ;
+   uint8_t get_beijing_time_flag;
 
    uint8_t gTimer_wifi_led_blik_time ;
    uint8_t gTimer_wifi_led_blink;

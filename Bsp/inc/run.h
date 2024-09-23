@@ -89,8 +89,8 @@ typedef struct __RUN{
   uint8_t temperature_flag;
   
 
-   uint8_t wifi_net_flag;
-   uint8_t time_led_flag;
+   uint8_t wifi_led_fast_blink_flag;
+ 
 
    uint8_t dec_key_times;
    uint8_t add_key_times;
@@ -149,7 +149,7 @@ typedef struct __RUN{
    volatile   uint8_t set_temperature_unit_value;
    volatile uint8_t gTimer_time_colon;
  
-   uint8_t link_wifi_net_flag;
+ 
 
 
    uint8_t gTimer_key_timing;

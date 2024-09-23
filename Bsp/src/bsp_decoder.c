@@ -29,7 +29,7 @@ void receive_data_fromm_display(uint8_t *pdata)
           
         run_t.gPower_On = power_on;
         run_t.power_off_flag = 0;
-        run_t.link_wifi_net_flag= 0;
+
 
         power_on_init();
          
@@ -101,7 +101,7 @@ void receive_data_fromm_display(uint8_t *pdata)
         if(pdata[3] == 0x01){  // link wifi 
 
              gpro_t.gTimer_wifi_led_blik_time =0;
-             run_t.wifi_net_flag =1;   
+             run_t.wifi_led_fast_blink_flag =1;   
 
         }
         else if(pdata[3] == 0x0){ //don't link wifi 
@@ -183,7 +183,7 @@ void receive_data_fromm_display(uint8_t *pdata)
       case 0x1C: //表示时间：小时，分，秒
 
         if(pdata[4] == 0x03){ //数据
-
+        gpro_t.get_beijing_time_flag = 1;
         run_t.works_dispTime_hours= pdata[5];
         run_t.works_dispTime_minutes  = pdata[6];
         run_t.gTimes_time_seconds  = pdata[7];
@@ -202,6 +202,24 @@ void receive_data_fromm_display(uint8_t *pdata)
         }
       break;
 
+      case 0x1F: //wifi link net is ok or don't link.
+
+        if(pdata[5] == 0x01){ //数据
+
+             gpro_t.wifi_link_net_success = 1;
+            
+
+        }
+        else if(pdata[5] == 0x00){
+
+          gpro_t.wifi_link_net_success = 0;
+          gpro_t.get_beijing_time_flag = 0;
+
+        }
+
+
+      break;
+
       case 0x21:  //smart phone timer timing power on .
 
       
@@ -209,7 +227,7 @@ void receive_data_fromm_display(uint8_t *pdata)
            gpro_t.smart_phone_app_power_on_flag  =1;
            run_t.gPower_On = power_on;
            run_t.power_off_flag = 0;
-           run_t.link_wifi_net_flag= 0;
+        
 
            power_on_init();
 
@@ -234,18 +252,8 @@ void receive_data_fromm_display(uint8_t *pdata)
           gpro_t.mode_key_flag=AI_MODE;
 
       break;
-
-
-      
-     
-    }
-
+      }
 }
-
-
-
-
-
 /**********************************************************************
     *
     *Function Name:uint8_t bcc_check(const unsigned char *data, int len) 

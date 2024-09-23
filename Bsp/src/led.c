@@ -82,7 +82,7 @@ void ALL_LED_Off(void)
  	* Return Ref:NO
  	* 
 *******************************************************************************************/  
-void Panel_Led_OnOff_Function(void)
+void Panel_Led_On_Fun(void)
 {
 
   // static uint8_t ai_changed_flag;
@@ -90,7 +90,7 @@ void Panel_Led_OnOff_Function(void)
 		run_t.gTimer_run_ico=0;
 		
 	  LED_POWER_ON();
-	
+	  TIME_LED_OnOff(1);
 
 
     if(gpro_t.gmouse == 0 ){
@@ -127,17 +127,6 @@ void Panel_Led_OnOff_Function(void)
 
 	 }
 
-	
-	
-	 
-
-	 if(run_t.time_led_flag ==1){
-	    TIME_LED_OnOff(1);
-	 }
-	 else
-	 	TIME_LED_OnOff(0);
-
-    
 	}
 }
 /***************************************************************
@@ -350,8 +339,7 @@ void Power_ON_Led(void)
 void wifi_icon_fast_blink(void)
 {
 
-   static uint8_t led_wifi;
-   if(run_t.wifi_net_flag==1 && gpro_t.gTimer_wifi_led_blik_time < 120){
+   if(run_t.wifi_led_fast_blink_flag==1 && gpro_t.gTimer_wifi_led_blik_time < 120){
     if(run_t.gTimer_smg_blink_times > 100){
         run_t.gTimer_smg_blink_times=0;
                LED_WIFI_TOGGLE()  ;
@@ -359,20 +347,20 @@ void wifi_icon_fast_blink(void)
       
     
    }
-   else if(run_t.wifi_net_flag==1 && gpro_t.gTimer_wifi_led_blik_time > 119){
+   else if(run_t.wifi_led_fast_blink_flag==1 && gpro_t.gTimer_wifi_led_blik_time > 119){
 
-      run_t.wifi_net_flag++;
+      run_t.wifi_led_fast_blink_flag++;
 
    }
 
    if(gpro_t.wifi_link_net_success == 1){
-       run_t.wifi_net_flag=3;
+       run_t.wifi_led_fast_blink_flag=3;
 
         LED_WIFI_ON();
 
 
    }
-   else if(run_t.wifi_net_flag==0 && gpro_t.wifi_link_net_success == 0){
+   else if(run_t.wifi_led_fast_blink_flag==0 && gpro_t.wifi_link_net_success == 0){
 
         if(gpro_t.gTimer_wifi_led_blink > 0){
             gpro_t.gTimer_wifi_led_blink=0;
@@ -385,3 +373,5 @@ void wifi_icon_fast_blink(void)
 
 
 }
+
+

@@ -31,9 +31,10 @@ void power_on_handler(void)
      
         run_t.gPower_On = power_on;
         run_t.power_off_flag = 0;
-        run_t.link_wifi_net_flag= 0;
+    
 
         SendData_PowerOff(1);
+        osDelay(20);
       
         power_on_init();
 
@@ -42,6 +43,7 @@ void power_on_handler(void)
     else{
       
             SendData_PowerOff(0);
+            osDelay(20);
             run_t.gPower_On = power_off;
          
 
@@ -73,7 +75,7 @@ void disp_timer_times_handler(void)
               switch(step_state){
 
 					case 0:
-						Led_Panel_OnOff();
+						Panel_Led_On_Fun();//Led_Panel_OnOff();
 					    step_state=2;
 					break;
                     
@@ -181,58 +183,7 @@ void power_off_run_handler(void)
        }
 
 }
-/*********************************************************************************
- * 
- * Function Name:void mode_key_handler(void)
- * 
- * 
- **********************************************************************************/
-#if 0
-void mode_key_handler(void)
-{
-    if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-       switch(gpro_t.set_timer_timing_doing_value){
 
-        case 0:  //don't set timer timing item
-
-        if(gpro_t.mode_key_flag==AI_MODE){
-            gpro_t.mode_key_flag=NO_AI_MODE;
-            LED_WIFI_OFF();
-            SendData_Set_Command(0x07,0x0); //AI,OFF
-            if(gpro_t.set_timer_timing_value_success ==TIMER_SUCCESS)
-              Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-        }
-        else{
-            if(gpro_t.mode_key_flag==NO_AI_MODE){
-            gpro_t.mode_key_flag=AI_MODE;
-            SendData_Set_Command(0X07,0x01); //AI ON
-
-      
-            run_t.gDry= 1;
-            
-            run_t.gPlasma = 1;
-            gpro_t.gmouse = 1;
-            led_mouse_on();
-            LED_PLASMA_ON();
-            LED_DRY_ON();
-            LED_WIFI_ON();
-            Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
-           
-            }  
-
-        }
-        break;
-
-       
-
-        }
-
-
-    }
-
-
-}
-#endif 
 /*********************************************************************************
  * 
  * Function Name:void mouse_on_off_handler(void)
@@ -304,7 +255,7 @@ void key_add_fun(void)
         gpro_t.manual_turn_off_dry_flag =0; //after set temperature allow shut off dry .
       
         
-   
+        
 
     break;
     
@@ -386,7 +337,7 @@ void key_dec_fun(void)
         run_t.set_temperature_unit_value  =gpro_t.set_up_temperature_value % 10; //
 
 
-        //set temperature value of flag bit : run_t.set_temperature_special_value=1
+        //set temperature value of flag bit 
         run_t.set_temperature_special_value=1;
         run_t.gTimer_key_temp_timing=0;
         run_t.gTimer_time_colon=0;
