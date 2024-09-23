@@ -113,7 +113,7 @@ void freeRTOS_Handler(void)
 static void vTaskRunPro(void *pvParameters)
 {
     BaseType_t xResult;
-	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(20); /* 设置最大等待时间为30ms */
+	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(100); /* 设置最大等待时间为30ms */
 	uint32_t ulValue;
     
     static volatile uint8_t power_on_off_flag,mouse_on_off_flag ;
@@ -201,25 +201,37 @@ static void vTaskRunPro(void *pvParameters)
 
             }
 
+            
+          
+
         
     }
     else{
 
-     
-       if(decoder_rx_flag ==1){
-        decoder_rx_flag = 0;
-        gpro_t.disp_rx_cmd_done_flag = 0;
+              if(decoder_rx_flag == 1){
 
-        check_code =  bcc_check(gl_tMsg.usData,ulid);
+                   decoder_rx_flag  =0 ;
+                   rx_end_flag = 0;
+                
+                   
+                   gpro_t.disp_rx_cmd_done_flag = 0;
+                
+            
+                   check_code =  bcc_check(gl_tMsg.usData,ulid);
+            
+            
+            
+                   if(check_code == bcc_check_code ){
+            
+                   receive_data_fromm_display(gl_tMsg.usData);
+                   }
+                   
+                   gl_tMsg.usData[0]=0;
 
-
-
-        if(check_code == bcc_check_code ){
-
-        receive_data_fromm_display(gl_tMsg.usData);
-        }
-       }
-
+                    
+                  
+               }
+      
 
        if(power_on_off_flag == 1){
              power_on_off_flag++;
@@ -432,6 +444,8 @@ static void vTaskStart(void *pvParameters)
                             eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
 
      }
+     
+    
 
     
 
@@ -545,21 +559,27 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
       switch(state)
 		{
 		case 0:  //#0
+		   if(gpro_t.disp_rx_cmd_done_flag ==0){
 			if(inputBuf[0] == 0x5A){  // 0x5A --main board singla
                rx_data_counter=0;
                gl_tMsg.usData[rx_data_counter] = inputBuf[0];
 				state=1; //=1
 
              }
-            else
+            else{
                 state=0;
+
+              }
+           }
 		break;
 
        
 		case 1: //#1
+       
 
-            if(gpro_t.disp_rx_cmd_done_flag ==0){
+            
               /* 初始化结构体指针 */
+             
                rx_data_counter++;
 		     
 	          gl_tMsg.usData[rx_data_counter] = inputBuf[0];
@@ -567,7 +587,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
               if(rx_end_flag == 1){
 
-                state = 0;
+               
             
                 ulid = rx_data_counter;
                 rx_end_flag=0;
@@ -580,7 +600,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
                 bcc_check_code=inputBuf[0];
 
-              
+                 state = 0;
                 xTaskNotifyFromISR(xHandleTaskRunPro,  /* 目标任务 */
                 DECODER_BIT_9,     /* 设置目标任务事件标志位bit0  */
                 eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
@@ -588,10 +608,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
                 /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
                 portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+                
                   
               }
 
-              }
+            
 
               if(gl_tMsg.usData[rx_data_counter] ==0xFE && rx_end_flag == 0 &&  rx_data_counter > 4){
                      

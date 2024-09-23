@@ -38,7 +38,8 @@ void receive_data_fromm_display(uint8_t *pdata)
         else if(pdata[3] == 0x0){ //close 
         
            run_t.gPower_On = power_off;
-
+           
+            power_off_run_handler();
 
         }
 
