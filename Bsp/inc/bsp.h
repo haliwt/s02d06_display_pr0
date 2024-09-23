@@ -17,7 +17,9 @@
 #include "display.h"
 #include "interrupt_manager.h"
 #include "delay.h"
+#include "bsp_decoder.h"
 #include "bsp_freertos.h"
+
 
 
 #include "FreeRTOS.h"
@@ -106,10 +108,10 @@ void compare_temp_value(void);
 
 void detected_ptc_or_fan_warning_fun(void);
 
-uint8_t bcc_check(const unsigned char *data, int len) ;
 
 
-void receive_data_fromm_display(uint8_t *pdata);
+
+
 
 
 
