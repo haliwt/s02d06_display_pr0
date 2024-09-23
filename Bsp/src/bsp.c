@@ -462,13 +462,13 @@ void compare_temp_value(void)
     	
         LED_DRY_ON();
        
-		SendData_Set_Command(0x20,0x01);//DRY_ON_NO_BUZZER);no buzzer sound 
+		SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);no buzzer sound 
         
      }
      else{ //PTC turn off 
          run_t.gDry =0;
          LED_DRY_OFF();
-    	 SendData_Set_Command(0x20,0x0);//DRY_OFF_NO_BUZZER);no buzzer sound 
+    	 SendData_Set_Command(0x22,0x0);//DRY_OFF_NO_BUZZER);no buzzer sound 
 
 
      }
@@ -479,7 +479,7 @@ void compare_temp_value(void)
 
          run_t.gDry =0;
          LED_DRY_OFF();
-    	 SendData_Set_Command(0x20,0x0);  //DRY_OFF_NO_BUZZER);no buzzer sound 
+    	 SendData_Set_Command(0x22,0x0);  //DRY_OFF_NO_BUZZER);no buzzer sound 
          first_one_flag =1;
         }
         else{
@@ -490,7 +490,7 @@ void compare_temp_value(void)
             
              LED_DRY_ON();
              
-             SendData_Set_Command(0x20,0x01);//DRY_ON_NO_BUZZER);
+             SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);
 
                
 
