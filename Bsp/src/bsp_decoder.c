@@ -257,8 +257,16 @@ void receive_data_fromm_display(uint8_t *pdata)
       break;
 
 
-      case 0x27:  //ai mode
+      case 0x27:  //ai mode -beijing mode . not ai mode ->timer timing mode
 
+         if(pdata[3] == 0x01){
+           
+            gpro_t.disp_timer_or_time_mode = WORKS_TIME;
+         }
+         else{
+            gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
+
+         }
           
 
       break;
