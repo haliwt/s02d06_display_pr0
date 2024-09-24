@@ -184,6 +184,7 @@ void Set_TimerTiming_Number_Value(void);
 void Set_Temperature_Value(void);
 
 
+void set_temperature_led_blink_fun(void);
 
 
 

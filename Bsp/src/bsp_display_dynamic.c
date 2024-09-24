@@ -15,7 +15,7 @@ void (*display_fan_speed_value)(uint8_t fan_level);
 
 //static void DisplayPanel_DHT11_Value(void);
 
-static void Display_Works_Time_Fun(void);
+
 static void WorksTime_DonotDisplay_Fun(void);
 static void Timer_Timing_Donot_Display(void);
 
@@ -41,7 +41,7 @@ void RunLocal_Dht11_Data_Process(void)
      
 	}
 
-    if(run_t.gTimer_compare_temp_value > 4 &&  run_t.set_temperature_special_value==0){
+   if(run_t.gTimer_compare_temp_value > 4 &&  run_t.set_temperature_special_value==0){
         
         run_t.gTimer_compare_temp_value=0;
 
@@ -54,45 +54,17 @@ void RunLocal_Dht11_Data_Process(void)
 
 /******************************************************************************
 * 
-* Function Name: static void Timer_Timing_Donot_Display(void)
+* Function Name: void disp_error_number_hundler(void)
 * Function :function of pointer 
 * Input Ref:NO
 * Return Ref:NO
 * 
 *******************************************************************************/
-static void Display_Works_Time_Fun(void)
+void disp_error_number_hundler(void)
 {
-     static uint8_t works_timing_flag,alternate_flag;
 
-	 if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-     if(run_t.gTimes_time_seconds > 59 ){
-            run_t.gTimes_time_seconds=0;
-            works_timing_flag =1;
-			run_t.works_dispTime_minutes++; //1 minute 
-		
-          
-			if(run_t.works_dispTime_minutes> 59){ //1 hour
-			run_t.works_dispTime_minutes=0;
-			run_t.works_dispTime_hours++;
-			if(run_t.works_dispTime_hours > 99){ //WT.edit times over 99hours 2023.09.20
-			run_t.works_dispTime_hours =0;
-			}
-        
-            }
-
-     	}
-       
-	       if(works_timing_flag==1){
-	          works_timing_flag=0;
-			 
-			 Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
-		  
-	        }
-		    
-        }
-		else{
-
-		    if(run_t.gTimer_error_digital < 60){//10ms * 51= 510
+  static uint8_t works_timing_flag,alternate_flag;
+   if(run_t.gTimer_error_digital < 60){//10ms * 51= 510
 
 		      
                if(alternate_flag ==0){
@@ -147,9 +119,6 @@ static void Display_Works_Time_Fun(void)
 
 
 			 }
-
-		}
-
 }
 /****************************************************************
  * 
@@ -221,7 +190,7 @@ static void WorksTime_DonotDisplay_Fun(void)
 *Return Ref:NO
 *
 ******************************************************************************/
-void Display_SmgTiming_Value(void)
+void Display_SmgTiming_Handler(void)
 {
 
     switch(gpro_t.disp_timer_or_time_mode){//switch(gpro_t.set_timer_timing_value_success){
@@ -290,18 +259,27 @@ void Display_SmgTiming_Value(void)
            }
   
             Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
-            Display_Works_Time_Fun();
+         
 			Timer_Timing_Donot_Display();
 
-          break;
+        break;
 
 		case SET_TIMER_ITEM:
 
 			 Set_TimerTiming_Number_Value();
 		break;
 
-	}
+        case PTC_WARNING:
 
+        break;
+
+
+        case FAN_WARNING:
+
+        break;
+
+	}
+  
 }
 /****************************************************************
  * 

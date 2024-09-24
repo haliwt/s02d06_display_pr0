@@ -74,6 +74,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         gpro_t.gTimer_wifi_led_blink_time ++;
         gpro_t.gTimer_wifi_led_blink++;
         gpro_t.gTimer_power_mode_key_long++;
+
+        //the first display board ref
+        g_tDisp.gTimer_disp_set_temp ++;
            
 
         }

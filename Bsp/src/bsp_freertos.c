@@ -284,8 +284,7 @@ static void vTaskRunPro(void *pvParameters)
 
       
        
-       disp_timer_times_handler();
-       
+       Display_SmgTiming_Handler();
        Set_Temperature_Value();
        RunLocal_Dht11_Data_Process();
              

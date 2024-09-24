@@ -1,5 +1,8 @@
 #include "bsp.h"
 
+display_state_ref g_tDisp;
+
+
 static void first_disp_set_temp_value_fun(uint8_t data);
 
 /**********************************************************************
@@ -165,6 +168,9 @@ void receive_data_fromm_display(uint8_t *pdata)
          }
       break;
 
+
+      
+
    
     case 0x1B: //湿度数据
 
@@ -240,6 +246,9 @@ void receive_data_fromm_display(uint8_t *pdata)
 
         if(pdata[4] == 0x01){ //only receive data  1 word .
 
+            g_tDisp.first_disp_set_temp_flag = 1;
+            g_tDisp.gTimer_disp_set_temp =0;
+            
             first_disp_set_temp_value_fun(pdata[5]);
 
          }
@@ -253,6 +262,19 @@ void receive_data_fromm_display(uint8_t *pdata)
           
 
       break;
+
+      case 0x4C: //display 1 and 2 of set timer timing value 
+
+        if(pdata[3]==0x0F){
+
+           run_t.timer_dispTime_hours = pdata[5]   ;
+           gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
+		   gpro_t.set_timer_timing_value_success=TIMER_SUCCESS;
+        }
+
+
+      break;
+
       }
 }
 /**********************************************************************
@@ -277,7 +299,7 @@ static void first_disp_set_temp_value_fun(uint8_t data)
 {
 
     gpro_t.set_up_temperature_value = data;
-
+    
     
     run_t.set_temperature_decade_value = gpro_t.set_up_temperature_value / 10 ;
     run_t.set_temperature_unit_value  =gpro_t.set_up_temperature_value % 10; //
@@ -293,5 +315,7 @@ static void first_disp_set_temp_value_fun(uint8_t data)
 
 
 }
+
+
 
 

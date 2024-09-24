@@ -37,17 +37,16 @@ void Single_SendAi_Usart_RunCmd(void(*sendaiHandler)(uint8_t seddat));
 
 void SplitDispose_Key_RunCmd(void(*keyHandler)(uint8_t dat));
 
-//void Smg_DisplayFan_Leve(void(*fandisplayHandler)(uint8_t fan_level));
 
-//void Display_SetTemperature_Value(void);
 
-void Display_SmgTiming_Value(void);
+void Display_SmgTiming_Handler(void);
 
 void Led_Panel_OnOff(void);
 
 void RunLocal_Dht11_Data_Process(void);
 
 
+void disp_error_number_hundler(void);
 
 
 #endif 

@@ -158,11 +158,16 @@ void Set_TimerTiming_Number_Value(void)
 
 			gpro_t.disp_timer_or_time_mode = WORKS_TIME;
 			gpro_t.set_timer_timing_value_success=0;
+            
 
 		}
 		else{
+             run_t.timer_dispTime_hours= run_t.temporary_timer_dispTime_hours ;
+             run_t.timer_dispTime_minutes = 0;
+        
 			gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
 			gpro_t.set_timer_timing_value_success=TIMER_SUCCESS;
+            SendData_Set_Command(0x4C, run_t.timer_dispTime_hours);
 
 		}
 	
@@ -248,7 +253,8 @@ void Set_Temperature_Value(void)
 
 	 }
 	 //temperature of smg of LED blink .
-	 if(run_t.set_temperature_special_value ==2 && gpro_t.set_timer_timing_doing_value==0){
+	 if((run_t.set_temperature_special_value ==2 && gpro_t.set_timer_timing_doing_value==0) || (g_tDisp.first_disp_set_temp_flag == 1 &&
+	  			g_tDisp.gTimer_disp_set_temp > 1)){
 	  	
 	  	
 		  if(run_t.gTimer_set_temp_times < 150 ){ // 4
@@ -273,6 +279,8 @@ void Set_Temperature_Value(void)
 			 gpro_t.set_temp_value_success=1;
 			 run_t.gTimer_display_dht11 = 2;
 	         run_t.set_temperature_special_value =0;
+             //the first display set temperature value 
+			 g_tDisp.first_disp_set_temp_flag=0;
 		
 			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
               compare_temp_value();
@@ -287,7 +295,14 @@ void Set_Temperature_Value(void)
 }
 
 
+void set_temperature_led_blink_fun(void)
+{
 
+
+
+
+
+}
 
 
 

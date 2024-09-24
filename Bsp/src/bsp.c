@@ -60,16 +60,6 @@ void power_on_handler(void)
 	*Return Ref:NO
 	*
 ******************************************************************************/
-void disp_timer_times_handler(void)
-{
-
-    if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
-           Display_SmgTiming_Value();
-              
-     }
-        
-}
-
 
 #if 0
 
@@ -84,7 +74,7 @@ void disp_timer_times_handler(void)
         
         case 2:
             if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
-                Display_SmgTiming_Value();
+                Display_SmgTiming_Handler();
                 }
             
 
@@ -342,9 +332,7 @@ void key_add_fun(void)
       run_t.temporary_timer_dispTime_minutes=0;
       run_t.gTimer_time_colon =0;
 
-      run_t.timer_dispTime_hours= run_t.temporary_timer_dispTime_hours /10;
-     run_t.timer_dispTime_minutes = 0;
-        
+    
      run_t.hours_two_decade_bit = run_t.temporary_timer_dispTime_hours /10;
     run_t.hours_two_unit_bit   = run_t.temporary_timer_dispTime_hours %10;
 
@@ -420,8 +408,7 @@ void key_dec_fun(void)
      run_t.gTimer_time_colon =0;
      run_t.temporary_timer_dispTime_minutes=0;
 
-     run_t.timer_dispTime_hours= run_t.temporary_timer_dispTime_hours /10;
-     run_t.timer_dispTime_minutes = 0;
+  
 
     run_t.hours_two_decade_bit = run_t.temporary_timer_dispTime_hours /10;
     run_t.hours_two_unit_bit   = run_t.temporary_timer_dispTime_hours %10;

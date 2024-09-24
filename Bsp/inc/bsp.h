@@ -97,7 +97,7 @@ void bsp_init(void);
 void power_on_handler(void);
 
 
-void disp_timer_times_handler(void);
+
 
 
 void power_off_run_handler(void);
