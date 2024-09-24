@@ -67,10 +67,11 @@ typedef struct _pro_t{
    uint8_t wifi_link_net_success;
    uint8_t disp_rx_cmd_done_flag;
    uint8_t disp_timer_or_time_mode;
+   uint8_t manual_turn_off_ptc_flag ;
    
    uint8_t set_timer_timing_value_success;
    uint8_t set_timer_timing_doing_value;
-   uint8_t set_temp_value_success;
+   uint8_t set_temp_value_success_flag;
    uint8_t set_up_temperature_value;
    
    uint8_t answer_signal_flag;

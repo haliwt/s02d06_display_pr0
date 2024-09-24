@@ -52,16 +52,12 @@ void receive_data_fromm_display(uint8_t *pdata)
 
      if(pdata[3] == 0x01){
 
-     
-    
-               run_t.gDry =1;
+         run_t.gDry =1;
+         gpro_t.manual_turn_off_ptc_flag = 0;
             
-              
-        
-         
-       }
+      }
        else if(pdata[3] == 0x0){
-        
+         gpro_t.manual_turn_off_ptc_flag = 0;
          run_t.gDry =0;
 
        }
@@ -246,6 +242,7 @@ void receive_data_fromm_display(uint8_t *pdata)
 
         if(pdata[4] == 0x01){ //only receive data  1 word .
 
+             gpro_t.manual_turn_off_ptc_flag = 0;
             g_tDisp.first_disp_set_temp_flag = 1;
             g_tDisp.gTimer_disp_set_temp =0;
             
@@ -314,7 +311,7 @@ static void first_disp_set_temp_value_fun(uint8_t data)
 
 
     run_t.gTimer_compare_temp_value=0;
-    gpro_t.set_temp_value_success=1;
+    gpro_t.set_temp_value_success_flag=1;
     run_t.gTimer_display_dht11 = 2;
     run_t.set_temperature_special_value =0;
 

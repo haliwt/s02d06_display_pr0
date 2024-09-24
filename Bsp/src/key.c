@@ -276,11 +276,12 @@ void Set_Temperature_Value(void)
 			 
              counter_times=0;
              run_t.gTimer_compare_temp_value=0;
-			 gpro_t.set_temp_value_success=1;
+			 gpro_t.set_temp_value_success_flag=1;
 			 run_t.gTimer_display_dht11 = 2;
 	         run_t.set_temperature_special_value =0;
              //the first display set temperature value 
 			 g_tDisp.first_disp_set_temp_flag=0;
+             gpro_t.manual_turn_off_ptc_flag =0;
 		
 			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
 
@@ -297,15 +298,6 @@ void Set_Temperature_Value(void)
      
 }
 
-
-void set_temperature_led_blink_fun(void)
-{
-
-
-
-
-
-}
 
 
 

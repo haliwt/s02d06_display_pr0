@@ -66,7 +66,7 @@ void power_on_init(void)
     run_t.gTimer_timer_timing_counter=0;
     gpro_t.set_timer_timing_value_success =0 ;
     gpro_t.disp_timer_or_time_mode = WORKS_TIME;
-    gpro_t.set_temp_value_success = 0;
+    gpro_t.set_temp_value_success_flag = 0;
    
 
     run_t.gTimer_time_colon =0;

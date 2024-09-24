@@ -128,7 +128,7 @@ void mode_key_fun(void)
                run_t.gTimer_timer_timing_counter =0;
 
                Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-             //  SendData_Set_Command(0x27, 0x00); //not AI mode that is timer mode
+               SendData_Set_Command(0x27, 0x00); //not AI mode that is timer mode
        
               }
          }
@@ -212,6 +212,7 @@ void power_off_run_handler(void)
 {
     
     if(run_t.gDry== 1){
+        gpro_t.manual_turn_off_ptc_flag = 1;
         run_t.gDry =0;
         LED_DRY_OFF();
         SendData_Set_Command(0x02,0x0); //DRY_OFF);
@@ -220,6 +221,7 @@ void power_off_run_handler(void)
 
     }
     else{
+        gpro_t.manual_turn_off_ptc_flag = 0;
         run_t.gDry =1;
 
         LED_DRY_ON();
@@ -444,24 +446,42 @@ void key_dec_fun(void)
 *******************************************************/
 void compare_temp_value(void)
 {
-    static uint8_t first_one_flag;
+    static uint8_t first_one_flag,send_1_on_flag,send_1_off_flag;
+    static uint8_t  send_1_off =0xff,send_1_on=0xff,send_2_on=0xff,send_2_off=0xff;
+    static uint8_t send_2_on_flag,send_2_off_flag;
 
-    if(gpro_t.set_temp_value_success ==1){
+    if(gpro_t.set_temp_value_success_flag ==1){
     
 
      if(gpro_t.set_up_temperature_value >run_t.gReal_humtemp[1] ){ //PTC TURN ON
+
+        if(gpro_t.manual_turn_off_ptc_flag ==0){
          run_t.gDry =1;
     	
         LED_DRY_ON();
-       
-		SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);no buzzer sound 
-        osDelay(20);
+
+        if(send_1_on !=send_1_on_flag ){
+             send_1_on = send_1_on_flag;
+             send_1_off_flag ++;
+		  SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);no buzzer sound 
+          osDelay(20);
+
+         }
+
+        }
      }
      else{ //PTC turn off 
          run_t.gDry =0;
          LED_DRY_OFF();
-    	 SendData_Set_Command(0x22,0x0);//DRY_OFF_NO_BUZZER);no buzzer sound 
-         osDelay(20);
+
+          
+         if(send_1_off !=send_1_off_flag ){
+             send_1_off = send_1_off_flag;
+             send_1_on_flag ++;
+    	   SendData_Set_Command(0x22,0x0);//DRY_OFF_NO_BUZZER);no buzzer sound 
+            osDelay(20);
+
+          }
 
 
      }
@@ -474,20 +494,32 @@ void compare_temp_value(void)
 
          run_t.gDry =0;
          LED_DRY_OFF();
-    	 SendData_Set_Command(0x22,0x0);  //DRY_OFF_NO_BUZZER);no buzzer sound 
+
+         
+        if(send_2_on !=send_2_on_flag ){
+             send_2_on = send_2_on_flag;
+             send_2_off_flag ++;
+    	    SendData_Set_Command(0x22,0x0);  //DRY_OFF_NO_BUZZER);no buzzer sound 
+         }
          first_one_flag =1;
         }
         else{
 
            if(first_one_flag==1 && (run_t.gReal_humtemp[1] <39)){
 
+            if(gpro_t.manual_turn_off_ptc_flag ==0){
+
              run_t.gDry =1;
             
              LED_DRY_ON();
-             
-            SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);
+            if(send_2_off !=send_2_off_flag ){
+             send_2_off = send_2_off_flag;
+             send_2_on_flag ++;
+                  SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);
 
-               
+                }
+
+                }
 
              }
            }
