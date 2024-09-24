@@ -414,15 +414,19 @@ void compare_temp_value(void)
         LED_DRY_ON();
        
 		SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);no buzzer sound 
-        
+        osDelay(20);
      }
      else{ //PTC turn off 
          run_t.gDry =0;
          LED_DRY_OFF();
     	 SendData_Set_Command(0x22,0x0);//DRY_OFF_NO_BUZZER);no buzzer sound 
+         osDelay(20);
 
 
      }
+
+      SendData_SetTemp_Data(gpro_t.set_up_temperature_value);
+      osDelay(20);
 
    }
    else{

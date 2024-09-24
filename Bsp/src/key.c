@@ -262,7 +262,7 @@ void Set_Temperature_Value(void)
 			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
               compare_temp_value();
               
-			  SendData_Set_Command(0x2A, gpro_t.set_up_temperature_value);
+			 
 			 
               
              }
