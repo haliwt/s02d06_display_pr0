@@ -96,6 +96,37 @@ void SendData_Set_Command(uint8_t cmd,uint8_t cmddata)
 }
 /*********************************************************
  * 
+ * Function Name:void SendData_Tx_Data(uint8_t dcmd,uint8_t ddata)
+ * Function: 
+ * Input Ref:cmd- command , dmddata-> command of mode .
+ * Return Ref:NO
+ * 
+*********************************************************/
+void SendData_Tx_Data(uint8_t dcmd,uint8_t ddata)
+
+{
+	outputBuf[0]=0xA5; //display board head = 0xA5
+	outputBuf[1]= 0x01; //display device Number:is 0x01
+	outputBuf[2]= dcmd; // command type = 0x06 ->buzzer sound open or not
+	outputBuf[3]= 0x0f; //  0x0f -> is data ,don't command.
+	outputBuf[4]=0x01; // data is length: 00 ->don't data ,0x01 -> has one data.
+    outputBuf[5]=ddata; // frame of end code -> 0xFE.
+    outputBuf[6]=0xFE; // frame of end code -> 0xFE.
+    outputBuf[7] = bcc_check(outputBuf,7);
+
+
+		transferSize=8;
+		if(transferSize)
+		{
+			while(transOngoingFlag);
+			transOngoingFlag=1;
+			HAL_UART_Transmit_IT(&huart1,outputBuf,transferSize);
+		}
+	
+}
+
+/*********************************************************
+ * 
  * Function Name:
  * Function:
  * Input Ref:NO

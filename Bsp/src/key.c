@@ -167,7 +167,7 @@ void Set_TimerTiming_Number_Value(void)
         
 			gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
 			gpro_t.set_timer_timing_value_success=TIMER_SUCCESS;
-            SendData_Set_Command(0x4C, run_t.timer_dispTime_hours);
+            SendData_Tx_Data(0x4C, run_t.timer_dispTime_hours);
 
 		}
 	

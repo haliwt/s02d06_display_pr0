@@ -273,7 +273,7 @@ void receive_data_fromm_display(uint8_t *pdata)
 
       case 0x4C: //display 1 and 2 of set timer timing value 
 
-        if(pdata[3]==0x0F){
+        if(pdata[4]==0x01){
 
            run_t.timer_dispTime_hours = pdata[5]   ;
            gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;

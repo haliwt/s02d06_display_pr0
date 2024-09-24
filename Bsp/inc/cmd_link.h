@@ -27,6 +27,7 @@ void SendData_Temp_Data(uint8_t tdata);
 
 void SendData_SetTemp_Data(uint8_t tdata);
 
+void SendData_Tx_Data(uint8_t dcmd,uint8_t ddata);
 
 
 void SendData_Time_Data(uint8_t tdata);

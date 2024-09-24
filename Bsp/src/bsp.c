@@ -118,7 +118,7 @@ void mode_key_fun(void)
           if(gpro_t.set_timer_timing_value_success==TIMER_SUCCESS){
        
              Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-             SendData_Set_Command(0x27, 0x00); //not AI mode that is timer mode
+             SendData_Set_Command(0x27, 0x02); //not AI mode that is timer mode
 
            }
             else{
@@ -312,7 +312,9 @@ void key_add_fun(void)
         run_t.gTimer_time_colon=0;
     
         run_t.gTimer_key_temp_timing=0;
+
         
+       
         
 
     break;
@@ -340,6 +342,8 @@ void key_add_fun(void)
 
     run_t.minutes_one_unit_bit = 0;
 
+     
+    //  SendData_Tx_Data(0x4C, run_t.timer_dispTime_hours);
    
  //   TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,0) ; //timer is default 12 hours "12:00" 
     break;
@@ -417,7 +421,7 @@ void key_dec_fun(void)
 
     run_t.minutes_one_unit_bit = run_t.temporary_timer_dispTime_minutes;
     
-  
+     // SendData_Tx_Data(0x4C, run_t.timer_dispTime_hours);
     
   //  TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,0) ; //timer is default 12 hours "12:00" 
 
