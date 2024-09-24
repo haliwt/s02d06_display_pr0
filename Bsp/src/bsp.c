@@ -466,8 +466,7 @@ void compare_temp_value(void)
 
      }
 
-      SendData_SetTemp_Data(gpro_t.set_up_temperature_value);
-      osDelay(20);
+     
 
    }
    else{
@@ -486,7 +485,7 @@ void compare_temp_value(void)
             
              LED_DRY_ON();
              
-             SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);
+            SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);
 
                
 

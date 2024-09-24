@@ -283,6 +283,9 @@ void Set_Temperature_Value(void)
 			 g_tDisp.first_disp_set_temp_flag=0;
 		
 			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
+
+              SendData_SetTemp_Data(gpro_t.set_up_temperature_value);
+              osDelay(20);
               compare_temp_value();
               
 			 
