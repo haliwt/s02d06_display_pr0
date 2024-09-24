@@ -246,6 +246,14 @@ static void vTaskRunPro(void *pvParameters)
 
               } 
 
+             if((gl_tMsg.key_add_flag ==2 || gl_tMsg.key_dec_flag==2) && gpro_t.set_timer_timing_doing_value==0){
+
+             
+               TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
+                run_t.gTimer_key_temp_timing=0;
+
+             }
+
 
         }
         else if(gl_tMsg.key_ptc_flag == 1 || gl_tMsg.key_plasma_flag ==1 || gl_tMsg.key_ultrasonic_flag ==1){

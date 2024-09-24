@@ -340,7 +340,10 @@ void key_add_fun(void)
            
 
       run_t.temporary_timer_dispTime_minutes=0;
-       run_t.gTimer_time_colon =0;
+      run_t.gTimer_time_colon =0;
+
+      run_t.timer_dispTime_hours= run_t.temporary_timer_dispTime_hours /10;
+     run_t.timer_dispTime_minutes = 0;
         
      run_t.hours_two_decade_bit = run_t.temporary_timer_dispTime_hours /10;
     run_t.hours_two_unit_bit   = run_t.temporary_timer_dispTime_hours %10;
@@ -416,6 +419,9 @@ void key_dec_fun(void)
    
      run_t.gTimer_time_colon =0;
      run_t.temporary_timer_dispTime_minutes=0;
+
+     run_t.timer_dispTime_hours= run_t.temporary_timer_dispTime_hours /10;
+     run_t.timer_dispTime_minutes = 0;
 
     run_t.hours_two_decade_bit = run_t.temporary_timer_dispTime_hours /10;
     run_t.hours_two_unit_bit   = run_t.temporary_timer_dispTime_hours %10;
