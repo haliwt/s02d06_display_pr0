@@ -225,7 +225,7 @@ static void vTaskRunPro(void *pvParameters)
               else{
                  gl_tMsg.key_long_mode_counter =0; //clear counter numbers.
                  gl_tMsg.key_long_power_counter =0;
-                  SendData_Buzzer();
+                 // SendData_Buzzer();
 
                   mode_key_fun();
 
@@ -282,8 +282,6 @@ static void vTaskRunPro(void *pvParameters)
           
       if(run_t.gPower_On == power_on){
 
-      
-       
        Display_SmgTiming_Handler();
        Set_Temperature_Value();
        RunLocal_Dht11_Data_Process();
