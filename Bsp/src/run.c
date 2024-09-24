@@ -53,7 +53,7 @@ void power_on_init(void)
     }
  
 
-    gpro_t.mode_key_flag=AI_MODE;
+ 
 	Power_ON_Led();
 
 	run_t.fan_warning=0;
@@ -65,6 +65,7 @@ void power_on_init(void)
 	
     run_t.gTimer_timer_timing_counter=0;
     gpro_t.set_timer_timing_value_success =0 ;
+    gpro_t.disp_timer_or_time_mode = WORKS_TIME;
     gpro_t.set_temp_value_success = 0;
    
 

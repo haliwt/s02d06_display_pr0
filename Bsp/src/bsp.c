@@ -63,42 +63,45 @@ void power_on_handler(void)
 void disp_timer_times_handler(void)
 {
 
-    static uint8_t step_state;
-
-        if(gpro_t.set_timer_timing_doing_value == 1){
-
-                 Set_TimerTiming_Number_Value();
-                   
-        }
-        else{
-
-              switch(step_state){
-
-					case 0:
-						Panel_Led_On_Fun();//Led_Panel_OnOff();
-					    step_state=2;
-					break;
-                    
-                    case 2:
-                        if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
-                            Display_SmgTiming_Value();
-                            }
-                        
+    if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
+           Display_SmgTiming_Value();
+              
+     }
+        
+}
 
 
-                     step_state=0;
-                    break;
+#if 0
 
-              }
+{
+
+  switch(step_state){
+
+		case 0:
+			Panel_Led_On_Fun();//Led_Panel_OnOff();
+		    step_state=2;
+		break;
+        
+        case 2:
+            if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
+                Display_SmgTiming_Value();
+                }
             
-        }    
-   
+
+
+         step_state=0;
+        break;
+
+  }
+
+}    
+
 
 	 
 
   }
 
-
+#endif 
 
 void detected_ptc_or_fan_warning_fun(void)
 {
@@ -110,7 +113,7 @@ void detected_ptc_or_fan_warning_fun(void)
 /******************************************************************************
 	*
 	*Function Name:void mode_key_fun(void)
-	*Funcion: exit this mode set fun ,
+	*Funcion: switch display timer timing value or beijing time.
 	*Input Ref: NO
 	*Return Ref:NO
 	*
@@ -118,23 +121,48 @@ void detected_ptc_or_fan_warning_fun(void)
 void mode_key_fun(void)
 {
 
-    if(gpro_t.mode_key_flag == AI_MODE){ //display beijing time
-            gpro_t.mode_key_flag = NO_AI_MODE;
-       
-           Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-       
-        }
-         else{ //display timer timing 
-           gpro_t.mode_key_flag = AI_MODE;
-           Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_hours);
+    if(gpro_t.disp_timer_or_time_mode== WORKS_TIME){ //display beijing time
            
+            gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
+
+          if(gpro_t.set_timer_timing_value_success==TIMER_SUCCESS){
+       
+             Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
+             SendData_Set_Command(0x27, 0x00); //not AI mode that is timer mode
+
+           }
+            else{
+
+               run_t.timer_dispTime_hours=0;
+               run_t.timer_dispTime_minutes=0;
+               run_t.gTimer_timer_timing_counter =0;
+
+               Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
+             //  SendData_Set_Command(0x27, 0x00); //not AI mode that is timer mode
+       
+              }
+         }
+         else{ //display timer timing 
+ 
+           gpro_t.disp_timer_or_time_mode = WORKS_TIME;
+           Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_hours);
+           SendData_Set_Command(0x27, 0x01); //open AI mode that works time.
+          
          }
 
 
 
  }
 
- 
+void mode_key_long_fun(void)
+{
+  if(run_t.ptc_warning ==0  && run_t.fan_warning == 0){
+
+       gpro_t.disp_timer_or_time_mode = SET_TIMER_ITEM;
+       gpro_t.set_timer_timing_doing_value= 1;
+       run_t.gTimer_key_timing=0;
+    }
+}
  
 /******************************************************************************
 	*
@@ -146,14 +174,14 @@ void mode_key_fun(void)
 ******************************************************************************/
 void power_off_run_handler(void)
 {
-    static uint8_t power_on_off_flag;
+    static uint8_t power_on_off_flag,fan_run_one_minute;
     switch(run_t.power_off_flag){
      case 0://2
 	  
 		 run_t.ptc_warning =0;
 		 run_t.fan_warning =0;
 			
-         run_t.gFan_RunContinue =1;
+         fan_run_one_minute =1;
 	     run_t.gTimer_fan_continue=0;
        
 		  Power_Off_Led_Off();
@@ -163,14 +191,14 @@ void power_off_run_handler(void)
        case 1://4
 
 
-            if(run_t.gTimer_fan_continue < 61 && run_t.gFan_RunContinue == 1 && power_on_off_flag !=0){
+            if(run_t.gTimer_fan_continue < 61 && fan_run_one_minute == 1 && power_on_off_flag !=0){
                    
 					
 		      }
 			  else if(run_t.gTimer_fan_continue > 59){
                     run_t.gTimer_fan_continue =0;
 				
-				   run_t.gFan_RunContinue ++;
+				   fan_run_one_minute ++;
                    power_on_off_flag = 1;
 
 			}
@@ -190,13 +218,54 @@ void power_off_run_handler(void)
  * 
  * 
  **********************************************************************************/
+ void ptc_on_off_handler(void)
+{
+    
+    if(run_t.gDry== 1){
+        run_t.gDry =0;
+        LED_DRY_OFF();
+        SendData_Set_Command(0x02,0x0); //DRY_OFF);
+    
+
+
+    }
+    else{
+        run_t.gDry =1;
+
+        LED_DRY_ON();
+
+        SendData_Set_Command(0x02,0x01); //DRY_ON);
+       
+
+    }  
+
+
+}
+
+void plasma_on_off_handler(void)
+{
+    if(run_t.gPlasma ==1){  //turun off kill 
+
+        run_t.gPlasma = 0;
+        LED_PLASMA_OFF();
+        SendData_Set_Command(0x03,0x00);//PLASMA_OFF);
+
+    }  
+    else{
+        run_t.gPlasma = 1;
+
+        LED_PLASMA_ON();
+
+        SendData_Set_Command(0x03,0x01); //PLASMA_ON);
+
+    }
+
+}
+
 void mouse_on_off_handler(void)
 {
-   if(run_t.fan_warning ==0 && run_t.ptc_warning == 0){ 
-
-
-
-        if(gpro_t.gmouse ==1){
+  
+     if(gpro_t.gmouse ==1){
 
             gpro_t.gmouse =0; //tur Off
            led_mouse_off();
@@ -214,7 +283,7 @@ void mouse_on_off_handler(void)
         }
 
 
-        }
+       
  }
  
 
@@ -228,7 +297,7 @@ void mouse_on_off_handler(void)
 ******************************************************/
 void key_add_fun(void)
 {
-    if(run_t.ptc_warning ==0){
+    if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
     
 
     run_t.gTimer_time_colon=0;
@@ -248,12 +317,11 @@ void key_add_fun(void)
         run_t.set_temperature_decade_value = gpro_t.set_up_temperature_value / 10 ;
         run_t.set_temperature_unit_value  =gpro_t.set_up_temperature_value % 10; //
 
-       // run_t.set_temperature_flag=set_temperature_value;
         run_t.set_temperature_special_value=1;
-        run_t.gTimer_key_temp_timing=0;
+        run_t.gTimer_key_timing =0;
         run_t.gTimer_time_colon=0;
-        gpro_t.manual_turn_off_dry_flag =0; //after set temperature allow shut off dry .
-      
+    
+        run_t.gTimer_key_temp_timing=0;
         
         
 
@@ -265,41 +333,21 @@ void key_add_fun(void)
 
     
         run_t.gTimer_key_timing =0;
-    
-        if(run_t.temporary_timer_dispTime_hours !=24)
-            run_t.temporary_timer_dispTime_minutes =  run_t.temporary_timer_dispTime_minutes + 30;
-        else if(run_t.temporary_timer_dispTime_hours ==24)
-            run_t.temporary_timer_dispTime_minutes =  run_t.temporary_timer_dispTime_minutes + 60;
-        
-        if(run_t.temporary_timer_dispTime_minutes >59){
-            run_t.temporary_timer_dispTime_hours ++;
-            if(run_t.temporary_timer_dispTime_hours ==24){
-                run_t.temporary_timer_dispTime_minutes=0;
-            }
-            else if(run_t.temporary_timer_dispTime_hours >24){
-
-                run_t.temporary_timer_dispTime_hours=0;
-                run_t.temporary_timer_dispTime_minutes=0;
-
-
-            }
-            else{
-
-                run_t.temporary_timer_dispTime_minutes =0;
-
-
-            }
-
+        run_t.temporary_timer_dispTime_hours ++;
+        if(run_t.temporary_timer_dispTime_hours >24){
+           run_t.temporary_timer_dispTime_hours=0;
         }
+           
 
+      run_t.temporary_timer_dispTime_minutes=0;
        run_t.gTimer_time_colon =0;
         
      run_t.hours_two_decade_bit = run_t.temporary_timer_dispTime_hours /10;
     run_t.hours_two_unit_bit   = run_t.temporary_timer_dispTime_hours %10;
 
-    run_t.minutes_one_decade_bit =  run_t.temporary_timer_dispTime_minutes /10;
+    run_t.minutes_one_decade_bit = 0;
 
-    run_t.minutes_one_unit_bit = run_t.temporary_timer_dispTime_minutes %10;
+    run_t.minutes_one_unit_bit = 0;
 
    
  //   TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,0) ; //timer is default 12 hours "12:00" 
@@ -339,9 +387,9 @@ void key_dec_fun(void)
 
         //set temperature value of flag bit 
         run_t.set_temperature_special_value=1;
-        run_t.gTimer_key_temp_timing=0;
+        run_t.gTimer_key_timing =0;
         run_t.gTimer_time_colon=0;
-        gpro_t.manual_turn_off_dry_flag =0; //after set temperature allow shut off dry .
+        run_t.gTimer_key_temp_timing=0;
 
     
         
@@ -354,31 +402,27 @@ void key_dec_fun(void)
   
     run_t.gTimer_key_timing =0;
     
-    run_t.temporary_timer_dispTime_minutes =  run_t.temporary_timer_dispTime_minutes -30;
-    if(run_t.temporary_timer_dispTime_minutes < 0){
+ 
+    
         run_t.temporary_timer_dispTime_hours--;
         if(run_t.temporary_timer_dispTime_hours <0){
 
-        run_t.temporary_timer_dispTime_hours=24;
-        run_t.temporary_timer_dispTime_minutes=0;
+            run_t.temporary_timer_dispTime_hours=24;
+        
 
         }
-        else{
+      
 
-        run_t.temporary_timer_dispTime_minutes =30;
-
-
-        }
-
-     }
+   
      run_t.gTimer_time_colon =0;
+     run_t.temporary_timer_dispTime_minutes=0;
 
     run_t.hours_two_decade_bit = run_t.temporary_timer_dispTime_hours /10;
     run_t.hours_two_unit_bit   = run_t.temporary_timer_dispTime_hours %10;
 
-    run_t.minutes_one_decade_bit =  run_t.temporary_timer_dispTime_minutes /10;
+    run_t.minutes_one_decade_bit =  run_t.temporary_timer_dispTime_minutes ;
 
-    run_t.minutes_one_unit_bit = run_t.temporary_timer_dispTime_minutes %10;
+    run_t.minutes_one_unit_bit = run_t.temporary_timer_dispTime_minutes;
     
   
     
@@ -408,7 +452,7 @@ void compare_temp_value(void)
     if(gpro_t.set_temp_value_success ==1){
     
 
-     if(gpro_t.set_up_temperature_value >run_t.gReal_humtemp[1] && gpro_t.manual_turn_off_dry_flag ==0){ //PTC TURN ON
+     if(gpro_t.set_up_temperature_value >run_t.gReal_humtemp[1] ){ //PTC TURN ON
          run_t.gDry =1;
     	
         LED_DRY_ON();

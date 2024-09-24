@@ -70,7 +70,7 @@ static void Display_Works_Time_Fun(void)
             works_timing_flag =1;
 			run_t.works_dispTime_minutes++; //1 minute 
 		
-            run_t.send_app_wokes_minutes_two++;
+          
 			if(run_t.works_dispTime_minutes> 59){ //1 hour
 			run_t.works_dispTime_minutes=0;
 			run_t.works_dispTime_hours++;
@@ -201,7 +201,7 @@ static void WorksTime_DonotDisplay_Fun(void)
 		 
 		   run_t.works_dispTime_minutes++; //1 minute 
 		
-		   run_t.send_app_wokes_minutes_two++;
+
 		   if(run_t.works_dispTime_minutes> 59){ //1 hour
 		   run_t.works_dispTime_minutes=0;
 		   run_t.works_dispTime_hours++;
@@ -224,11 +224,10 @@ static void WorksTime_DonotDisplay_Fun(void)
 void Display_SmgTiming_Value(void)
 {
 
- 
-
-    switch(gpro_t.set_timer_timing_value_success){
+    switch(gpro_t.disp_timer_or_time_mode){//switch(gpro_t.set_timer_timing_value_success){
 
 	   case TIMER_SUCCESS:
+	   if(gpro_t.set_timer_timing_value_success==TIMER_SUCCESS){
 	   if(run_t.gTimer_timer_timing_counter > 59){
 	    run_t.gTimer_timer_timing_counter =0;
 	
@@ -259,6 +258,16 @@ void Display_SmgTiming_Value(void)
 
         Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
         WorksTime_DonotDisplay_Fun();
+	   }
+	   else{
+		     WorksTime_DonotDisplay_Fun();
+			 if(run_t.gTimer_timer_timing_counter > 30){
+	          run_t.gTimer_timer_timing_counter =0;
+			   gpro_t.disp_timer_or_time_mode = WORKS_TIME;
+			 }
+
+
+	   }
         
 	    break;
 
@@ -270,7 +279,7 @@ void Display_SmgTiming_Value(void)
     		 
     		   run_t.works_dispTime_minutes++; //1 minute 
     		
-    		   run_t.send_app_wokes_minutes_two++;
+    		 
     		   if(run_t.works_dispTime_minutes> 59){ //1 hour
     		   run_t.works_dispTime_minutes=0;
     		   run_t.works_dispTime_hours++;
@@ -285,6 +294,11 @@ void Display_SmgTiming_Value(void)
 			Timer_Timing_Donot_Display();
 
           break;
+
+		case SET_TIMER_ITEM:
+
+			 Set_TimerTiming_Number_Value();
+		break;
 
 	}
 

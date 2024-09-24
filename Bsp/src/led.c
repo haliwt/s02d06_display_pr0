@@ -339,7 +339,7 @@ void Power_ON_Led(void)
 void wifi_icon_fast_blink(void)
 {
 
-   if(run_t.wifi_led_fast_blink_flag==1 && gpro_t.gTimer_wifi_led_blik_time < 120){
+   if(run_t.wifi_led_fast_blink_flag==1 && gpro_t.gTimer_wifi_led_blink_time < 120){
     if(run_t.gTimer_smg_blink_times > 100){
         run_t.gTimer_smg_blink_times=0;
                LED_WIFI_TOGGLE()  ;
@@ -347,7 +347,7 @@ void wifi_icon_fast_blink(void)
       
     
    }
-   else if(run_t.wifi_led_fast_blink_flag==1 && gpro_t.gTimer_wifi_led_blik_time > 119){
+   else if(run_t.wifi_led_fast_blink_flag==1 && gpro_t.gTimer_wifi_led_blink_time > 119){
 
       run_t.wifi_led_fast_blink_flag++;
 

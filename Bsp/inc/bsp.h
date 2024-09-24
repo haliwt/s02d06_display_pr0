@@ -45,7 +45,9 @@
 typedef enum{
 
   WORKS_TIME,
-  TIMER_SUCCESS
+  TIMER_SUCCESS,
+  SET_TIMER_ITEM
+ 
 
 }TIMER_STATE;
 
@@ -61,22 +63,25 @@ typedef enum power_onoff_state_t{
 typedef struct _pro_t{
 
    uint8_t gmouse;
-   uint8_t mode_key_flag;
+ 
    uint8_t wifi_link_net_success;
    uint8_t disp_rx_cmd_done_flag;
+   uint8_t disp_timer_or_time_mode;
    
    uint8_t set_timer_timing_value_success;
    uint8_t set_timer_timing_doing_value;
    uint8_t set_temp_value_success;
    uint8_t set_up_temperature_value;
-   uint8_t manual_turn_off_dry_flag;
+   
    uint8_t answer_signal_flag;
    uint8_t set_timer_first_smg_blink_flag;
    uint8_t smart_phone_app_power_on_flag ;
    uint8_t get_beijing_time_flag;
 
-   uint8_t gTimer_wifi_led_blik_time ;
+   uint8_t gTimer_wifi_led_blink_time ;
    uint8_t gTimer_wifi_led_blink;
+   uint8_t gTimer_power_mode_key_long;
+  
     
    uint16_t gTimer_4bitsmg_blink_times;
 
@@ -112,9 +117,12 @@ void compare_temp_value(void);
 void detected_ptc_or_fan_warning_fun(void);
 
 
+void mode_key_long_fun(void);
 
 
+void ptc_on_off_handler(void);
 
+void plasma_on_off_handler(void);
 
 
 

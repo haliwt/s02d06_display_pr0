@@ -4,6 +4,7 @@
 
 
 key_types key_t;
+static void set_timer_fun_led_blink(void);
 
 /***********************************************************
 *
@@ -152,13 +153,27 @@ void Set_TimerTiming_Number_Value(void)
 		run_t.gTimer_key_timing =0;		
 		gpro_t.set_timer_timing_doing_value  =0 ;
 	    run_t.gTimer_timer_timing_counter=0;
+
+		if(run_t.hours_two_decade_bit==0 && run_t.hours_two_unit_bit==0){
+
+			gpro_t.disp_timer_or_time_mode = WORKS_TIME;
+			gpro_t.set_timer_timing_value_success=0;
+
+		}
+		else{
+			gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
+			gpro_t.set_timer_timing_value_success=TIMER_SUCCESS;
+
+		}
 	
 	 }
 
     }
+
+	set_timer_fun_led_blink();
 }
 
-void set_timer_fun_led_blink(void)
+static void set_timer_fun_led_blink(void)
 {
   //  static uint8_t smg_blink;
  

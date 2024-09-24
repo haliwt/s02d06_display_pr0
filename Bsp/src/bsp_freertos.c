@@ -58,7 +58,23 @@ static TaskHandle_t xHandleTaskStart = NULL;
 typedef struct Msg
 {
 	uint8_t  ucMessageID;
-	uint8_t usData[12];
+    uint8_t usData[12];
+    uint8_t  key_long_mode_counter;
+    uint8_t  key_long_power_counter;
+    uint8_t  key_long_wifi_counter;
+    
+    uint8_t  key_long_power_flag;
+    uint8_t  key_long_mode_flag;
+    uint8_t  key_long_wifi_flag;
+    
+    uint8_t  key_power_flag;
+    uint8_t  key_mode_flag;
+    uint8_t  key_add_flag;
+    uint8_t  key_dec_flag;
+    uint8_t  key_wifi_flag;
+    uint8_t  key_plasma_flag;
+    uint8_t  key_ptc_flag;
+    uint8_t  key_ultrasonic_flag;
 
 }MSG_T;
 
@@ -113,12 +129,10 @@ void freeRTOS_Handler(void)
 static void vTaskRunPro(void *pvParameters)
 {
     BaseType_t xResult;
-	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(50); /* 设置最大等待时间为30ms */
+	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(30); /* 设置最大等待时间为30ms */
 	uint32_t ulValue;
     
-    static volatile uint8_t power_on_off_flag,mouse_on_off_flag ;
-    static uint8_t dry_on_off_flag,plasma_on_off_flag, wifi_on_off_flag ;
-    static uint8_t key_add_flag,key_dec_flag,key_mode_flag;
+  
     
     while(1)
     {
@@ -145,66 +159,16 @@ static void vTaskRunPro(void *pvParameters)
 						          &ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
 						          xMaxBlockTime);  /* 最大允许延迟时间-等待时间 */
 		
-		if( xResult == pdPASS )
-		{
+    if( xResult == pdPASS )
+    {
 			/* 接收到消息，检测那个位被按下 */
              
-			if((ulValue & POWER_KEY_0) != 0)
-			{
-        	  power_on_off_flag = 1;
-            }
-            else if((ulValue & DECODER_BIT_9 ) != 0){
-            
-                decoder_rx_flag = 1;
+	 if((ulValue & DECODER_BIT_9 ) != 0){
+    
+        decoder_rx_flag = 1;
 
-            }
-            else if((ulValue & MODE_KEY_1) != 0){
-            if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-                if(run_t.gPower_On == power_on)
-                 key_mode_flag = 1;
-      
-               }
-
-            }
-            else if((ulValue & DEC_KEY_2) != 0){
-                if(run_t.gPower_On == power_on)
-                  key_dec_flag = 1;
-                 //key_dec_fun();
-
-            }
-            else if((ulValue & ADD_KEY_3) != 0){
-                if(run_t.gPower_On == power_on)
-                  key_add_flag = 1;
-                  //key_add_fun();
+    }
            
-            }
-            else if((ulValue & MOUSE_KEY_4) != 0){
-                 if(run_t.gPower_On == power_on)
-                 mouse_on_off_flag = 1;
-             
-				  
-            }
-            else if((ulValue & PLASMA_KEY_5) != 0){
-              if(run_t.gPower_On == power_on)
-               plasma_on_off_flag = 1;
-
-           }
-            else if((ulValue & DRY_KEY_6) != 0){
-             
-                 if(run_t.gPower_On == power_on)
-                  dry_on_off_flag =1;
-    		     
-            }   
-            else if((ulValue & WIFI_KEY_7) != 0){
-               if(run_t.gPower_On == power_on)
-                  wifi_on_off_flag = 1;
-
-            }
-
-            
-          
-
-        
     }
     else{
 
@@ -226,135 +190,120 @@ static void vTaskRunPro(void *pvParameters)
        }
       
 
-       if(power_on_off_flag == 1){
-             power_on_off_flag++;
+       if(gl_tMsg.key_power_flag == 1){
+           if(POWER_KEY_VALUE()  ==KEY_UP){
+             gl_tMsg.key_power_flag++;
 
-             power_on_handler();
+             if(gl_tMsg.key_long_power_flag == 1){
 
+                 gpro_t.gTimer_wifi_led_blink_time =0;
+                 run_t.wifi_led_fast_blink_flag =1;  
+                 gpro_t.gTimer_power_mode_key_long = 0;
+                 SendData_Set_Command(0x05,0x01); //link net flag is "1"
+
+             }
+             else{
+                 gl_tMsg.key_long_mode_counter =0; //clear counter numbers.
+                 gl_tMsg.key_long_power_counter =0;
+                power_on_handler();
+             }
+
+            }
         }
-        else if(plasma_on_off_flag ==1 || dry_on_off_flag == 1 || wifi_on_off_flag ==1 ||mouse_on_off_flag ==1 \
-                     || key_add_flag ==1 || key_dec_flag ==1 || key_mode_flag == 1){
-                
+        else if(gl_tMsg.key_mode_flag == 1){
 
-              if(key_add_flag == 1 && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+          if(MODEL_KEY_VALUE() ==KEY_UP){
 
-                  key_add_flag ++;
+              gl_tMsg.key_mode_flag++;
+
+              if(gl_tMsg.key_long_mode_flag == 1){
+                gpro_t.gTimer_power_mode_key_long = 0;
+                mode_key_long_fun();
+              
+
+              }
+              else{
+                 gl_tMsg.key_long_mode_counter =0; //clear counter numbers.
+                 gl_tMsg.key_long_power_counter =0;
+                  SendData_Buzzer();
+
+                  mode_key_fun();
+
+              }
+            }
+        }
+        else if(gl_tMsg.key_add_flag == 1 || gl_tMsg.key_dec_flag == 1){
+            if(gl_tMsg.key_add_flag == 1   && ADD_KEY_VALUE() ==KEY_UP){
+
+                  gl_tMsg.key_add_flag ++;
                   key_add_fun();
 
               }
-              else if(key_dec_flag == 1 && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
-                 key_dec_flag ++;
+              else if(gl_tMsg.key_dec_flag == 1  && DEC_KEY_VALUE() ==KEY_UP){
+                 gl_tMsg.key_dec_flag ++;
                  key_dec_fun();
 
 
               } 
-              else if(key_mode_flag == 1){
-                 key_mode_flag++;
-                 SendData_Buzzer();
-                 mode_key_fun();
 
+
+        }
+        else if(gl_tMsg.key_ptc_flag == 1 || gl_tMsg.key_plasma_flag ==1 || gl_tMsg.key_ultrasonic_flag ==1){
+
+              if(gl_tMsg.key_ptc_flag == 1   && DRY_KEY_VALUE() ==KEY_UP){
+                   gl_tMsg.key_ptc_flag ++ ;
+                   ptc_on_off_handler();
+                   
+
+                }
+                else if(gl_tMsg.key_plasma_flag ==1 && PLASMA_KEY_VALUE()==KEY_UP){
+
+                       gl_tMsg.key_plasma_flag++ ;
+                       plasma_on_off_handler();
                   
+                }
+                else if(gl_tMsg.key_ultrasonic_flag ==1 && MOUSE_KEY_VALUE() == KEY_UP){
+                        gl_tMsg.key_ultrasonic_flag ++ ;
 
-              }
-              else if(plasma_on_off_flag==1){
-               plasma_on_off_flag++;
-              
-
-                 if(run_t.gPlasma ==1){  //turun off kill 
-
-                    run_t.gPlasma = 0;
-                    LED_PLASMA_OFF();
-                    SendData_Set_Command(0x03,0x00);//PLASMA_OFF);
-
-                }  
-                else{
-                        run_t.gPlasma = 1;
-                    
-                        LED_PLASMA_ON();
-                      
-                        SendData_Set_Command(0x03,0x01); //PLASMA_ON);
+                         mouse_on_off_handler();
 
                 }
                 
-               
-               }
-               else if(dry_on_off_flag ==1){
-                    dry_on_off_flag++;
 
-                   
-                if(run_t.ptc_warning ==0){
-
-                 
-    			  if(run_t.gDry== 1){
-    				    run_t.gDry =0;
-                        LED_DRY_OFF();
-    					SendData_Set_Command(0x02,0x0); //DRY_OFF);
-                        gpro_t.manual_turn_off_dry_flag =1;
-                     
-                       
-                   }
-                   else{
-                        run_t.gDry =1;
-    			    
-                        LED_DRY_ON();
-                     
-    					SendData_Set_Command(0x02,0x01); //DRY_ON);
-                        gpro_t.manual_turn_off_dry_flag =0;
-                    
-                     }  
-    			   }
-    		    }
-                else if(wifi_on_off_flag ==1){
-
-                    wifi_on_off_flag++;
-                    gpro_t.gTimer_wifi_led_blik_time =0;
-                    run_t.wifi_led_fast_blink_flag =1;
-                    
-                    SendData_Set_Command(0x05,0x01); //link wifi net 
-               
-                }
-                else if(mouse_on_off_flag==1){
-                      mouse_on_off_flag++;
-
-                      mouse_on_off_handler();
-
-                 }
-       }
-          
+         }
           
       if(run_t.gPower_On == power_on){
 
       
-       if((key_add_flag ==2 ||  key_dec_flag==2) && gpro_t.set_timer_timing_doing_value==1){
-           if(key_add_flag==2)key_add_flag++;
-           else if(key_dec_flag==2)key_dec_flag ++ ;
-
-         wifi_icon_fast_blink();
-         TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,0) ;
-
-       }
-       else if((key_add_flag ==2 ||  key_dec_flag==2) && gpro_t.set_timer_timing_doing_value==0 ){
-            if(key_add_flag ==2)key_add_flag++;
-            else if(key_dec_flag == 2)key_dec_flag++;
-            run_t.gTimer_key_temp_timing=0;
-            TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
-            run_t.gTimer_key_temp_timing=0;
-
-
-       }
-
+       
        disp_timer_times_handler();
+       
        Set_Temperature_Value();
        RunLocal_Dht11_Data_Process();
              
        Display_TimeColon_Blink_Fun();
-       set_timer_fun_led_blink();
+      
 
        Warning_Error_Numbers_Fun();
 
        wifi_icon_fast_blink();
-     
+       if((gl_tMsg.key_long_power_flag == 1 || gl_tMsg.key_long_mode_flag == 1) &&  gpro_t.gTimer_power_mode_key_long  > 1){
+
+            if(gl_tMsg.key_long_power_flag == 1){
+                  gl_tMsg.key_long_mode_counter =0;
+                 gl_tMsg.key_long_power_counter=0;
+                 gl_tMsg.key_long_power_flag =0;
+
+            }
+            else if(gl_tMsg.key_long_mode_flag == 1){
+                 gl_tMsg.key_long_mode_counter =0;
+                 gl_tMsg.key_long_power_counter=0;
+
+                 gl_tMsg.key_long_mode_flag =0;
+
+            }
        
+         }
        }
        else if(run_t.gPower_On == power_off){
 
@@ -385,56 +334,105 @@ static void vTaskStart(void *pvParameters)
     if(POWER_KEY_VALUE()  ==KEY_DOWN){
 
            
-           xTaskNotify(xHandleTaskRunPro, /* 目标任务 */
-                        POWER_KEY_0,            /* 设置目标任务事件标志位bit0  */
-                         eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
+          gl_tMsg.key_long_mode_counter =0;
+          gl_tMsg.key_long_power_counter++;
+
+         if(gl_tMsg.key_long_power_counter > 60 && run_t.gPower_On == power_on && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+            gl_tMsg.key_long_power_counter =0;
+            gl_tMsg.key_long_power_flag =1;
+            gpro_t.gTimer_power_mode_key_long = 0;
+            
+             SendData_Buzzer();
+         }
+        gl_tMsg.key_power_flag = 1;
+
+        
+         
 
     }
     else if( MODEL_KEY_VALUE() ==KEY_DOWN){
 
-        
+          
+          gl_tMsg.key_long_power_counter=0;
+          gl_tMsg.key_long_mode_counter++;
+         if(gl_tMsg.key_long_mode_counter > 60  && run_t.gPower_On == power_on &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+             gl_tMsg.key_long_mode_counter=0;   
+         
+             gl_tMsg.key_long_mode_flag =1;
+            gpro_t.gTimer_power_mode_key_long = 0;
+            
+                SendData_Buzzer();
+           }
 
-       xTaskNotify(xHandleTaskRunPro, /* 目标任务 */
-                         MODE_KEY_1,            /* 设置目标任务事件标志位bit0  */
-                         eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
+         if(run_t.gPower_On == power_on   && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+            gl_tMsg.key_mode_flag  =  1;
+
+          }
+
     }
      else if(DEC_KEY_VALUE() == KEY_DOWN){
-
-           xTaskNotify(xHandleTaskRunPro, /* 目标任务 */
-                            DEC_KEY_2,            /* 设置目标任务事件标志位bit0  */
-                            eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
+           gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_mode_counter=0;
+     
+          if(run_t.gPower_On == power_on  && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+             gl_tMsg.key_dec_flag =1;
+           }
 
      }
      else if(ADD_KEY_VALUE() ==KEY_DOWN){
 
-          xTaskNotify(xHandleTaskRunPro, /* 目标任务 */
-                            ADD_KEY_3,            /* 设置目标任务事件标志位bit0  */
-                            eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
+            gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_mode_counter=0;
 
+            if(run_t.gPower_On == power_on && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+                gl_tMsg.key_add_flag =1;
+              }
     }
     else if(WIFI_KEY_VALUE()==KEY_DOWN){
 
-          xTaskNotify(xHandleTaskRunPro, /* 目标任务 */
-                            WIFI_KEY_7,            /* 设置目标任务事件标志位bit0  */
-                            eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
+           gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_mode_counter=0;
 
-     }
+        if(run_t.gPower_On == power_on  && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+           gl_tMsg.key_long_wifi_counter++;
+           
+         if(gl_tMsg.key_long_wifi_counter > 60  && run_t.gPower_On == power_on &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+             gl_tMsg.key_long_wifi_counter=0;   
+         
+             gl_tMsg.key_long_wifi_flag =1;
+             gpro_t.gTimer_power_mode_key_long = 0;
+            
+                SendData_Buzzer();
+           }
+         }
+
+    }
      else if(PLASMA_KEY_VALUE()==KEY_DOWN){
+            gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_mode_counter=0;
+         if(run_t.gPower_On == power_on  && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+           gl_tMsg.key_plasma_flag = 1;
 
-            xTaskNotify(xHandleTaskRunPro, /* 目标任务 */
-                            PLASMA_KEY_5,            /* 设置目标任务事件标志位bit0  */
-                            eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
+         }
+            
      }
      else if(DRY_KEY_VALUE()==KEY_DOWN){
-            xTaskNotify(xHandleTaskRunPro, /* 目标任务 */
-                            DRY_KEY_6,            /* 设置目标任务事件标志位bit0  */
-                            eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
+           gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_mode_counter=0; 
+          if(run_t.gPower_On == power_on   && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+           gl_tMsg.key_ptc_flag =1;
+
+            }
 
      }
      else if(MOUSE_KEY_VALUE() == KEY_DOWN){
-         xTaskNotify(xHandleTaskRunPro, /* 目标任务 */
-                            MOUSE_KEY_4,            /* 设置目标任务事件标志位bit0  */
-                            eSetBits);          /* 将目标任务的事件标志位与BIT_0进行或操作，  将结果赋值给事件标志位。*/
+           gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_mode_counter=0;
+     
+          if(run_t.gPower_On == power_on  && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+           gl_tMsg.key_ultrasonic_flag = 1;
+
+          }
 
      }
      

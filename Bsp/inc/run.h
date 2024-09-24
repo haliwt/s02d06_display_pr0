@@ -58,44 +58,23 @@ typedef enum _WIFI_POWER_STATE_{
 
 typedef struct __RUN{
 
-   uint8_t keyvalue;
  
-   
-
-   uint8_t power_key;
-   uint8_t gTemperature_timer_flag;
    uint8_t gPower_On;
-   uint8_t gRun_flag;
-   uint8_t power_times;
+  
+   uint8_t gmode_flag;
    
-   uint8_t keyAdd_continue;
-   uint8_t keyDec_continue;
+  
 
    uint8_t power_off_flag;
   
 
-
-
-   uint8_t gTemperature;
- 
-   uint8_t gTimer_timer_timing_counter;
-   
-  
-  
-  uint8_t gTimer_setup_zero;
-
-  uint8_t gFan_RunContinue;
-
-  uint8_t temperature_flag;
-  
-
-   uint8_t wifi_led_fast_blink_flag;
+    uint8_t wifi_led_fast_blink_flag;
  
 
-   uint8_t dec_key_times;
-   uint8_t add_key_times;
+ 
+
    
-   uint8_t  gTimer_Cmd;
+
    uint8_t  gPlasma;
  
    uint8_t  gDry;
@@ -111,31 +90,27 @@ typedef struct __RUN{
  
    //fan ref
    uint8_t gFan_level;
-   uint8_t gTimer_display_fan_level;
-   uint8_t fan_key_max;
-   uint8_t fan_key_min;
+
+ 
   
 
 
    //dry ref 
-   uint8_t  dry_key;
+
 
 
 
  
 
-   uint8_t gTimes_minutes_temp;
-   uint8_t set_up_temp_flag;
-   uint8_t gSet_up_times;
+ 
 
-   uint8_t gTimer_display_dht11;
-   uint8_t gTimer_compare_temp_value;
+
   
 
    uint8_t Timer_model_flag;
    uint8_t temperature_set_flag;
 
-   uint8_t gTimes_time_seconds;
+   
 
   
 	
@@ -163,15 +138,12 @@ typedef struct __RUN{
   
 
  
-   volatile uint8_t gTimer_key_temp_timing;
+ 
+  
 
-   uint8_t send_app_wokes_minutes_two;
-   uint8_t send_app_wokes_minutes_one;
 
-   uint8_t send_app_timer_minutes_one;
-   uint8_t send_app_timer_minutes_two;
-   uint8_t define_initialization_timer_time_hours;
-   uint8_t receive_app_timer_time_flag ;
+ 
+
    uint8_t works_dispTime_minutes;
    uint8_t works_dispTime_hours;
 
@@ -187,7 +159,7 @@ typedef struct __RUN{
 
     
    
- 
+   
 
   volatile int8_t timer_dispTime_hours;
   volatile int8_t timer_dispTime_minutes;
@@ -196,6 +168,13 @@ typedef struct __RUN{
 	uint8_t gTimer_usart_error;
 	uint8_t gTimer_error_digital ;
    uint8_t gTimer_smg_blink_times;
+
+    uint8_t gTimer_timer_timing_counter ;
+    uint8_t gTimer_display_dht11;
+     uint8_t gTimer_compare_temp_value;
+     uint8_t gTimes_time_seconds;
+     
+     uint8_t gTimer_key_temp_timing;
 
     uint16_t gTimer_set_temp_times;
  

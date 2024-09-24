@@ -62,15 +62,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
         run_t.gTimer_timer_timing_counter ++;
 		run_t.gTimes_time_seconds ++;
+
+        run_t.gTimer_key_temp_timing++;
      
 	
 	    run_t.gTimer_key_timing++;
 		
-		run_t.gTimer_key_temp_timing++ ;
+	
         run_t.gTimer_usart_error++;
         // process ref
-        gpro_t.gTimer_wifi_led_blik_time ++;
+        gpro_t.gTimer_wifi_led_blink_time ++;
         gpro_t.gTimer_wifi_led_blink++;
+        gpro_t.gTimer_power_mode_key_long++;
            
 
         }
