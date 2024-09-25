@@ -128,7 +128,7 @@ void mode_key_fun(void)
                run_t.gTimer_timer_timing_counter =0;
 
                Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-               SendData_Set_Command(0x27, 0x00); //not AI mode that is timer mode
+               SendData_Set_Command(0x27, 0x02); //not AI mode that is timer mode
        
               }
          }
@@ -450,7 +450,9 @@ void compare_temp_value(void)
     static uint8_t  send_1_off =0xff,send_1_on=0xff,send_2_on=0xff,send_2_off=0xff;
     static uint8_t send_2_on_flag,send_2_off_flag;
 
-    if(gpro_t.set_temp_value_success_flag ==1){
+    switch(gpro_t.set_temp_value_success_flag){
+
+    case 1:
     
 
      if(gpro_t.set_up_temperature_value >run_t.gReal_humtemp[1] ){ //PTC TURN ON
@@ -460,7 +462,7 @@ void compare_temp_value(void)
     	
         LED_DRY_ON();
 
-        if(send_1_on !=send_1_on_flag ){
+        if(send_1_on !=send_1_on_flag){
              send_1_on = send_1_on_flag;
              send_1_off_flag ++;
 		  SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);no buzzer sound 
@@ -489,8 +491,13 @@ void compare_temp_value(void)
      
 
    }
-   else{
-        if(run_t.gReal_humtemp[1] >39){
+   break;
+
+   case 0:
+  
+      if(run_t.gReal_humtemp[1] >39){
+         
+         first_one_flag =1;
 
          run_t.gDry =0;
          LED_DRY_OFF();
@@ -501,13 +508,11 @@ void compare_temp_value(void)
              send_2_off_flag ++;
     	    SendData_Set_Command(0x22,0x0);  //DRY_OFF_NO_BUZZER);no buzzer sound 
          }
-         first_one_flag =1;
+         
         }
-        else{
+        else if(run_t.gReal_humtemp[1] <38 && first_one_flag==1){
 
-           if(first_one_flag==1 && (run_t.gReal_humtemp[1] <39)){
-
-            if(gpro_t.manual_turn_off_ptc_flag ==0){
+          if(gpro_t.manual_turn_off_ptc_flag ==0){
 
              run_t.gDry =1;
             
@@ -519,11 +524,25 @@ void compare_temp_value(void)
 
                 }
 
+               }
+           }
+         else if(run_t.gReal_humtemp[1] <40 && first_one_flag==0){
+
+           if(gpro_t.manual_turn_off_ptc_flag ==0){
+
+             run_t.gDry =1;
+            
+             LED_DRY_ON();
+            if(send_2_off !=send_2_off_flag ){
+             send_2_off = send_2_off_flag;
+             send_2_on_flag ++;
+                  SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);
+
                 }
 
              }
-           }
-
+          }
+       break;
       }
 }
 
