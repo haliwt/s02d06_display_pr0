@@ -128,9 +128,9 @@ void freeRTOS_Handler(void)
 **********************************************************************************************************/
 static void vTaskRunPro(void *pvParameters)
 {
-    BaseType_t xResult;
-	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(30); /* 设置最大等待时间为30ms */
-	uint32_t ulValue;
+//    BaseType_t xResult;
+//	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(30); /* 设置最大等待时间为30ms */
+//	uint32_t ulValue;
     
   
     
@@ -154,27 +154,26 @@ static void vTaskRunPro(void *pvParameters)
 		    注：ulNotifiedValue表示任务vTaskMsgPro的任务控制块里面的变量。		
 		*/
 		
-		xResult = xTaskNotifyWait(0x00000000,      
-						          0xFFFFFFFF,      
-						          &ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
-						          xMaxBlockTime);  /* 最大允许延迟时间-等待时间 */
-		
-    if( xResult == pdPASS )
-    {
-			/* 接收到消息，检测那个位被按下 */
-             
-	 if((ulValue & DECODER_BIT_9 ) != 0){
-    
-        decoder_rx_flag = 1;
+//		xResult = xTaskNotifyWait(0x00000000,      
+//						          0xFFFFFFFF,      
+//						          &ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
+//						          xMaxBlockTime);  /* 最大允许延迟时间-等待时间 */
+//		
+//    if( xResult == pdPASS )
+//    {
+//			/* 接收到消息，检测那个位被按下 */
+//             
+//	 if((ulValue & DECODER_BIT_9 ) != 0){
+//    
+//        decoder_rx_flag = 1;
+//
+//    }
+//           
+//    }
+//    else{
 
-    }
-           
-    }
-    else{
+      if(gpro_t.disp_rx_cmd_done_flag == 1){
 
-      if(decoder_rx_flag == 1){
-
-           decoder_rx_flag  =0 ;
            rx_end_flag = 0;
         
           check_code =  bcc_check(gl_tMsg.usData,ulid);
@@ -316,11 +315,11 @@ static void vTaskRunPro(void *pvParameters)
 
        }
      // USART1_Cmd_Error_Handler();
-
+      vTaskDelay(20);
     }
 
-   }
-}
+ }
+
 
 /**********************************************************************************************************
 *	凄1�7 敄1�7 各1�7: vTaskStart
@@ -597,14 +596,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                 bcc_check_code=inputBuf[0];
 
                  state = 0;
-                xTaskNotifyFromISR(xHandleTaskRunPro,  /* 目标任务 */
-                DECODER_BIT_9,     /* 设置目标任务事件标志位bit0  */
-                eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-                &xHigherPriorityTaskWoken);
-
-                /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-                portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-                
+//                xTaskNotifyFromISR(xHandleTaskRunPro,  /* 目标任务 */
+//                DECODER_BIT_9,     /* 设置目标任务事件标志位bit0  */
+//                eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
+//                &xHigherPriorityTaskWoken);
+//
+//                /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
+//                portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//                
                   
               }
 
