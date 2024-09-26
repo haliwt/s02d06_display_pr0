@@ -488,9 +488,6 @@ void compare_temp_value(void)
 
      }
 
-     
-
-   }
    break;
 
    case 0:

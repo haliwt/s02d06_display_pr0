@@ -101,10 +101,13 @@ void receive_data_fromm_display(uint8_t *pdata)
         if(pdata[3] == 0x01){  // link wifi 
 
              gpro_t.gTimer_wifi_led_blink_time =0;
-             run_t.wifi_led_fast_blink_flag =1;   
+             run_t.wifi_led_fast_blink_flag =1;  
+             gpro_t.wifi_link_net_success = 0;
+             gpro_t.get_beijing_time_flag = 0;
 
         }
         else if(pdata[3] == 0x0){ //don't link wifi 
+
 
 
 
