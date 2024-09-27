@@ -349,7 +349,7 @@ void wifi_icon_fast_blink(void)
    }
    else if(run_t.wifi_led_fast_blink_flag==1 && gpro_t.gTimer_wifi_led_blink_time > 119){
 
-      run_t.wifi_led_fast_blink_flag++;
+      run_t.wifi_led_fast_blink_flag=0;
 
    }
 

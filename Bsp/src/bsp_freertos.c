@@ -174,9 +174,8 @@ static void vTaskRunPro(void *pvParameters)
 
       if(gpro_t.disp_rx_cmd_done_flag == 1){
 
-           rx_end_flag = 0;
-        
-          check_code =  bcc_check(gl_tMsg.usData,ulid);
+           
+        check_code =  bcc_check(gl_tMsg.usData,ulid);
           if(check_code == bcc_check_code ){
     
            receive_data_fromm_display(gl_tMsg.usData);
@@ -195,9 +194,13 @@ static void vTaskRunPro(void *pvParameters)
 
              if(gl_tMsg.key_long_power_flag == 1){
 
-                 gpro_t.gTimer_wifi_led_blink_time =0;
-                 run_t.wifi_led_fast_blink_flag =1;  
+             
                  gpro_t.gTimer_power_mode_key_long = 0;
+
+                  gpro_t.gTimer_wifi_led_blink_time =0;
+                 run_t.wifi_led_fast_blink_flag =1;  
+                 gpro_t.wifi_link_net_success = 0;
+                 gpro_t.get_beijing_time_flag = 0;
                  SendData_Set_Command(0x05,0x01); //link net flag is "1"
 
              }
@@ -257,24 +260,24 @@ static void vTaskRunPro(void *pvParameters)
         }
         else if(gl_tMsg.key_ptc_flag == 1 || gl_tMsg.key_plasma_flag ==1 || gl_tMsg.key_ultrasonic_flag ==1){
 
-              if(gl_tMsg.key_ptc_flag == 1   && DRY_KEY_VALUE() ==KEY_UP){
-                   gl_tMsg.key_ptc_flag ++ ;
-                   ptc_on_off_handler();
-                   
+            if(gl_tMsg.key_ptc_flag == 1   && DRY_KEY_VALUE() ==KEY_UP){
+                gl_tMsg.key_ptc_flag ++ ;
+                ptc_on_off_handler();
 
-                }
-                else if(gl_tMsg.key_plasma_flag ==1 && PLASMA_KEY_VALUE()==KEY_UP){
 
-                       gl_tMsg.key_plasma_flag++ ;
-                       plasma_on_off_handler();
-                  
-                }
-                else if(gl_tMsg.key_ultrasonic_flag ==1 && MOUSE_KEY_VALUE() == KEY_UP){
-                        gl_tMsg.key_ultrasonic_flag ++ ;
+            }
+            else if(gl_tMsg.key_plasma_flag ==1 && PLASMA_KEY_VALUE()==KEY_UP){
 
-                         mouse_on_off_handler();
+                gl_tMsg.key_plasma_flag++ ;
+                plasma_on_off_handler();
 
-                }
+            }
+            else if(gl_tMsg.key_ultrasonic_flag ==1 && MOUSE_KEY_VALUE() == KEY_UP){
+                gl_tMsg.key_ultrasonic_flag ++ ;
+
+                mouse_on_off_handler();
+
+            }
                 
 
          }
@@ -315,7 +318,7 @@ static void vTaskRunPro(void *pvParameters)
 
        }
      // USART1_Cmd_Error_Handler();
-      vTaskDelay(20);
+      vTaskDelay(50);
     }
 
  }
@@ -341,7 +344,7 @@ static void vTaskStart(void *pvParameters)
           gl_tMsg.key_long_mode_counter =0;
           gl_tMsg.key_long_power_counter++;
 
-         if(gl_tMsg.key_long_power_counter > 60 && run_t.gPower_On == power_on && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+         if(gl_tMsg.key_long_power_counter > 50 && run_t.gPower_On == power_on && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
             gl_tMsg.key_long_power_counter =0;
             gl_tMsg.key_long_power_flag =1;
             gpro_t.gTimer_power_mode_key_long = 0;
@@ -359,7 +362,7 @@ static void vTaskStart(void *pvParameters)
           
           gl_tMsg.key_long_power_counter=0;
           gl_tMsg.key_long_mode_counter++;
-         if(gl_tMsg.key_long_mode_counter > 60  && run_t.gPower_On == power_on &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+         if(gl_tMsg.key_long_mode_counter > 50  && run_t.gPower_On == power_on &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0){
              gl_tMsg.key_long_mode_counter=0;   
          
              gl_tMsg.key_long_mode_flag =1;
@@ -483,56 +486,7 @@ void AppTaskCreate (void)
 
 
 
-/*
-*********************************************************************************************************
-*	凄1�7 敄1�7 各1�7: AppObjCreate
-*	功能说明: 创建任务通信机制
-*	彄1�7    叄1�7: 旄1�7
-*	迄1�7 囄1�7 倄1�7: 旄1�7
-*********************************************************************************************************
-*/
-# if 0
-void AppObjCreate (void)
-{
-    #if 1
 
-//   /* 创建10个uint8_t型消息队刄1�7 */
-//	xQueue1 = xQueueCreate(4, sizeof(uint8_t));
-//    if( xQueue1 == 0 )
-//    {
-//        /* 没有创建成功，用户可以在这里加入创建失败的处理机刄1�7 */
-//    }
-	
-	/* 创建10个存储指针变量的消息队列，由于CM3/CM4内核昄1�732位机，一个指针变量占甄1�74个字芄1�7 */
-	xQueue2 = xQueueCreate(4, sizeof(struct Msg *));
-    if( xQueue2 == 0 )
-    {
-        /* 没有创建成功，用户可以在这里加入创建失败的处理机刄1�7 */
-    }
-
-	
-
-	#endif 
-
-    #if 0
-
-	 /* 创建队列雄1�7 */
-    xQueueSet = xQueueCreateSet(QUEUESET_LENGTH);
-    /* 创建队列*/
-    xQueue1 = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
-    xQueue2 = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
-	
-    /* 创建二��信号量 */
-    xSemaphore = xSemaphoreCreateBinary();
-	
-    /* 将队列和二��信号量添加到队列集丄1�7 */
-    xQueueAddToSet(xQueue1, xQueueSet);
-    xQueueAddToSet(xQueue2, xQueueSet);
-    xQueueAddToSet(xSemaphore, xQueueSet);
-    #endif 
-}
-
-#endif 
 /********************************************************************************
 	**
 	*Function Name:void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
