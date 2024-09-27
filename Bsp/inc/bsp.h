@@ -126,6 +126,7 @@ void ptc_on_off_handler(void);
 void plasma_on_off_handler(void);
 
 
+void smartphone_app_power_on_fun(void);
 
 #endif 
 

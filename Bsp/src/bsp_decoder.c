@@ -236,6 +236,12 @@ void receive_data_fromm_display(uint8_t *pdata)
              run_t.gPlasma  = pdata[7];
              gpro_t.gmouse = pdata[8];
 
+             if(run_t.gDry == 0){
+                gpro_t.manual_turn_off_ptc_flag =1;
+
+             }
+             else gpro_t.manual_turn_off_ptc_flag =1;
+
             run_t.gPower_On = power_on;
             run_t.power_off_flag = 0;
 

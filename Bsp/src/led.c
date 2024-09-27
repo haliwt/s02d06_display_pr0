@@ -317,7 +317,7 @@ void Power_Off_Led_Off(void)
    LED_DRY_OFF();
    LED_TIME_OFF();
    LED_PLASMA_OFF();
-   LED_FAN_OFF();
+   LED_MOUSE_OFF();
    LED_POWER_OFF();
    SMG_POWER_OFF();
 
@@ -327,11 +327,12 @@ void Power_ON_Led(void)
 {
    LED_WIFI_ON();
    LED_DRY_ON();
-   LED_TIME_ON();
+  
    LED_PLASMA_ON();
-   LED_FAN_ON();
+   LED_MOUSE_ON();
    LED_POWER_ON();
    SMG_POWER_ON();
+   LED_TIME_ON();
 
 }
 
@@ -373,5 +374,43 @@ void wifi_icon_fast_blink(void)
 
 
 }
+
+
+void led_fun_indicator_light(void)
+{
+
+   if(run_t.gDry == 1){
+
+       LED_DRY_ON();
+
+   }
+   else{
+       LED_DRY_OFF();
+
+   }
+
+   if(run_t.gPlasma == 1){
+
+      LED_PLASMA_ON();
+
+   }
+   else{
+
+      LED_PLASMA_OFF();
+   }
+
+   if(gpro_t.gmouse == 1){
+
+        LED_MOUSE_ON();
+
+   }
+   else{
+    LED_MOUSE_OFF();
+
+   }
+
+
+}
+
 
 

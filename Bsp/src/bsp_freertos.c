@@ -284,6 +284,8 @@ static void vTaskRunPro(void *pvParameters)
           
       if(run_t.gPower_On == power_on){
 
+       smartphone_app_power_on_fun();
+       led_fun_indicator_light();
        Display_SmgTiming_Handler();
        Set_Temperature_Value();
        RunLocal_Dht11_Data_Process();

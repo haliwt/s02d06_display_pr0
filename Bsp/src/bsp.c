@@ -52,7 +52,28 @@ void power_on_handler(void)
 
   }
 
-   /******************************************************************************
+void smartphone_app_power_on_fun(void)
+{
+    
+    if(gpro_t.smart_phone_app_power_on_flag ==1){
+
+      gpro_t.smart_phone_app_power_on_flag++;
+
+      run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
+    
+        
+    run_t.gPower_On = power_on;
+    run_t.power_off_flag = 0;
+       
+    
+        
+     power_on_init();
+     }
+
+
+}
+
+/******************************************************************************
 	*
 	*Function Name:void RunPocess_Command_Handler(void)
 	*Funcion: display pannel run of process 
@@ -175,6 +196,9 @@ void power_off_run_handler(void)
 	     run_t.gTimer_fan_continue=0;
        
 		  Power_Off_Led_Off();
+          run_t.gDry =0;
+          run_t.gPlasma =0;
+          gpro_t.gmouse = 0;
          run_t.power_off_flag = 1;
        break;
 

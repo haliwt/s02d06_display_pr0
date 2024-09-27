@@ -56,5 +56,8 @@ void Power_ON_Led(void);
 
 void wifi_icon_fast_blink(void);
 
+void led_fun_indicator_light(void);
+
+
 
 #endif 

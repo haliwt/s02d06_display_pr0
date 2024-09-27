@@ -53,8 +53,18 @@ void power_on_init(void)
     }
  
 
- 
-	Power_ON_Led();
+    if(gpro_t.smart_phone_app_power_on_flag ==0){
+	   Power_ON_Led();
+
+     }
+     else{
+
+        LED_POWER_ON();
+        SMG_POWER_ON(); 
+        LED_TIME_ON();
+
+        led_fun_indicator_light();
+     }
 
 	run_t.fan_warning=0;
 	run_t.ptc_warning=0;
