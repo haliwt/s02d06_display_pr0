@@ -226,20 +226,41 @@ void receive_data_fromm_display(uint8_t *pdata)
 
       break;
 
-      case 0x21:  //smart phone timer timing power on .
+      case 0x20: //smart phone timer power on and power off command
+        if(pdata[4] == 0x04){ //4 command 
 
-      
-        if(pdata[3] == 0x01){ //数据
-           gpro_t.smart_phone_app_power_on_flag  =1;
-           run_t.gPower_On = power_on;
-           run_t.power_off_flag = 0;
-        
+          if(pdata[5]==1){
+             gpro_t.smart_phone_app_power_on_flag  =1;
 
-           power_on_init();
+             run_t.gDry  = pdata[6];
+             run_t.gPlasma  = pdata[7];
+             gpro_t.gmouse = pdata[8];
 
-        }
+            run_t.gPower_On = power_on;
+            run_t.power_off_flag = 0;
+
+
+             power_on_init();
+            }
+       }
+
 
       break;
+
+//      case 0x21:  //smart phone timer timing power on .
+//
+//      
+//        if(pdata[3] == 0x01){ //数据
+//           gpro_t.smart_phone_app_power_on_flag  =1;
+//           run_t.gPower_On = power_on;
+//           run_t.power_off_flag = 0;
+//        
+//
+//           power_on_init();
+//
+//        }
+//
+//      break;
 
       case 0x2A: //set temperature value 
 
