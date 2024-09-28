@@ -176,7 +176,7 @@ typedef struct __RUN{
      
      uint8_t gTimer_key_temp_timing;
 
-    uint16_t gTimer_set_temp_times;
+    
  
    
   

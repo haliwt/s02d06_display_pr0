@@ -68,6 +68,9 @@ typedef struct _pro_t{
    uint8_t disp_rx_cmd_done_flag;
    uint8_t disp_timer_or_time_mode;
    uint8_t manual_turn_off_ptc_flag ;
+
+   uint8_t temp_switch_on_flag;
+   uint8_t  temp_switch_off_flag;
    
    uint8_t set_timer_timing_value_success;
    uint8_t set_timer_timing_doing_value;
@@ -84,7 +87,7 @@ typedef struct _pro_t{
    uint8_t gTimer_power_mode_key_long;
   
     
-   uint16_t gTimer_4bitsmg_blink_times;
+   
 
 
 

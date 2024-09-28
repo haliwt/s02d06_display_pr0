@@ -43,10 +43,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	
     run_t.gTimer_smg_blink_times++;
 
-	run_t.gTimer_set_temp_times++;
+
 	run_t.gTimer_time_colon++ ;
     run_t.gTimer_error_digital++;
-    gpro_t.gTimer_4bitsmg_blink_times++;
+   
 	
     if(tm0>999){ //1000 *1ms = 1000ms = 1s
 		tm0=0;
@@ -76,7 +76,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         gpro_t.gTimer_power_mode_key_long++;
 
         //the first display board ref
-        g_tDisp.gTimer_disp_set_temp ++;
+
            
 
         }

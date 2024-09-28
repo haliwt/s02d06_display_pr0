@@ -26,7 +26,7 @@ void power_on_handler(void)
 
      if(run_t.gPower_On == power_off){
 
-        run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
+      
 
      
         run_t.gPower_On = power_on;
@@ -59,7 +59,7 @@ void smartphone_app_power_on_fun(void)
 
       gpro_t.smart_phone_app_power_on_flag++;
 
-      run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
+  
     
         
     run_t.gPower_On = power_on;
@@ -339,7 +339,11 @@ void key_add_fun(void)
     
         run_t.gTimer_key_temp_timing=0;
 
-        
+        gpro_t.manual_turn_off_ptc_flag = 0;
+        gpro_t.temp_switch_on_flag++;
+        gpro_t.temp_switch_off_flag++;
+
+        g_tDisp.first_disp_set_temp_flag=0;
        
         
 
@@ -412,8 +416,10 @@ void key_dec_fun(void)
         run_t.gTimer_time_colon=0;
         run_t.gTimer_key_temp_timing=0;
 
-    
-        
+         gpro_t.manual_turn_off_ptc_flag = 0;
+             gpro_t.temp_switch_on_flag++;
+        gpro_t.temp_switch_off_flag++;
+        g_tDisp.first_disp_set_temp_flag=0;
 
     break;
 
@@ -470,9 +476,9 @@ void key_dec_fun(void)
 *******************************************************/
 void compare_temp_value(void)
 {
-    static uint8_t first_one_flag,send_1_on_flag,send_1_off_flag;
+   
     static uint8_t  send_1_off =0xff,send_1_on=0xff,send_2_on=0xff,send_2_off=0xff;
-    static uint8_t send_2_on_flag,send_2_off_flag;
+    static uint8_t  first_one_flag ;
 
     switch(gpro_t.set_temp_value_success_flag){
 
@@ -486,9 +492,10 @@ void compare_temp_value(void)
     	
         LED_DRY_ON();
 
-        if(send_1_on !=send_1_on_flag){
-             send_1_on = send_1_on_flag;
-             send_1_off_flag ++;
+        if(send_1_on != gpro_t.temp_switch_on_flag){
+             send_1_on = gpro_t.temp_switch_on_flag;
+             gpro_t.temp_switch_off_flag++;
+             
 		  SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);no buzzer sound 
           osDelay(20);
 
@@ -501,9 +508,11 @@ void compare_temp_value(void)
          LED_DRY_OFF();
 
           
-         if(send_1_off !=send_1_off_flag ){
-             send_1_off = send_1_off_flag;
-             send_1_on_flag ++;
+         if(send_1_off !=gpro_t.temp_switch_on_flag){
+             send_1_off = gpro_t.temp_switch_on_flag;
+
+            gpro_t.temp_switch_off_flag++;
+            
     	   SendData_Set_Command(0x22,0x0);//DRY_OFF_NO_BUZZER);no buzzer sound 
             osDelay(20);
 
@@ -524,9 +533,9 @@ void compare_temp_value(void)
          LED_DRY_OFF();
 
          
-        if(send_2_on !=send_2_on_flag ){
-             send_2_on = send_2_on_flag;
-             send_2_off_flag ++;
+        if(send_2_on !=gpro_t.temp_switch_on_flag){
+             send_2_on = gpro_t.temp_switch_on_flag;
+            gpro_t.temp_switch_off_flag++;
     	    SendData_Set_Command(0x22,0x0);  //DRY_OFF_NO_BUZZER);no buzzer sound 
          }
          
@@ -538,9 +547,10 @@ void compare_temp_value(void)
              run_t.gDry =1;
             
              LED_DRY_ON();
-            if(send_2_off !=send_2_off_flag ){
-             send_2_off = send_2_off_flag;
-             send_2_on_flag ++;
+            if(send_2_off !=gpro_t.temp_switch_off_flag ){
+             send_2_off = gpro_t.temp_switch_off_flag;
+                gpro_t.temp_switch_on_flag++;
+             
                   SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);
 
                 }
@@ -554,9 +564,9 @@ void compare_temp_value(void)
              run_t.gDry =1;
             
              LED_DRY_ON();
-            if(send_2_off !=send_2_off_flag ){
-             send_2_off = send_2_off_flag;
-             send_2_on_flag ++;
+            if(send_2_off != gpro_t.temp_switch_on_flag){
+             send_2_off =  gpro_t.temp_switch_on_flag;
+             gpro_t.temp_switch_off_flag ++;
                   SendData_Set_Command(0x22,0x01);//DRY_ON_NO_BUZZER);
 
                 }

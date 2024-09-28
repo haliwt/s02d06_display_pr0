@@ -8,8 +8,8 @@ typedef struct{
 
     uint8_t first_disp_set_temp_value ;
     uint8_t first_disp_set_temp_flag;
+    uint8_t first_disp_set_timer_flag;
 
-    uint8_t gTimer_disp_set_temp ;
 
 
 }display_state_ref;

@@ -3,7 +3,7 @@
 display_state_ref g_tDisp;
 
 
-static void first_disp_set_temp_value_fun(uint8_t data);
+static void first_disp_set_temp_value_fun(void);
 
 /**********************************************************************
     *
@@ -53,12 +53,14 @@ void receive_data_fromm_display(uint8_t *pdata)
      if(pdata[3] == 0x01){
 
          run_t.gDry =1;
+          LED_DRY_ON();
          gpro_t.manual_turn_off_ptc_flag = 0;
             
       }
        else if(pdata[3] == 0x0){
          gpro_t.manual_turn_off_ptc_flag = 0;
          run_t.gDry =0;
+         LED_DRY_OFF();
 
        }
 
@@ -69,11 +71,13 @@ void receive_data_fromm_display(uint8_t *pdata)
         if(pdata[3] == 0x01){
            
               run_t.gPlasma=1;
+              LED_PLASMA_ON();
           
         }
         else if(pdata[3] == 0x0){
 
           run_t.gPlasma=0;
+          LED_PLASMA_OFF();
 
         }
 
@@ -86,10 +90,12 @@ void receive_data_fromm_display(uint8_t *pdata)
         if(pdata[3] == 0x01){  //open 
           
              gpro_t.gmouse = 1;
+             LED_MOUSE_ON();
         }
         else if(pdata[3] == 0x0){ //close 
 
              gpro_t.gmouse = 0;
+             LED_MOUSE_OFF();
 
         }
 
@@ -253,30 +259,37 @@ void receive_data_fromm_display(uint8_t *pdata)
 
       break;
 
-//      case 0x21:  //smart phone timer timing power on .
-//
-//      
-//        if(pdata[3] == 0x01){ //数据
-//           gpro_t.smart_phone_app_power_on_flag  =1;
-//           run_t.gPower_On = power_on;
-//           run_t.power_off_flag = 0;
-//        
-//
-//           power_on_init();
-//
-//        }
-//
-//      break;
+      case 0x22:  // compare set temp value ->PTC打开关闭指令,没有蜂鸣器声音。
+      
+        if(pdata[3] == 0x01){ //set temperature value compare value after open ptc
+         
+            run_t.gDry =1;
+            LED_DRY_ON();
+            gpro_t.manual_turn_off_ptc_flag = 0;
+
+           
+        }
+        else if(pdata[3]==0){
+            run_t.gDry =0;
+            LED_DRY_OFF();
+            gpro_t.manual_turn_off_ptc_flag = 0;
+
+
+        }
+
+      break;
 
       case 0x2A: //set temperature value 
 
         if(pdata[4] == 0x01){ //only receive data  1 word .
-
+            
              gpro_t.manual_turn_off_ptc_flag = 0;
             g_tDisp.first_disp_set_temp_flag = 1;
-            g_tDisp.gTimer_disp_set_temp =0;
-            
-            first_disp_set_temp_value_fun(pdata[5]);
+       
+            run_t.gTimer_key_timing =0;
+            gpro_t.set_up_temperature_value =pdata[5];
+           
+            first_disp_set_temp_value_fun();
 
          }
 
@@ -330,10 +343,10 @@ uint8_t bcc_check(const unsigned char *data, int len)
 }
 
 
-static void first_disp_set_temp_value_fun(uint8_t data)
+static void first_disp_set_temp_value_fun(void)
 {
 
-    gpro_t.set_up_temperature_value = data;
+   // gpro_t.set_up_temperature_value = data;
     
     
     run_t.set_temperature_decade_value = gpro_t.set_up_temperature_value / 10 ;
@@ -346,7 +359,7 @@ static void first_disp_set_temp_value_fun(uint8_t data)
     run_t.set_temperature_special_value =0;
 
     TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
-    compare_temp_value();
+   // compare_temp_value();
 
 
 }
