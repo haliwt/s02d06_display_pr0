@@ -189,19 +189,40 @@ static void set_timer_fun_led_blink(void)
  
    if(gpro_t.set_timer_timing_doing_value==1 || g_tDisp.first_disp_set_timer_flag==1){
 
-    
-        TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,0) ; 
-         osDelay(200);
-         TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,1) ; 
-          
-      }
+       if(gpro_t.set_timer_first_smg_blink_flag ==0){
+       gpro_t.set_timer_first_smg_blink_flag++ ;
+
+        TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,1) ; 
+       
+       
+        gpro_t.gTimer_4bitsmg_blink_times=0;
+
+    }
+    else{
+   
+    if(gpro_t.gTimer_4bitsmg_blink_times < 200 ){// //180ms
+       
+       
+       TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,0) ; 
+     
+        
+    }
+    else if(gpro_t.gTimer_4bitsmg_blink_times > 199 && gpro_t.gTimer_4bitsmg_blink_times < 401 ){//120
+       
+      
+     TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,1) ; 
+   
+       
+
+    }
+    else{
+    	gpro_t.gTimer_4bitsmg_blink_times=0;
  
-
- }
-
-
-
-/****************************************************************
+    }
+    }
+  }
+}
+ /****************************************************************
 	*
 	*Function Name :void Set_Temperature_Value(void)
 	*Function : set timer timing how many ?

@@ -128,49 +128,10 @@ void freeRTOS_Handler(void)
 **********************************************************************************************************/
 static void vTaskRunPro(void *pvParameters)
 {
-//    BaseType_t xResult;
-//	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(30); /* 设置最大等待时间为30ms */
-//	uint32_t ulValue;
-    
-  
-    
-    while(1)
+
+   while(1)
     {
-		/*
-			第一个参数 ulBitsToClearOnEntry的作用（函数执行前）：
-		          ulNotifiedValue &= ~ulBitsToClearOnEntry
-		          简单的说就是参数ulBitsToClearOnEntry那个位是1，那么notification value
-		          的那个位就会被清零。
 
-		          这里ulBitsToClearOnEntry = 0x00000000就是函数执行前保留所有位。
-		
-		    第二个参数 ulBitsToClearOnExit的作用（函数退出前）：			
-				  ulNotifiedValue &= ~ulBitsToClearOnExit
-		          简单的说就是参数ulBitsToClearOnEntry那个位是1，那么notification value
-		          的那个位就会被清零。
-
-				  这里ulBitsToClearOnExi = 0xFFFFFFFF就是函数退出前清楚所有位。
-		
-		    注：ulNotifiedValue表示任务vTaskMsgPro的任务控制块里面的变量。		
-		*/
-		
-//		xResult = xTaskNotifyWait(0x00000000,      
-//						          0xFFFFFFFF,      
-//						          &ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
-//						          xMaxBlockTime);  /* 最大允许延迟时间-等待时间 */
-//		
-//    if( xResult == pdPASS )
-//    {
-//			/* 接收到消息，检测那个位被按下 */
-//             
-//	 if((ulValue & DECODER_BIT_9 ) != 0){
-//    
-//        decoder_rx_flag = 1;
-//
-//    }
-//           
-//    }
-//    else{
 
       if(gpro_t.disp_rx_cmd_done_flag == 1){
 
@@ -186,8 +147,6 @@ static void vTaskRunPro(void *pvParameters)
             
           
        }
-      
-
        if(gl_tMsg.key_power_flag == 1){
            if(POWER_KEY_VALUE()  ==KEY_UP){
              gl_tMsg.key_power_flag++;
@@ -329,11 +288,10 @@ static void vTaskRunPro(void *pvParameters)
 
 
 /**********************************************************************************************************
-*	凄1�7 敄1�7 各1�7: vTaskStart
-*	功能说明: 消息处理，使用函数comGetChar获取串口命令，使用函数comSendBuf发��串口消恄1�7
-*	彄1�7    叄1�7: pvParameters 是在创建该任务时传��的形参
-*	迄1�7 囄1�7 倄1�7: 旄1�7
-*   伄1�7 兄1�7 纄1�7: 3  (数��越小优先级越低，这个跟uCOS相反)
+*	vTask Name: AppTaskCreate
+*	功能说明: 创建应用任务
+*	Inpute Ref：
+*	Return Ref:
 **********************************************************************************************************/
 static void vTaskStart(void *pvParameters)
 {

@@ -41,13 +41,11 @@ void power_on_handler(void)
 
     }
     else{
-            power_off_flag_recoder ++;
-            SendData_PowerOff(0);
-            osDelay(20);
-            run_t.gPower_On = power_off;
-         
-
-        }
+        power_off_flag_recoder ++;
+        SendData_PowerOff(0);
+        osDelay(20);
+        run_t.gPower_On = power_off;
+      }
 
 
   }
@@ -73,53 +71,7 @@ void smartphone_app_power_on_fun(void)
 
 }
 
-/******************************************************************************
-	*
-	*Function Name:void RunPocess_Command_Handler(void)
-	*Funcion: display pannel run of process 
-	*Input Ref: NO
-	*Return Ref:NO
-	*
-******************************************************************************/
 
-#if 0
-
-{
-
-  switch(step_state){
-
-		case 0:
-			Panel_Led_On_Fun();//Led_Panel_OnOff();
-		    step_state=2;
-		break;
-        
-        case 2:
-            if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
-                Display_SmgTiming_Handler();
-                }
-            
-
-
-         step_state=0;
-        break;
-
-  }
-
-}    
-
-
-	 
-
-  }
-
-#endif 
-
-void detected_ptc_or_fan_warning_fun(void)
-{
-
-    Warning_Error_Numbers_Fun();
-
-}
 
 /******************************************************************************
 	*

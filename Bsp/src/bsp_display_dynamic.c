@@ -153,7 +153,6 @@ static void Timer_Timing_Donot_Display(void)
   }
 
 }
-
 /****************************************************************
  * 
  * Function Name: static void WorksTime_DonotDisplay_Fun(void)
@@ -180,8 +179,6 @@ static void WorksTime_DonotDisplay_Fun(void)
 	       }
   }
 }
-
-
 /******************************************************************************
 *
 *Function Name:static void Setup_Timer_Times(void)

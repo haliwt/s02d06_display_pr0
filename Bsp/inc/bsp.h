@@ -85,6 +85,7 @@ typedef struct _pro_t{
    uint8_t gTimer_wifi_led_blink_time ;
    uint8_t gTimer_wifi_led_blink;
    uint8_t gTimer_power_mode_key_long;
+   uint8_t gTimer_4bitsmg_blink_times;
   
     
    
@@ -118,7 +119,7 @@ void mode_key_fun(void);
 
 void compare_temp_value(void);
 
-void detected_ptc_or_fan_warning_fun(void);
+
 
 
 void mode_key_long_fun(void);

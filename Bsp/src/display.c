@@ -1,12 +1,4 @@
-#include "display.h"
-#include "smg.h"
-#include "cmd_link.h"
-#include "run.h"
-#include "key.h"
-#include "led.h"
-#include "bsp_display_dynamic.h"
-
-
+#include "bsp.h"
 
 static void TimeColon_Smg_Blink_Fun(void);
 
@@ -85,31 +77,31 @@ void Display_Error_Digital(uint8_t errnumbers,uint8_t sel)
 ********************************************************************************/
 static void TimeColon_Smg_Blink_Fun(void)
 {
-	//if(run_t.gTimer_colon < 1){ //2
+	
 	static uint8_t i;
 
+    if(gpro_t.disp_timer_or_time_mode != SET_TIMER_ITEM || gpro_t.disp_timer_or_time_mode != PTC_WARNING || gpro_t.disp_timer_or_time_mode != FAN_WARNING){
      i++ ;
-     if(i==1)
+     if(i ==1){
 		  SmgBlink_Colon_Function(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,0);
+     }
      else{
-          i=0;
-	  // }
-	  // else if(run_t.gTimer_colon >  1	&&	run_t.gTimer_colon < 3){
+          if(i > 5){
+           i=0;
+
+          }
+	
 		   SmgBlink_Colon_Function(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,1);
         }
 
-	 // }
-	 // else{
-	//	 run_t.gTimer_colon =0;
-        
-	 // }
+    }
 }
 
 
 void Display_TimeColon_Blink_Fun(void)
 {
 
-  if(run_t.gTimer_time_colon >160){ //10*20ms=300ms
+  if(run_t.gTimer_time_colon >200){ //10*20ms=300ms
 
 	   run_t.gTimer_time_colon =0;
        
