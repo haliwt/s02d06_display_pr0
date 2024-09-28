@@ -268,6 +268,8 @@ void Display_SmgTiming_Handler(void)
 
         case PTC_WARNING:
 
+         Warning_Error_Numbers_Fun();
+
         break;
 
 

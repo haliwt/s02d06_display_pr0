@@ -78,14 +78,14 @@ typedef struct _pro_t{
    uint8_t set_up_temperature_value;
    
    uint8_t answer_signal_flag;
-   uint8_t set_timer_first_smg_blink_flag;
+  
    uint8_t smart_phone_app_power_on_flag ;
    uint8_t get_beijing_time_flag;
 
    uint8_t gTimer_wifi_led_blink_time ;
    uint8_t gTimer_wifi_led_blink;
    uint8_t gTimer_power_mode_key_long;
-   uint8_t gTimer_4bitsmg_blink_times;
+   uint16_t gTimer_4bitsmg_blink_times;
   
     
    

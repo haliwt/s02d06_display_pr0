@@ -254,7 +254,7 @@ static void vTaskRunPro(void *pvParameters)
        Display_TimeColon_Blink_Fun();
       
 
-       Warning_Error_Numbers_Fun();
+      
 
        wifi_icon_fast_blink();
        if((gl_tMsg.key_long_power_flag == 1 || gl_tMsg.key_long_mode_flag == 1) &&  gpro_t.gTimer_power_mode_key_long  > 1){
