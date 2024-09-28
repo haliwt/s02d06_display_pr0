@@ -8,7 +8,7 @@ pro_run_t  gpro_t;
 
 uint8_t hours_one,hours_two,minutes_one,minutes_two;
 
-uint8_t  step_state;
+uint8_t  step_state,power_off_flag_recoder ;
 
 
 
@@ -34,14 +34,14 @@ void power_on_handler(void)
     
 
         SendData_PowerOff(1);
-        osDelay(20);
+        osDelay(10);
       
         power_on_init();
 
 
     }
     else{
-      
+            power_off_flag_recoder ++;
             SendData_PowerOff(0);
             osDelay(20);
             run_t.gPower_On = power_off;
@@ -140,9 +140,10 @@ void mode_key_fun(void)
        
              Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
              SendData_Set_Command(0x27, 0x02); //not AI mode that is timer mode
+             osDelay(10);
 
            }
-            else{
+           else{
 
                run_t.timer_dispTime_hours=0;
                run_t.timer_dispTime_minutes=0;
@@ -150,6 +151,7 @@ void mode_key_fun(void)
 
                Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
                SendData_Set_Command(0x27, 0x02); //not AI mode that is timer mode
+                osDelay(10);
        
               }
          }
@@ -158,6 +160,7 @@ void mode_key_fun(void)
            gpro_t.disp_timer_or_time_mode = WORKS_TIME;
            Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_hours);
            SendData_Set_Command(0x27, 0x01); //open AI mode that works time.
+            osDelay(10);
           
          }
 

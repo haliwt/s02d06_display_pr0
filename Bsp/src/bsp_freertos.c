@@ -191,6 +191,7 @@ static void vTaskRunPro(void *pvParameters)
        if(gl_tMsg.key_power_flag == 1){
            if(POWER_KEY_VALUE()  ==KEY_UP){
              gl_tMsg.key_power_flag++;
+             gl_tMsg.key_long_mode_counter =0;
 
              if(gl_tMsg.key_long_power_flag == 1){
 
@@ -217,6 +218,7 @@ static void vTaskRunPro(void *pvParameters)
           if(MODEL_KEY_VALUE() ==KEY_UP){
 
               gl_tMsg.key_mode_flag++;
+              gl_tMsg.key_long_power_counter=0;
 
               if(gl_tMsg.key_long_mode_flag == 1){
                 gpro_t.gTimer_power_mode_key_long = 0;
