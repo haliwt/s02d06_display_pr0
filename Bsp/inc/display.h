@@ -19,8 +19,11 @@ void Display_Error_Digital(uint8_t errnumbers,uint8_t sel);
 
 void Display_TimeColon_Blink_Fun(void);
 
-void Warning_Error_Numbers_Fun(void);
 
+
+void fan_disp_error_number(void);
+
+void ptc_disp_error_number(void);
 
 
 #endif 

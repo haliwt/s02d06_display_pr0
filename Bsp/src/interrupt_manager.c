@@ -45,7 +45,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 	run_t.gTimer_time_colon++ ;
-    run_t.gTimer_error_digital++;
+    
     gpro_t.gTimer_4bitsmg_blink_times++;
 	
     if(tm0>999){ //1000 *1ms = 1000ms = 1s

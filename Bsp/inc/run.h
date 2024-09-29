@@ -166,7 +166,7 @@ typedef struct __RUN{
 	
 
 	uint8_t gTimer_usart_error;
-	uint8_t gTimer_error_digital ;
+
    uint8_t gTimer_smg_blink_times;
 
     uint8_t gTimer_timer_timing_counter ;

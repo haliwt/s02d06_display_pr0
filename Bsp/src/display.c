@@ -110,73 +110,38 @@ void Display_TimeColon_Blink_Fun(void)
 }
 
 
-void Warning_Error_Numbers_Fun(void)
+void fan_disp_error_number(void)
 {
     static uint8_t alternate_flag;
 
-   if(run_t.ptc_warning ==1 ||  run_t.fan_warning ==1){
+   if(run_t.fan_warning ==1){ //display "Er: 02"
 
-		if(run_t.gTimer_error_digital < 60){//10ms * 51= 510
-
-		      
-            if(alternate_flag ==0){
-			   	  
-                     
-			     if(run_t.ptc_warning ==1){
-                 
-					Display_Error_Digital(0x01,0);
-			     }
-				 else {
-			        if(run_t.fan_warning ==1){
+		
 
 					  
-                      Display_Error_Digital(0x02,0);
+        Display_Error_Digital(0x02,0);
+
+        osDelay(200);
+        Display_Error_Digital(0x10,1);
+        osDelay(200);
                      
-
-			        }
-
-				 }
-			    
-
-               }
-			   else{
-
-			      alternate_flag=2;
-				   if(run_t.ptc_warning ==1 && run_t.fan_warning ==1){
-
-					     Display_Error_Digital(0x02,0);
-
-				   	}
-				    else  if(run_t.ptc_warning ==1 && run_t.fan_warning ==0){
-                       
-					    Display_Error_Digital(0x01,0);
-			        }
-					else  if(run_t.ptc_warning ==0 && run_t.fan_warning ==1){
-                       
-					    Display_Error_Digital(0x02,0);
-			        }
-
-
-			   }
-			   
-
-		   }
-		   else if(run_t.gTimer_error_digital > 59 && run_t.gTimer_error_digital  < 121 ){
-		   		alternate_flag++;
- 				Display_Error_Digital(0x10,1);
- 				if(alternate_flag==2 ||alternate_flag>2 )alternate_flag=0;
-		   }
-		    else if(run_t.gTimer_error_digital > 119){
-
-			  run_t.gTimer_error_digital=0;
-
-
-			 }
-
-		}
-
-
-
 }
+}
+
+void ptc_disp_error_number(void)
+{
+    static uint8_t alternate_flag;
+
+   if(run_t.ptc_warning ==1){ //display "Er: 02"
+
+		Display_Error_Digital(0x01,0);
+
+        osDelay(200);
+        Display_Error_Digital(0x10,1);
+        osDelay(200);
+                     
+  }
+}
+
 
 

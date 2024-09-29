@@ -144,6 +144,9 @@ void receive_data_fromm_display(uint8_t *pdata)
                 
          gpro_t.disp_timer_or_time_mode = PTC_WARNING;
          run_t.ptc_warning =1 ;
+         run_t.gDry =0;
+         LED_DRY_OFF();
+         
       }
       else if(pdata[3] == 0x0){ // don't buzzer sound .
      
@@ -161,6 +164,8 @@ void receive_data_fromm_display(uint8_t *pdata)
                 
          gpro_t.disp_timer_or_time_mode = FAN_WARNING;
          run_t.fan_warning =1;
+         run_t.gDry =0;
+         LED_DRY_OFF();
       }
       else if(pdata[3] == 0x0){ // don't buzzer sound .
     
