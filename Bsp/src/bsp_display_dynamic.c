@@ -268,12 +268,15 @@ void Display_SmgTiming_Handler(void)
 
         case PTC_WARNING:
 
-         Warning_Error_Numbers_Fun();
+           Warning_Error_Numbers_Fun();
 
         break;
 
 
         case FAN_WARNING:
+
+        
+            Warning_Error_Numbers_Fun();
 
         break;
 

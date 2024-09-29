@@ -137,6 +137,41 @@ void receive_data_fromm_display(uint8_t *pdata)
 
      break;
 
+     case 0x08: //PTC_WARNING 
+
+     
+     if(pdata[3] == 0x01){  // high temperature value warning .
+                
+         gpro_t.disp_timer_or_time_mode = PTC_WARNING;
+         run_t.ptc_warning =1 ;
+      }
+      else if(pdata[3] == 0x0){ // don't buzzer sound .
+     
+     
+     
+      }
+
+     break;
+
+
+    case 0x09: //FAN_WARNING 
+
+     
+     if(pdata[3] == 0x01){  // high temperature value warning .
+                
+         gpro_t.disp_timer_or_time_mode = FAN_WARNING;
+         run_t.fan_warning =1;
+      }
+      else if(pdata[3] == 0x0){ // don't buzzer sound .
+    
+     
+     
+      }
+
+     break;
+
+     
+
 
       case 0x1A: //温度数据
 
@@ -283,7 +318,7 @@ void receive_data_fromm_display(uint8_t *pdata)
 
         if(pdata[4] == 0x01){ //only receive data  1 word .
             
-             gpro_t.manual_turn_off_ptc_flag = 0;
+            gpro_t.manual_turn_off_ptc_flag = 0;
             g_tDisp.first_disp_set_temp_flag = 1;
        
             run_t.gTimer_key_timing =0;
@@ -313,12 +348,15 @@ void receive_data_fromm_display(uint8_t *pdata)
 
       case 0x4C: //display 1 and 2 of set timer timing value 
 
-        if(pdata[4]==0x01){
+      if(pdata[4]==0x01){
 
-           run_t.timer_dispTime_hours = pdata[5]   ;
-           gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
-		   gpro_t.set_timer_timing_value_success=TIMER_SUCCESS;
-        }
+       run_t.timer_dispTime_hours = pdata[5]   ;
+
+       run_t.hours_two_decade_bit= run_t.timer_dispTime_hours /10;
+       run_t.hours_two_unit_bit=  run_t.timer_dispTime_hours %10;
+       gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
+	   gpro_t.set_timer_timing_value_success=TIMER_SUCCESS;
+       }
 
 
       break;
