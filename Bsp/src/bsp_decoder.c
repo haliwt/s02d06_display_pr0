@@ -58,7 +58,7 @@ void receive_data_fromm_display(uint8_t *pdata)
             
       }
        else if(pdata[3] == 0x0){
-         gpro_t.manual_turn_off_ptc_flag = 0;
+         gpro_t.manual_turn_off_ptc_flag = 1;
          run_t.gDry =0;
          LED_DRY_OFF();
 
