@@ -290,7 +290,8 @@ void Set_Temperature_Value(void)
             run_t.set_temperature_special_value =0;
             //the first display set temperature value
             if(g_tDisp.first_disp_set_temp_flag == 1){
-            g_tDisp.first_disp_set_temp_flag++;
+                g_tDisp.first_disp_set_temp_flag++;
+                compare_temp_value();
             }
             else{
                 set_compare_flag = 1;
