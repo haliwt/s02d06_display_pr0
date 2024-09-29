@@ -352,6 +352,132 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
     wifi_icon_fast_blink();
     
 }
+
+
+/*******************************************************************************************************
+    *
+    *Function Name:void TM1640_Write_4Bit_Data(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit)
+    *Function :Smg display times hour minute
+    *Input Ref: onebit ,twobit hours ,threebit fourbit minute,sl -select "H" or "numbers"
+    *Return Ref: NO
+    *
+********************************************************************************************************/
+void TM1639_Write_4Bit_Time_D2bit(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit,uint8_t sl)
+{
+
+	
+	 TM1639_STB_SetLow();
+	 TM1639_Write_OneByte(0X40);//To Address of fixed reg 0x44
+	 TM1639_STB_SetHigh();
+    
+    TM1639_STB_SetLow();
+     TM1639_Write_OneByte(0X44);//To Address of fixed reg 0x44
+     TM1639_STB_SetHigh();
+     wifi_icon_fast_blink();
+	 
+    //digital 1
+     TM1639_Start();
+     TM1639_Write_OneByte(0xC8);//0xC0H->GRID_1->BIT_1
+   
+     TM1639_Write_OneByte(segNumber_Low_4bit[onebit]);//display "10"
+
+     TM1639_Stop();
+     wifi_icon_fast_blink();
+
+	 TM1639_Start();
+     TM1639_Write_OneByte(0XC9);//0xC1H->GRID_1->BIT_1
+    
+     TM1639_Write_OneByte(segNumber_High_4bit[onebit]);//display "01"
+     
+
+     TM1639_Stop();
+    
+    
+     //dighital 2
+   
+     TM1639_Start();
+     TM1639_Write_OneByte(0xCA);//0xC1H->GRID_2->BIT_2
+     
+     TM1639_Write_OneByte(segNumber_Low_4bit[twobit]);//display "2 :"
+    
+     TM1639_Stop();
+   wifi_icon_fast_blink();
+
+	TM1639_Start();
+
+    TM1639_Write_OneByte(0xCB);//0xC1H->GRID_2->BIT_2
+    if(sl==0){//TM1639_Write_OneByte(OFFLED);//display "NULL"
+        TM1639_Write_OneByte(segNumber_High_4bit[twobit]|seg_h);//display "2 :"
+     }
+     else{
+
+        TM1639_Write_OneByte(segNumber_High_4bit[twobit]);//display "2 :"
+
+     }
+   
+    
+	 
+    TM1639_Stop();
+	 
+   wifi_icon_fast_blink();
+     //digital 3 
+     //minute 
+    TM1639_Start();
+    TM1639_Write_OneByte(0xCC);//0xC2H->GRID_3->BIT_3
+    if(sl==0){//TM1639_Write_OneByte(OFFLED);//display "NULL"
+	    TM1639_Write_OneByte(segNumber_Low_4bit[threebit]);//display ""
+
+    }
+    else{
+        TM1639_Write_OneByte(segNumber_Low_4bit[0x10]);
+     }
+    TM1639_Stop();
+    wifi_icon_fast_blink();
+    //minute 
+    TM1639_Start();
+    TM1639_Write_OneByte(0xCD);//0xC2H->GRID_3->BIT_3
+    if(sl==0){
+	    TM1639_Write_OneByte(segNumber_High_4bit[threebit]|seg_h);//display ""
+
+	}//TM1639_Write_OneByte(OFFLED);//display "NULL"
+    else TM1639_Write_OneByte(segNumber_High_4bit[0x10]);
+	
+    TM1639_Stop();
+	
+    wifi_icon_fast_blink();
+    //digital 4
+	//minute 
+    TM1639_Start();
+    TM1639_Write_OneByte(0xCE);//0xC2H->GRID_4
+    if(sl==0){//TM1639_Write_OneByte(OFFLED);//display "NULL"
+	    TM1639_Write_OneByte(segNumber_Low_4bit[fourbit]);//display ""
+
+    }
+    else TM1639_Write_OneByte(segNumber_Low_4bit[0x10]);
+    TM1639_Stop();
+    wifi_icon_fast_blink();
+    //minute 
+    TM1639_Start();
+    TM1639_Write_OneByte(0xCF);//0xC2H->GRID_4
+    if(sl==0){//TM1639_Write_OneByte(OFFLED);//display "NULL"
+	    TM1639_Write_OneByte(segNumber_High_4bit[fourbit]|seg_h);//display ""
+
+    }
+    else TM1639_Write_OneByte(segNumber_High_4bit[0x10]);
+    TM1639_Stop();
+
+	
+    wifi_icon_fast_blink();
+
+
+    //open diplay
+    TM1639_Start();
+    TM1639_Write_OneByte(OpenDispTM1639|0x8f);//0xC2H->GRID3->BIT_3
+    TM1639_Stop();
+    wifi_icon_fast_blink();
+    
+}
+
 /*******************************************************************************************************
     *
     *Function Name:void TM1640_Write_4Bit_Data(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit)

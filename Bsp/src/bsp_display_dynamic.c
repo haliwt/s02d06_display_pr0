@@ -44,8 +44,11 @@ void RunLocal_Dht11_Data_Process(void)
    if(run_t.gTimer_compare_temp_value > 4 &&  run_t.set_temperature_special_value==0){
         
         run_t.gTimer_compare_temp_value=0;
+        if(run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+            
+           compare_temp_value();
 
-        compare_temp_value();
+        }
 
 
     }
