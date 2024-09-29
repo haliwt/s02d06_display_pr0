@@ -351,11 +351,15 @@ void receive_data_fromm_display(uint8_t *pdata)
       if(pdata[4]==0x01){
 
        run_t.timer_dispTime_hours = pdata[5]   ;
+       
 
        run_t.hours_two_decade_bit= run_t.timer_dispTime_hours /10;
        run_t.hours_two_unit_bit=  run_t.timer_dispTime_hours %10;
-       gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
-	   gpro_t.set_timer_timing_value_success=TIMER_SUCCESS;
+      
+       g_tDisp.first_disp_set_timer_flag=1;
+       run_t.gTimer_key_timing  = 4;
+       gpro_t.disp_timer_or_time_mode = SET_TIMER_ITEM;
+    
        }
 
 

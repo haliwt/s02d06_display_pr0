@@ -173,12 +173,16 @@ void Set_TimerTiming_Number_Value(void)
 
 		}
 		else{
-             run_t.timer_dispTime_hours= run_t.temporary_timer_dispTime_hours ;
+             if(g_tDisp.first_disp_set_timer_flag==0){
+               run_t.timer_dispTime_hours= run_t.temporary_timer_dispTime_hours ;
+               
+             }
              run_t.timer_dispTime_minutes = 0;
         
 			gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
 			gpro_t.set_timer_timing_value_success=TIMER_SUCCESS;
             set_timer_timing_flag  =0   ;
+            run_t.gTimer_timer_timing_counter=0;
 
              TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,1) ; 
              osDelay(200);

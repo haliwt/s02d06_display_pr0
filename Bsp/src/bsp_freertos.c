@@ -252,10 +252,6 @@ static void vTaskRunPro(void *pvParameters)
        RunLocal_Dht11_Data_Process();
              
        Display_TimeColon_Blink_Fun();
-      
-
-      
-
        wifi_icon_fast_blink();
        if((gl_tMsg.key_long_power_flag == 1 || gl_tMsg.key_long_mode_flag == 1) &&  gpro_t.gTimer_power_mode_key_long  > 1){
 
@@ -295,9 +291,7 @@ static void vTaskRunPro(void *pvParameters)
 **********************************************************************************************************/
 static void vTaskStart(void *pvParameters)
 {
-	
-
-    while(1)
+	while(1)
     {
       
     if(POWER_KEY_VALUE()  ==KEY_DOWN){
