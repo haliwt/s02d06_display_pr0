@@ -127,6 +127,7 @@ void mode_key_long_fun(void)
        gpro_t.disp_timer_or_time_mode = SET_TIMER_ITEM;
        gpro_t.set_timer_timing_doing_value= 1;
        run_t.gTimer_key_timing=0;
+       g_tDisp.first_disp_set_timer_flag=0;
     }
 }
  
