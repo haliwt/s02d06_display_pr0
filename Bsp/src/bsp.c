@@ -130,7 +130,6 @@ void mode_key_long_fun(void)
        g_tDisp.first_disp_set_timer_flag=0;
     }
 }
- 
 /******************************************************************************
 	*
 	*Function Name:void RunPocess_Command_Handler(void)
