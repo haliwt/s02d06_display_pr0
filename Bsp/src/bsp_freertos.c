@@ -166,7 +166,7 @@ static void vTaskRunPro(void *pvParameters)
              }
              else{
                  gl_tMsg.key_long_mode_counter =0; //clear counter numbers.
-                 gl_tMsg.key_long_power_counter =0;
+              
                 power_on_handler();
              }
 
