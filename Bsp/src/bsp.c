@@ -158,6 +158,9 @@ void power_off_run_handler(void)
        break;
 
        case 1://4
+           
+           
+            LED_WIFI_OFF();
 
 
             if(run_t.gTimer_fan_continue < 61 && fan_run_one_minute == 1 && power_on_off_flag !=0){
