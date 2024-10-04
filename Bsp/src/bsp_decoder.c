@@ -344,6 +344,10 @@ void receive_data_fromm_display(uint8_t *pdata)
             gpro_t.disp_timer_or_time_mode = WORKS_TIME;
          }
          else{
+            if(gpro_t.set_timer_timing_value_success!=TIMER_SUCCESS){
+                run_t.gTimer_timer_timing_counter =0;
+                Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
+            }
             gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
 
          }

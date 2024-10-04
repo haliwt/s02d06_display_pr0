@@ -166,7 +166,7 @@ static void vTaskRunPro(void *pvParameters)
              }
              else{
                  gl_tMsg.key_long_mode_counter =0; //clear counter numbers.
-              
+                 gl_tMsg.key_long_power_counter=0;
                 power_on_handler();
              }
 
@@ -178,7 +178,7 @@ static void vTaskRunPro(void *pvParameters)
 
               gl_tMsg.key_mode_flag++;
               gl_tMsg.key_long_power_counter=0;
-
+            
               if(gl_tMsg.key_long_mode_flag == 1){
                 gpro_t.gTimer_power_mode_key_long = 0;
                 mode_key_long_fun();
@@ -318,6 +318,7 @@ static void vTaskStart(void *pvParameters)
           
           gl_tMsg.key_long_power_counter=0;
           gl_tMsg.key_long_mode_counter++;
+          gl_tMsg.key_power_flag = 0;
          if(gl_tMsg.key_long_mode_counter > 50  && run_t.gPower_On == power_on &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0){
              gl_tMsg.key_long_mode_counter=0;   
          

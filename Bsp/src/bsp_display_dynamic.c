@@ -163,8 +163,9 @@ void Display_SmgTiming_Handler(void)
 	   }
 	   else{
 		     WorksTime_DonotDisplay_Fun();
-			 if(run_t.gTimer_timer_timing_counter > 30){
+			 if(run_t.gTimer_timer_timing_counter > 19){
 	          run_t.gTimer_timer_timing_counter =0;
+			 // Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 			   gpro_t.disp_timer_or_time_mode = WORKS_TIME;
 			 }
 

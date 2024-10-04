@@ -37,7 +37,7 @@ void power_on_handler(void)
         osDelay(10);
       
         power_on_init();
-
+ 
 
     }
     else{
@@ -56,23 +56,11 @@ void smartphone_app_power_on_fun(void)
     if(gpro_t.smart_phone_app_power_on_flag ==1){
 
       gpro_t.smart_phone_app_power_on_flag++;
-
-  
-    
-        
-    run_t.gPower_On = power_on;
-    run_t.power_off_flag = 0;
-       
-    
-        
-     power_on_init();
+      run_t.gPower_On = power_on;
+      run_t.power_off_flag = 0;
+       power_on_init();
      }
-
-
 }
-
-
-
 /******************************************************************************
 	*
 	*Function Name:void mode_key_fun(void)
@@ -159,31 +147,23 @@ void power_off_run_handler(void)
 
        case 1://4
            
-           
-            LED_WIFI_OFF();
-
-
-            if(run_t.gTimer_fan_continue < 61 && fan_run_one_minute == 1 && power_on_off_flag !=0){
+        LED_WIFI_OFF();
+        if(run_t.gTimer_fan_continue < 61 && fan_run_one_minute == 1 && power_on_off_flag !=0){
                    
 					
-		      }
+		    }
 			  else if(run_t.gTimer_fan_continue > 59){
-                    run_t.gTimer_fan_continue =0;
-				
-				   fan_run_one_minute ++;
-                   power_on_off_flag = 1;
+          run_t.gTimer_fan_continue =0;
+			    fan_run_one_minute ++;
+          power_on_off_flag = 1;
 
 			}
-
-
-		  
-            Breath_Led();
+        Breath_Led();
 		 
 		 break;
        }
 
 }
-
 /*********************************************************************************
  * 
  * Function Name:void mouse_on_off_handler(void)
