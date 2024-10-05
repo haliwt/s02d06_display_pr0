@@ -69,10 +69,19 @@ void smartphone_app_power_on_fun(void)
 void mode_key_fun(void)
 {
 
-    if(gpro_t.disp_timer_or_time_mode== WORKS_TIME){ //display beijing time
-           
-            gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
 
+   switch(gpro_t.disp_timer_or_time_mode){
+
+
+    case WORKS_TIME:
+
+
+           gpro_t.disp_timer_or_time_mode = TIMER_SUCCESS;
+            Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
+            SendData_Set_Command(0x27, 0x02); //not AI mode that is timer mode
+            osDelay(10);
+           
+       #if 0
           if(gpro_t.set_timer_timing_value_success==TIMER_SUCCESS){
        
              Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
@@ -92,17 +101,22 @@ void mode_key_fun(void)
        
               }
          }
-         else{ //display timer timing 
- 
-           gpro_t.disp_timer_or_time_mode = WORKS_TIME;
-           Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_hours);
-           SendData_Set_Command(0x27, 0x01); //open AI mode that works time.
-            osDelay(10);
+       #endif 
+     break;
+
+     case TIMER_SUCCESS:
+        
+       gpro_t.disp_timer_or_time_mode = WORKS_TIME;
+       Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_hours);
+       SendData_Set_Command(0x27, 0x01); //open AI mode that works time.
+        osDelay(10);
           
-         }
+         
+
+    break;
 
 
-
+    }
  }
 
 void mode_key_long_fun(void)
