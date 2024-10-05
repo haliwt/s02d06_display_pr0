@@ -68,11 +68,11 @@ void power_on_init(void)
 
 	run_t.fan_warning=0;
 	run_t.ptc_warning=0;
-
-     run_t.wifi_led_fast_blink_flag =0;   
-
-	
-	
+    
+    run_t.wifi_led_fast_blink_flag =0; 
+    gpro_t.gTimer_wifi_led_blink_time =0;
+    gpro_t.key_long_wifi_flag=0;
+   
     run_t.gTimer_timer_timing_counter=0;
     gpro_t.set_timer_timing_value_success =0 ;
     gpro_t.disp_timer_or_time_mode = WORKS_TIME;

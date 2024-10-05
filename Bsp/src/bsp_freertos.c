@@ -60,12 +60,12 @@ typedef struct Msg
 	uint8_t  ucMessageID;
     uint8_t usData[12];
     uint8_t  key_long_mode_counter;
-    uint8_t  key_long_power_counter;
     uint8_t  key_long_wifi_counter;
+ 
     
     uint8_t  key_long_power_flag;
     uint8_t  key_long_mode_flag;
-    uint8_t  key_long_wifi_flag;
+   
     
     uint8_t  key_power_flag;
     uint8_t  key_mode_flag;
@@ -128,11 +128,9 @@ void freeRTOS_Handler(void)
 **********************************************************************************************************/
 static void vTaskRunPro(void *pvParameters)
 {
-
+  
    while(1)
     {
-
-
       if(gpro_t.disp_rx_cmd_done_flag == 1){
 
            
@@ -147,28 +145,14 @@ static void vTaskRunPro(void *pvParameters)
             
           
        }
+
        if(gl_tMsg.key_power_flag == 1){
            if(POWER_KEY_VALUE()  ==KEY_UP){
              gl_tMsg.key_power_flag++;
-             gl_tMsg.key_long_mode_counter =0;
-
-             if(gl_tMsg.key_long_power_flag == 1){
-
+              gl_tMsg.key_long_mode_counter =0; //clear counter numbers.
+              gl_tMsg.key_long_wifi_counter=0;
+               power_on_handler();
              
-                 gpro_t.gTimer_power_mode_key_long = 0;
-
-                  gpro_t.gTimer_wifi_led_blink_time =0;
-                 run_t.wifi_led_fast_blink_flag =1;  
-                 gpro_t.wifi_link_net_success = 0;
-                 gpro_t.get_beijing_time_flag = 0;
-                 SendData_Set_Command(0x05,0x01); //link net flag is "1"
-
-             }
-             else{
-                 gl_tMsg.key_long_mode_counter =0; //clear counter numbers.
-                 gl_tMsg.key_long_power_counter=0;
-                power_on_handler();
-             }
 
             }
         }
@@ -177,7 +161,7 @@ static void vTaskRunPro(void *pvParameters)
           if(MODEL_KEY_VALUE() ==KEY_UP){
 
               gl_tMsg.key_mode_flag++;
-              gl_tMsg.key_long_power_counter=0;
+              gl_tMsg.key_long_wifi_counter=0;
             
               if(gl_tMsg.key_long_mode_flag == 1){
                 gpro_t.gTimer_power_mode_key_long = 0;
@@ -187,13 +171,28 @@ static void vTaskRunPro(void *pvParameters)
               }
               else{
                  gl_tMsg.key_long_mode_counter =0; //clear counter numbers.
-                 gl_tMsg.key_long_power_counter =0;
+                 gl_tMsg.key_long_wifi_counter =0;
                  SendData_Buzzer();
 
                   mode_key_fun();
 
               }
             }
+        }
+        else if(gpro_t.key_long_wifi_flag== 1){
+            
+       
+             gl_tMsg.key_long_mode_counter =0;
+             gpro_t.gTimer_power_mode_key_long = 0;
+              gl_tMsg.key_long_wifi_counter=0;
+              gpro_t.gTimer_wifi_led_blink_time =0;
+              run_t.wifi_led_fast_blink_flag =1;  
+              gpro_t.wifi_link_net_success = 0;
+              gpro_t.get_beijing_time_flag = 0;
+              SendData_Set_Command(0x05,0x01); //link net flag is "1"
+              osDelay(10);
+              gpro_t.key_long_wifi_flag++;
+
         }
         else if(gl_tMsg.key_add_flag == 1 || gl_tMsg.key_dec_flag == 1){
             if(gl_tMsg.key_add_flag == 1   && ADD_KEY_VALUE() ==KEY_UP){
@@ -253,36 +252,34 @@ static void vTaskRunPro(void *pvParameters)
              
        Display_TimeColon_Blink_Fun();
        wifi_icon_fast_blink();
-       if((gl_tMsg.key_long_power_flag == 1 || gl_tMsg.key_long_mode_flag == 1) &&  gpro_t.gTimer_power_mode_key_long  > 1){
+       if((gpro_t.key_long_wifi_flag== 2 || gl_tMsg.key_long_mode_flag == 1) &&  gpro_t.gTimer_power_mode_key_long  > 1){
 
-            if(gl_tMsg.key_long_power_flag == 1){
+            if(gpro_t.key_long_wifi_flag== 2){
                   gl_tMsg.key_long_mode_counter =0;
-                 gl_tMsg.key_long_power_counter=0;
-                 gl_tMsg.key_long_power_flag =0;
+                 gl_tMsg.key_long_wifi_counter=0;
+                 gpro_t.key_long_wifi_flag=0;
 
             }
             else if(gl_tMsg.key_long_mode_flag == 1){
                  gl_tMsg.key_long_mode_counter =0;
-                 gl_tMsg.key_long_power_counter=0;
+                 gl_tMsg.key_long_wifi_counter=0;
 
                  gl_tMsg.key_long_mode_flag =0;
 
             }
        
          }
+         
        }
        else if(run_t.gPower_On == power_off){
 
           power_off_run_handler();
-
-       }
+      }
      // USART1_Cmd_Error_Handler();
       vTaskDelay(50);
     }
 
  }
-
-
 /**********************************************************************************************************
 *	vTask Name: AppTaskCreate
 *	功能说明: 创建应用任务
@@ -296,27 +293,14 @@ static void vTaskStart(void *pvParameters)
       
     if(POWER_KEY_VALUE()  ==KEY_DOWN){
 
-           
-          gl_tMsg.key_long_mode_counter =0;
-          gl_tMsg.key_long_power_counter++;
-
-         if(gl_tMsg.key_long_power_counter > 50 && run_t.gPower_On == power_on && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
-            gl_tMsg.key_long_power_counter =0;
-            gl_tMsg.key_long_power_flag =1;
-            gpro_t.gTimer_power_mode_key_long = 0;
-            
-             SendData_Buzzer();
-         }
+        gl_tMsg.key_long_mode_counter =0;
+        gl_tMsg.key_long_wifi_counter=0;
         gl_tMsg.key_power_flag = 1;
-
-        
-         
-
     }
     else if( MODEL_KEY_VALUE() ==KEY_DOWN){
 
           
-          gl_tMsg.key_long_power_counter=0;
+          gl_tMsg.key_long_wifi_counter=0;
           gl_tMsg.key_long_mode_counter++;
           gl_tMsg.key_power_flag = 0;
          if(gl_tMsg.key_long_mode_counter > 50  && run_t.gPower_On == power_on &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0){
@@ -335,7 +319,7 @@ static void vTaskStart(void *pvParameters)
 
     }
      else if(DEC_KEY_VALUE() == KEY_DOWN){
-           gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_wifi_counter=0;
            gl_tMsg.key_long_mode_counter=0;
      
           if(run_t.gPower_On == power_on  && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
@@ -345,34 +329,29 @@ static void vTaskStart(void *pvParameters)
      }
      else if(ADD_KEY_VALUE() ==KEY_DOWN){
 
-            gl_tMsg.key_long_power_counter=0;
+            gl_tMsg.key_long_wifi_counter=0;
            gl_tMsg.key_long_mode_counter=0;
 
             if(run_t.gPower_On == power_on && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
                 gl_tMsg.key_add_flag =1;
               }
     }
-    else if(WIFI_KEY_VALUE()==KEY_DOWN){
+    else if(WIFI_KEY_VALUE()==KEY_DOWN && gpro_t.key_long_wifi_flag==0){
 
-           gl_tMsg.key_long_power_counter=0;
-           gl_tMsg.key_long_mode_counter=0;
-
-        if(run_t.gPower_On == power_on  && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
-           gl_tMsg.key_long_wifi_counter++;
-           
-         if(gl_tMsg.key_long_wifi_counter > 60  && run_t.gPower_On == power_on &&  run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-             gl_tMsg.key_long_wifi_counter=0;   
-         
-             gl_tMsg.key_long_wifi_flag =1;
-             gpro_t.gTimer_power_mode_key_long = 0;
+       
+        gl_tMsg.key_long_mode_counter=0;
+        gl_tMsg.key_long_wifi_counter++;
+        if(gl_tMsg.key_long_wifi_counter > 50 && run_t.gPower_On == power_on && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
+            gl_tMsg.key_long_wifi_counter =0;
+            gpro_t.key_long_wifi_flag=1;
+            gpro_t.gTimer_power_mode_key_long = 0;
             
-                SendData_Buzzer();
-           }
+             SendData_Buzzer();
          }
 
     }
      else if(PLASMA_KEY_VALUE()==KEY_DOWN){
-            gl_tMsg.key_long_power_counter=0;
+            gl_tMsg.key_long_wifi_counter=0;
            gl_tMsg.key_long_mode_counter=0;
          if(run_t.gPower_On == power_on  && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
            gl_tMsg.key_plasma_flag = 1;
@@ -381,7 +360,7 @@ static void vTaskStart(void *pvParameters)
             
      }
      else if(DRY_KEY_VALUE()==KEY_DOWN){
-           gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_wifi_counter=0;
            gl_tMsg.key_long_mode_counter=0; 
           if(run_t.gPower_On == power_on   && run_t.ptc_warning ==0 && run_t.fan_warning == 0){
            gl_tMsg.key_ptc_flag =1;
@@ -390,7 +369,7 @@ static void vTaskStart(void *pvParameters)
 
      }
      else if(MOUSE_KEY_VALUE() == KEY_DOWN){
-           gl_tMsg.key_long_power_counter=0;
+           gl_tMsg.key_long_wifi_counter=0;
            gl_tMsg.key_long_mode_counter=0;
      
           if(run_t.gPower_On == power_on  && run_t.ptc_warning ==0 && run_t.fan_warning == 0){

@@ -26,9 +26,6 @@ void power_on_handler(void)
 
      if(run_t.gPower_On == power_off){
 
-      
-
-     
         run_t.gPower_On = power_on;
         run_t.power_off_flag = 0;
     
@@ -158,6 +155,7 @@ void power_off_run_handler(void)
           power_on_off_flag = 1;
 
 			}
+      run_t.wifi_led_fast_blink_flag =0;  
         Breath_Led();
 		 
 		 break;
