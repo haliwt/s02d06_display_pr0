@@ -80,6 +80,7 @@ void mode_key_fun(void)
             Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
             SendData_Set_Command(0x27, 0x02); //not AI mode that is timer mode
             osDelay(10);
+            run_t.gTimer_timer_timing_counter=0;
            
        #if 0
           if(gpro_t.set_timer_timing_value_success==TIMER_SUCCESS){
