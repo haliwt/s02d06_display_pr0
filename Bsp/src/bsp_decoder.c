@@ -406,7 +406,7 @@ static void first_disp_set_temp_value_fun(void)
 
     run_t.gTimer_compare_temp_value=0;
     gpro_t.set_temp_value_success_flag=1;
-    run_t.gTimer_display_dht11 = 2;
+    run_t.gTimer_display_dht11 = 0;
     run_t.set_temperature_special_value =0;
 
     TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);

@@ -10,7 +10,7 @@ void Power_Off(void);
 
 /**********************************************************************
 *
-*Functin Name: void Display_DHT11_Value(void)
+*Functin Name: void Power_Off(void)
 *Function : Timer of key be pressed handle
 *Input Ref:  key of value
 *Return Ref: NO

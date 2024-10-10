@@ -33,7 +33,7 @@ void RunLocal_Dht11_Data_Process(void)
 {
    
 
-   if((run_t.gTimer_display_dht11 > 6  || disp_times < 10) && run_t.set_temperature_special_value==0){
+   if((run_t.gTimer_display_dht11 > 6  || disp_times < 10) && run_t.set_temperature_special_value==0 &&   run_t.set_temperature_special_value==0){
 	    run_t.gTimer_display_dht11=0;
         disp_times ++ ;
          Display_DHT11_Value();

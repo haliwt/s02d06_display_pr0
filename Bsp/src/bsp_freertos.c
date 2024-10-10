@@ -276,7 +276,7 @@ static void vTaskRunPro(void *pvParameters)
           power_off_run_handler();
       }
      // USART1_Cmd_Error_Handler();
-      vTaskDelay(50);
+      vTaskDelay(30); //vTaskDelay(50)
     }
 
  }
