@@ -1,6 +1,8 @@
 #include "bsp.h"
 
 
+
+mouse_class mouse_t1;
 volatile uint32_t led_k,led_i;
 
 
@@ -82,7 +84,7 @@ void ALL_LED_Off(void)
  	* Return Ref:NO
  	* 
 *******************************************************************************************/  
-void Panel_Led_On_Fun(void)
+void led_class::Panel_Led_On_Fun(void)
 {
 
   // static uint8_t ai_changed_flag;
@@ -95,11 +97,11 @@ void Panel_Led_On_Fun(void)
 
     if(gpro_t.gmouse == 0 ){
 
-       mouse_led_onoff(0); //display fan of grass is one 
+       mouse_t1.mouse_led_onoff(0); //display fan of grass is one 
     } 
     else if(gpro_t.gmouse == 1){ // && (run_t.gDry==0 && run_t.gPlasma==0)){ //WT.DEDIT 20223.09.15
       
-          mouse_led_onoff(1); //display fan of grass is two .
+          mouse_t1.mouse_led_onoff(1); //display fan of grass is two .
            
 
          
@@ -284,7 +286,7 @@ static void Power_Breath_Two(void)
 
 
 
-void Breath_Led(void)
+void led_class::Breath_Led(void)
 {
     
    
@@ -311,7 +313,7 @@ void Panel_Led_OnOff_RunCmd(void (*panelledHandler)(void))
 	 panel_led_fun= panelledHandler;
 }
 
-void Power_Off_Led_Off(void)
+void led_class::Power_Off_Led_Off(void)
 {
    LED_WIFI_OFF();
    LED_DRY_OFF();
@@ -323,7 +325,7 @@ void Power_Off_Led_Off(void)
 
 }
 
-void Power_ON_Led(void)
+void led_class::Power_ON_Led(void)
 {
    LED_WIFI_ON();
    LED_DRY_ON();
@@ -337,7 +339,7 @@ void Power_ON_Led(void)
 }
 
 
-void wifi_icon_fast_blink(void)
+void led_class::wifi_icon_fast_blink(void)
 {
 
    if(run_t.wifi_led_fast_blink_flag==1 && gpro_t.gTimer_wifi_led_blink_time < 120){
@@ -376,7 +378,7 @@ void wifi_icon_fast_blink(void)
 }
 
 
-void led_fun_indicator_light(void)
+void led_class::led_fun_indicator_light(void)
 {
 
    if(run_t.gDry == 1){

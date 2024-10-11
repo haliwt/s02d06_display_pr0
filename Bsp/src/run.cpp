@@ -2,6 +2,7 @@
 
 
 RUN_T run_t;
+led_class led_t0;
 
 uint8_t power_on_off_flag;
 
@@ -54,7 +55,7 @@ void power_on_init(void)
  
 
     if(gpro_t.smart_phone_app_power_on_flag ==0){
-	   Power_ON_Led();
+	   led_t0.Power_ON_Led();
 
      }
      else{
@@ -63,7 +64,7 @@ void power_on_init(void)
         SMG_POWER_ON(); 
         LED_TIME_ON();
 
-        led_fun_indicator_light();
+        led_t0.led_fun_indicator_light();
      }
 
 	run_t.fan_warning=0;
@@ -114,7 +115,7 @@ void Power_Off_Fun(void)
 		
         run_t.gPower_On =power_off;
 	
-       Power_Off_Led_Off();
+       led_t0.Power_Off_Led_Off();
 
   
 } 

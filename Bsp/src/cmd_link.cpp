@@ -6,7 +6,7 @@ uint8_t outputBuf[8];
 static uint8_t transferSize;
 uint8_t inputBuf[MAX_BUFFER_SIZE];
 
-
+decoder_class decoder_t1;
 
 /****************************************************************************************************
 **
@@ -27,7 +27,7 @@ void SendData_PowerOff(uint8_t index)
 	outputBuf[4]=0x00; // data is length: 00 ->don't data 
 	outputBuf[5]=0xFE; // frame of end code -> 0xFE.
 	
-	outputBuf[6] = bcc_check(outputBuf,6);
+	outputBuf[6] = decoder_t1.bcc_check(outputBuf,6);
 	transferSize=7;
 	if(transferSize)
 	{
@@ -54,7 +54,7 @@ void SendData_Buzzer(void)
 	outputBuf[4]=0x00; // data is length: 00 ->don't data 
 	outputBuf[5]=0xFE; // frame of end code -> 0xFE.
 	
-	outputBuf[6] = bcc_check(outputBuf,6);
+	outputBuf[6] = decoder_t1.bcc_check(outputBuf,6);
 	transferSize=7;
 	if(transferSize)
 	{
@@ -82,7 +82,7 @@ void SendData_Set_Command(uint8_t cmd,uint8_t cmddata)
 	outputBuf[3]= cmddata; // command order -> 01 - buzzer sound done, 00- don't buzzer sound 
 	outputBuf[4]=0x00; // data is length: 00 ->don't data 
 	outputBuf[5]=0xFE; // frame of end code -> 0xFE.
-    outputBuf[6] = bcc_check(outputBuf,6);
+    outputBuf[6] = decoder_t1.bcc_check(outputBuf,6);
 
 
 		transferSize=7;
@@ -112,7 +112,7 @@ void SendData_Tx_Data(uint8_t dcmd,uint8_t ddata)
 	outputBuf[4]=0x01; // data is length: 00 ->don't data ,0x01 -> has one data.
     outputBuf[5]=ddata; // frame of end code -> 0xFE.
     outputBuf[6]=0xFE; // frame of end code -> 0xFE.
-    outputBuf[7] = bcc_check(outputBuf,7);
+    outputBuf[7] = decoder_t1.bcc_check(outputBuf,7);
 
 
 		transferSize=8;
@@ -143,7 +143,7 @@ void SendData_Temp_Data(uint8_t tdata)
 	outputBuf[4]=0x01; // data is length: 00 ->don't data 
 	outputBuf[5]=tdata; // frame of end code -> 0xFE.
 	outputBuf[6]=0xFE; // frame of end code -> 0xFE.
-    outputBuf[7] = bcc_check(outputBuf,7);
+    outputBuf[7] = decoder_t1.bcc_check(outputBuf,7);
 		
 		transferSize=8;
 		if(transferSize)
@@ -174,7 +174,7 @@ void SendData_SetTemp_Data(uint8_t tdata)
 	outputBuf[4]=0x01; // data is length: 00 ->don't data 
 	outputBuf[5]=tdata; // frame of end code -> 0xFE.
 	outputBuf[6]=0xFE; // frame of end code -> 0xFE.
-    outputBuf[7] = bcc_check(outputBuf,7);
+    outputBuf[7] = decoder_t1.bcc_check(outputBuf,7);
 		
 		transferSize=8;
 		if(transferSize)

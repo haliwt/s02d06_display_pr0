@@ -2,6 +2,12 @@
 #define __LED_H_
 #include "main.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
 
 #define LED_POWER_TOGGLE()            	HAL_GPIO_TogglePin(LED_POWER_GPIO_Port, LED_POWER_Pin)
 #define LED_POWER_ON()					HAL_GPIO_WritePin(LED_POWER_GPIO_Port, LED_POWER_Pin,GPIO_PIN_SET)
@@ -36,28 +42,35 @@
 
 
 
-extern void (*panel_led_fun)(void);
+class led_class{
 
-void Panel_Led_OnOff_RunCmd(void (*panelledHandler)(void));
+ public:
 
+    void (*panel_led_fun)(void);
 
-
-void Panel_Led_On_Fun(void);
-
-
-
-void Breath_Led(void);
-
-void Power_Off_Led_Off(void);
-
-
-void Power_ON_Led(void);
-
-
-void wifi_icon_fast_blink(void);
-
-void led_fun_indicator_light(void);
+    void Panel_Led_OnOff_RunCmd(void (*panelledHandler)(void));
 
 
 
-#endif 
+    void Panel_Led_On_Fun(void);
+
+
+
+    void Breath_Led(void);
+
+    void Power_Off_Led_Off(void);
+
+
+    void Power_ON_Led(void);
+
+
+    void wifi_icon_fast_blink(void);
+
+    void led_fun_indicator_light(void);
+
+};
+
+#ifdef __cplusplus
+}
+#endif
+#endif /*__ GPIO_H__ */ 

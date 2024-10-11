@@ -3,8 +3,10 @@
 
 pro_run_t  gpro_t;
 
+mouse_class mouse_t;
+led_class led_t;
 
-
+decoder_class decoder_t;
 
 uint8_t hours_one,hours_two,minutes_one,minutes_two;
 
@@ -127,7 +129,8 @@ void mode_key_long_fun(void)
        gpro_t.disp_timer_or_time_mode = SET_TIMER_ITEM;
        gpro_t.set_timer_timing_doing_value= 1;
        run_t.gTimer_key_timing=0;
-       g_tDisp.first_disp_set_timer_flag=0;
+       //g_tDisp.first_disp_set_timer_flag=0;
+       decoder_t.set_timer_flag_to_first_disp(0);
     }
 }
 /******************************************************************************
@@ -150,7 +153,7 @@ void power_off_run_handler(void)
          fan_run_one_minute =1;
 	     run_t.gTimer_fan_continue=0;
        
-		  Power_Off_Led_Off();
+		  led_t.Power_Off_Led_Off();
           run_t.gDry =0;
           run_t.gPlasma =0;
           gpro_t.gmouse = 0;
@@ -171,7 +174,7 @@ void power_off_run_handler(void)
 
 			}
       run_t.wifi_led_fast_blink_flag =0;  
-        Breath_Led();
+        led_t.Breath_Led();
 		 
 		 break;
        }
@@ -235,7 +238,7 @@ void mouse_on_off_handler(void)
      if(gpro_t.gmouse ==1){
 
             gpro_t.gmouse =0; //tur Off
-           led_mouse_off();
+           mouse_t.led_mouse_off();
            
             
            SendData_Set_Command(0x04,0x0);//stop dirver mouse //MOUSE_STOP);
@@ -244,7 +247,7 @@ void mouse_on_off_handler(void)
         else {
 
           gpro_t.gmouse =1; //turn on
-          led_mouse_on();
+          mouse_t.led_mouse_on();
           
           SendData_Set_Command(0x04,0x01);//MOUSE_RUN);
         }
@@ -295,7 +298,8 @@ void key_add_fun(void)
         gpro_t.temp_switch_off_flag++;
     
           run_t.gTimer_display_dht11 =0;
-        g_tDisp.first_disp_set_temp_flag=0;
+       // g_tDisp.first_disp_set_temp_flag=0;
+          decoder_t.set_temp_flag_to_first_disp(0);
        
         
 
@@ -372,7 +376,8 @@ void key_dec_fun(void)
              gpro_t.temp_switch_on_flag++;
         gpro_t.temp_switch_off_flag++;
          run_t.gTimer_display_dht11 =0;
-        g_tDisp.first_disp_set_temp_flag=0;
+       // g_tDisp.first_disp_set_temp_flag=0;
+         decoder_t.set_temp_flag_to_first_disp(0);
 
     break;
 

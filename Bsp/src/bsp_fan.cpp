@@ -1,13 +1,13 @@
 #include "bsp.h"
 
 
-void led_mouse_on(void)
+void mouse_class::led_mouse_on(void)
 {
    LED_MOUSE_ON() ;
 
 
 }
-void led_mouse_off(void)
+void mouse_class::led_mouse_off(void)
 {
 
  LED_MOUSE_OFF() ;
@@ -15,7 +15,7 @@ void led_mouse_off(void)
 }
 
 
- void mouse_led_onoff(uint8_t sel)
+ void mouse_class::mouse_led_onoff(uint8_t sel)
 {
 
 	if(sel==1)LED_MOUSE_ON();

@@ -19,7 +19,8 @@
 #define MODE_LONG_KEY_8         (1 << 8)
 #define DECODER_BIT_9            (1<< 9)
 
-
+led_class led_t1;
+decoder_class decoder_t0;
 
 /***********************************************************************************************************
 											函数声明
@@ -134,10 +135,10 @@ static void vTaskRunPro(void *pvParameters)
       if(gpro_t.disp_rx_cmd_done_flag == 1){
 
            
-        check_code =  bcc_check(gl_tMsg.usData,ulid);
+        check_code =  decoder_t0.bcc_check(gl_tMsg.usData,ulid);
           if(check_code == bcc_check_code ){
     
-           receive_data_fromm_display(gl_tMsg.usData);
+           decoder_t0.receive_data_fromm_display(gl_tMsg.usData);
            }
            gpro_t.disp_rx_cmd_done_flag = 0;
            gl_tMsg.usData[0]=0;
@@ -245,13 +246,13 @@ static void vTaskRunPro(void *pvParameters)
       if(run_t.gPower_On == power_on){
 
        smartphone_app_power_on_fun();
-       led_fun_indicator_light();
+       led_t1.led_fun_indicator_light();
        Display_SmgTiming_Handler();
        Set_Temperature_Value();
        RunLocal_Dht11_Data_Process();
              
        Display_TimeColon_Blink_Fun();
-       wifi_icon_fast_blink();
+       led_t1.wifi_icon_fast_blink();
        if((gpro_t.key_long_wifi_flag== 2 || gl_tMsg.key_long_mode_flag == 1) &&  gpro_t.gTimer_power_mode_key_long  > 1){
 
             if(gpro_t.key_long_wifi_flag== 2){
