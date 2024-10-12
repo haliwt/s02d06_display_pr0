@@ -20,7 +20,7 @@
 #define DECODER_BIT_9            (1<< 9)
 
 led_class led_t1;
-decoder_class decoder_t0;
+//extern decoder_class decoder_t0;
 
 /***********************************************************************************************************
 											函数声明

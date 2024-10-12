@@ -2,9 +2,10 @@
 
 //display_state_ref g_tDisp;
 
-decoder_class decoder_t2;
+//decoder_class decoder_t0;
 static void first_disp_set_temp_value_fun(void);
 
+uint8_t disp_timer_first_flag;
 /**********************************************************************
     *
     *Function Name:void receive_data_fromm_display(uint8_t *pdata,uint8_t len)
@@ -325,7 +326,7 @@ void decoder_class::receive_data_fromm_display(uint8_t *pdata)
             
             gpro_t.manual_turn_off_ptc_flag = 0;
            // g_tDisp.first_disp_set_temp_flag = 1;
-           decoder_t2.set_temp_flag_to_first_disp(1); 
+           decoder_t0.set_temp_flag_to_first_disp(1); 
        
             run_t.gTimer_key_timing =0;
             gpro_t.set_up_temperature_value =pdata[5];
@@ -364,10 +365,11 @@ void decoder_class::receive_data_fromm_display(uint8_t *pdata)
        
 
        run_t.hours_two_decade_bit= run_t.timer_dispTime_hours /10;
-       run_t.hours_two_unit_bit=  run_t.timer_dispTime_hours %10;
+       run_t.hours_two_unit_bit=  run_t.hours_two_decade_bit; //run_t.timer_dispTime_hours %10;
       
        //g_tDisp.first_disp_set_timer_flag=1;
-       decoder_t2.set_timer_flag_to_first_disp(1);
+      decoder_t0.set_timer_flag_to_first_disp(1);
+      disp_timer_first_flag = decoder_t0.get_timer_flag_for_first_disp();
        run_t.gTimer_key_timing  = 4;
        gpro_t.disp_timer_or_time_mode = SET_TIMER_ITEM;
     
@@ -418,7 +420,7 @@ static void first_disp_set_temp_value_fun(void)
 }
 
 
-
+#if 0
 void decoder_class::set_temp_flag_to_first_disp(uint8_t fdata)
 {
         first_disp_set_temp_flag = fdata;
@@ -448,5 +450,5 @@ uint8_t  decoder_class::get_timer_flag_for_first_disp(void)
 }
 
 
-
+#endif 
 

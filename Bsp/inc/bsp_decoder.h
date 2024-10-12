@@ -28,16 +28,46 @@ class decoder_class{
 
   public:
 
+  
+
    void receive_data_fromm_display(uint8_t *pdata);
    uint8_t bcc_check(const unsigned char *data, int len) ;
 
    
  
-   void set_temp_flag_to_first_disp(uint8_t fdata);
-   void set_timer_flag_to_first_disp(uint8_t tdata);
+  // void set_temp_flag_to_first_disp(uint8_t fdata);
+  // void set_timer_flag_to_first_disp(uint8_t tdata);
 
-   uint8_t  get_temp_flag_for_first_disp(void);
-   uint8_t  get_timer_flag_for_first_disp(void);
+  // uint8_t  get_temp_flag_for_first_disp(void);
+  /// uint8_t  get_timer_flag_for_first_disp(void);
+
+        void set_temp_flag_to_first_disp(uint8_t fdata)
+        {
+                first_disp_set_temp_flag = fdata;
+
+        }
+
+        uint8_t get_temp_flag_for_first_disp(void)
+        {
+
+               return first_disp_set_temp_flag;
+
+        }
+
+        void set_timer_flag_to_first_disp(uint8_t tdata)
+        {
+
+               first_disp_set_timer_flag = tdata;
+
+        }
+
+
+        uint8_t  get_timer_flag_for_first_disp(void)
+        {
+
+                 return first_disp_set_timer_flag ;
+
+        }
     
 
    private:
@@ -48,6 +78,9 @@ class decoder_class{
    
 
 };
+
+extern decoder_class decoder_t0;
+
 
 #ifdef __cplusplus
 }

@@ -4,9 +4,10 @@
 pro_run_t  gpro_t;
 
 mouse_class mouse_t;
+
 led_class led_t;
 
-decoder_class decoder_t;
+decoder_class decoder_t0;
 
 uint8_t hours_one,hours_two,minutes_one,minutes_two;
 
@@ -130,7 +131,7 @@ void mode_key_long_fun(void)
        gpro_t.set_timer_timing_doing_value= 1;
        run_t.gTimer_key_timing=0;
        //g_tDisp.first_disp_set_timer_flag=0;
-       decoder_t.set_timer_flag_to_first_disp(0);
+       decoder_t0.set_timer_flag_to_first_disp(0);
     }
 }
 /******************************************************************************
@@ -299,7 +300,7 @@ void key_add_fun(void)
     
           run_t.gTimer_display_dht11 =0;
        // g_tDisp.first_disp_set_temp_flag=0;
-          decoder_t.set_temp_flag_to_first_disp(0);
+          decoder_t0.set_temp_flag_to_first_disp(0);
        
         
 
@@ -377,7 +378,7 @@ void key_dec_fun(void)
         gpro_t.temp_switch_off_flag++;
          run_t.gTimer_display_dht11 =0;
        // g_tDisp.first_disp_set_temp_flag=0;
-         decoder_t.set_temp_flag_to_first_disp(0);
+         decoder_t0.set_temp_flag_to_first_disp(0);
 
     break;
 

@@ -4,10 +4,12 @@
 
 
 key_types key_t;
-decoder_class decoder_t3;
+//decoder_class decoder_t0;
 static void set_timer_fun_led_blink(void);
 
 uint8_t set_timer_timing_flag ;
+
+uint8_t decoder_t3_timer_flag;
 
 /***********************************************************
 *
@@ -151,17 +153,20 @@ void Set_TimerTiming_Number_Value(void)
 {
    uint8_t stateflag;
    //if(gpro_t.set_timer_timing_doing_value==1 ||  g_tDisp.first_disp_set_timer_flag==1){
-   if(gpro_t.set_timer_timing_doing_value==1 ||  decoder_t3.get_timer_flag_for_first_disp()==1){
+   decoder_t3_timer_flag = decoder_t0.get_timer_flag_for_first_disp();
+   if(gpro_t.set_timer_timing_doing_value==1 ||  decoder_t0.get_timer_flag_for_first_disp()==1){
    //set timer timing value 
     if(run_t.gTimer_key_timing > 3){
 		run_t.gTimer_key_timing =0;	
       
 		gpro_t.set_timer_timing_doing_value  =0 ;
-        if(decoder_t3.get_timer_flag_for_first_disp()){//if(g_tDisp.first_disp_set_timer_flag==1){
+        if(decoder_t0.get_timer_flag_for_first_disp()){//if(g_tDisp.first_disp_set_timer_flag==1){
             //g_tDisp.first_disp_set_timer_flag++ ;
-           stateflag++;
-            decoder_t3.set_timer_flag_to_first_disp(stateflag);
-          }
+             run_t.hours_two_decade_bit = run_t.timer_dispTime_hours /10;
+             run_t.hours_two_unit_bit   =  run_t.timer_dispTime_hours  % 10;
+            stateflag++;
+            decoder_t0.set_timer_flag_to_first_disp(stateflag);
+        }
 	    run_t.gTimer_timer_timing_counter=0;
 
 		if(run_t.hours_two_decade_bit==0 && run_t.hours_two_unit_bit==0){
@@ -174,7 +179,7 @@ void Set_TimerTiming_Number_Value(void)
              TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,0);
             set_timer_timing_flag  =0   ;
 
-            if(decoder_t3.get_timer_flag_for_first_disp()==0){//if(g_tDisp.first_disp_set_timer_flag==0){
+            if(decoder_t0.get_timer_flag_for_first_disp()==0){//if(g_tDisp.first_disp_set_timer_flag==0){
                 
                SendData_Tx_Data(0x4C,0x0);
             }
@@ -182,9 +187,17 @@ void Set_TimerTiming_Number_Value(void)
 
 		}
 		else{
-             if(decoder_t3.get_timer_flag_for_first_disp()==0){//if(g_tDisp.first_disp_set_timer_flag==0){
+
+       
+             if(decoder_t0.get_timer_flag_for_first_disp()==0){//if(g_tDisp.first_disp_set_timer_flag==0){
                run_t.timer_dispTime_hours = run_t.temporary_timer_dispTime_hours ;
                
+             }
+             else{
+
+                    run_t.hours_two_decade_bit = run_t.timer_dispTime_hours /10;
+                    run_t.hours_two_unit_bit   =  run_t.timer_dispTime_hours % 10;
+
              }
              run_t.timer_dispTime_minutes = 0;
         
@@ -196,7 +209,7 @@ void Set_TimerTiming_Number_Value(void)
              TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,1) ; 
              osDelay(200);
              TM1639_Write_4Bit_Time(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,0);
-            if(decoder_t3.get_timer_flag_for_first_disp()==0){//if(g_tDisp.first_disp_set_timer_flag==0){
+            if(decoder_t0.get_timer_flag_for_first_disp()==0){//if(g_tDisp.first_disp_set_timer_flag==0){
                 
                SendData_Tx_Data(0x4C, run_t.timer_dispTime_hours);
             }
@@ -215,7 +228,7 @@ static void set_timer_fun_led_blink(void)
  
 
    //if(gpro_t.set_timer_timing_doing_value==1 || g_tDisp.first_disp_set_timer_flag==1){
-    if(gpro_t.set_timer_timing_doing_value==1 || decoder_t3.get_timer_flag_for_first_disp()==1){
+    if(gpro_t.set_timer_timing_doing_value==1 || decoder_t0.get_timer_flag_for_first_disp()==1){
      if(set_timer_timing_flag  ==0 ){
 
       set_timer_timing_flag  ++;
@@ -277,7 +290,7 @@ void Set_Temperature_Value(void)
 	 //temperature of smg of LED blink .
 	// if((run_t.set_temperature_special_value ==2 && gpro_t.set_timer_timing_doing_value==0) || (g_tDisp.first_disp_set_temp_flag == 1))
      
-     if((run_t.set_temperature_special_value ==2 && gpro_t.set_timer_timing_doing_value==0) || (decoder_t3.get_temp_flag_for_first_disp() == 1))
+     if((run_t.set_temperature_special_value ==2 && gpro_t.set_timer_timing_doing_value==0) || (decoder_t0.get_temp_flag_for_first_disp() == 1))
 	  {
 	  	
 	  	    TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,1);
@@ -291,10 +304,10 @@ void Set_Temperature_Value(void)
             run_t.gTimer_display_dht11 = 2;
             run_t.set_temperature_special_value =0;
             //the first display set temperature value
-            if(decoder_t3.get_temp_flag_for_first_disp()==1){//if(g_tDisp.first_disp_set_temp_flag == 1){
+            if(decoder_t0.get_temp_flag_for_first_disp()==1){//if(g_tDisp.first_disp_set_temp_flag == 1){
                 //g_tDisp.first_disp_set_temp_flag++;
                 tempflag++;
-                decoder_t3.set_temp_flag_to_first_disp(tempflag);
+                decoder_t0.set_temp_flag_to_first_disp(tempflag);
                 compare_temp_value();
             }
             else{
