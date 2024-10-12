@@ -190,8 +190,8 @@ static void vTaskRunPro(void *pvParameters)
               run_t.wifi_led_fast_blink_flag =1;  
               gpro_t.wifi_link_net_success = 0;
               gpro_t.get_beijing_time_flag = 0;
-              SendData_Set_Command(0x05,0x01); //link net flag is "1"
-              osDelay(10);
+              //SendData_Set_Command(0x05,0x01); //link net flag is "1"
+             /// osDelay(10);
               gpro_t.key_long_wifi_flag++;
 
         }
@@ -346,8 +346,8 @@ static void vTaskStart(void *pvParameters)
             gl_tMsg.key_long_wifi_counter =0;
             gpro_t.key_long_wifi_flag=1;
             gpro_t.gTimer_power_mode_key_long = 0;
-            
-             SendData_Buzzer();
+            SendData_Set_Command(0x05,0x01); //link net flag is "1"
+             //SendData_Buzzer();
          }
 
     }

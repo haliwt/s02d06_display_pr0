@@ -174,21 +174,21 @@ static void Power_Breath_Two(void)
         led_k++;
         
         
-        if(led_k <25 && dec_led_flag==1){
+        if(led_k <250 && dec_led_flag==1){
             i++;
          if(switch_flag ==1 || i > 4){
             switch_flag =0;
           
             //LED_POWER_OFF();
             LED_POWER_OFF();
-            flag = Delay(24-i);
+            flag = Delay(240-i);
            
           }
           if(flag ==1){
             flag =0;
              LED_POWER_ON();
              j=i;
-             if(j< 5){
+             if(j< 10){
                switch_flag = Delay(j);
     
              }
@@ -198,7 +198,7 @@ static void Power_Breath_Two(void)
             }
           
         }
-        else if(led_k < 25 && dec_led_flag==0){
+        else if(led_k < 250 && dec_led_flag==0){
             i++;
          if(switch_flag ==1 || i < 10){
             switch_flag =0;
@@ -209,14 +209,14 @@ static void Power_Breath_Two(void)
             flag = Delay(30-i);
         #endif 
             LED_POWER_ON();
-            flag = Delay(24-i);
+            flag = Delay(240-i);
             
     
           }
           if(flag ==1){
             flag =0;
           
-               if(j< 20){
+               if(j< 10){//20
                //LED_POWER_OFF();
 
                 LED_POWER_OFF();
@@ -240,7 +240,7 @@ static void Power_Breath_Two(void)
             }
          }
         
-        if(led_k > 24 && dec_led_flag==0){
+        if(led_k > 240 && dec_led_flag==0){
     
         
     
@@ -259,7 +259,7 @@ static void Power_Breath_Two(void)
          //  }
             
           }
-          else if(led_k>24 && dec_led_flag==1){
+          else if(led_k>240 && dec_led_flag==1){
             
          
            
