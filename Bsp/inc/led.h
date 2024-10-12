@@ -37,11 +37,6 @@ extern "C" {
 #define SMG_POWER_OFF()             HAL_GPIO_WritePin(SMG_POWER_GPIO_Port , SMG_POWER_Pin,GPIO_PIN_RESET)
 
 
-
-
-
-
-
 class led_class{
 
  public:

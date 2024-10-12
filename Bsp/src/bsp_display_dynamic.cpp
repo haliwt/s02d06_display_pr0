@@ -128,7 +128,31 @@ void Display_SmgTiming_Handler(void)
 
     switch(gpro_t.disp_timer_or_time_mode){//switch(gpro_t.set_timer_timing_value_success){
 
-	   case TIMER_SUCCESS:
+	  case WORKS_TIME: //NO_AI_MODE by timer timing  auto be changed AI_MODE
+			
+        
+          if(run_t.gTimes_time_seconds > 59){
+    		   run_t.gTimes_time_seconds=0;
+    		 
+    		   run_t.works_dispTime_minutes++; //1 minute 
+    		
+    		 
+    		   if(run_t.works_dispTime_minutes> 59){ //1 hour
+    		   run_t.works_dispTime_minutes=0;
+    		   run_t.works_dispTime_hours++;
+    		   if(run_t.works_dispTime_hours > 24){
+    		        run_t.works_dispTime_hours =0;
+    		   }
+    	      }
+           }
+  
+            Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
+         
+			Timer_Timing_Donot_Display();
+
+      break;
+
+      case TIMER_SUCCESS:
 	   if(gpro_t.set_timer_timing_value_success==TIMER_SUCCESS){
 	   if(run_t.gTimer_timer_timing_counter > 59){
 	    run_t.gTimer_timer_timing_counter =0;
@@ -160,6 +184,7 @@ void Display_SmgTiming_Handler(void)
 
         Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
         WorksTime_DonotDisplay_Fun();
+        
 	   }
 	   else{
 		     WorksTime_DonotDisplay_Fun();
@@ -173,30 +198,6 @@ void Display_SmgTiming_Handler(void)
 	   }
         
 	    break;
-
-		case WORKS_TIME: //NO_AI_MODE by timer timing  auto be changed AI_MODE
-			
-        
-          if(run_t.gTimes_time_seconds > 59){
-    		   run_t.gTimes_time_seconds=0;
-    		 
-    		   run_t.works_dispTime_minutes++; //1 minute 
-    		
-    		 
-    		   if(run_t.works_dispTime_minutes> 59){ //1 hour
-    		   run_t.works_dispTime_minutes=0;
-    		   run_t.works_dispTime_hours++;
-    		   if(run_t.works_dispTime_hours > 24){
-    		        run_t.works_dispTime_hours =0;
-    		   }
-    	      }
-           }
-  
-            Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes);
-         
-			Timer_Timing_Donot_Display();
-
-        break;
 
 		case SET_TIMER_ITEM:
 

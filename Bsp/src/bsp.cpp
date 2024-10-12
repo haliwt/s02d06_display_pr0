@@ -300,7 +300,7 @@ void key_add_fun(void)
     
           run_t.gTimer_display_dht11 =0;
        // g_tDisp.first_disp_set_temp_flag=0;
-          decoder_t0.set_temp_flag_to_first_disp(0);
+         decoder_t0.set_temp_flag_to_first_disp(0);
        
         
 

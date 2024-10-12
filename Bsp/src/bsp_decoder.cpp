@@ -378,6 +378,21 @@ void decoder_class::receive_data_fromm_display(uint8_t *pdata)
 
       break;
 
+      case 0x5C: //synchronization set timer hours: minutes: seconds;
+
+       if(gpro_t.disp_timer_or_time_mode == TIMER_SUCCESS){ //防御性编程
+        if(pdata[4] == 0x03){ //数据
+       
+        run_t.timer_dispTime_hours = pdata[5];
+        run_t.timer_dispTime_minutes = pdata[6];
+        run_t.gTimer_timer_timing_counter = pdata[7];
+
+
+        }
+       }
+
+      break;
+
       }
 }
 /**********************************************************************

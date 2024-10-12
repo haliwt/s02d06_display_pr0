@@ -41,34 +41,34 @@ class decoder_class{
   // uint8_t  get_temp_flag_for_first_disp(void);
   /// uint8_t  get_timer_flag_for_first_disp(void);
 
-        void set_temp_flag_to_first_disp(uint8_t fdata)
-        {
-                first_disp_set_temp_flag = fdata;
+    void set_temp_flag_to_first_disp(uint8_t fdata)
+    {
+            first_disp_set_temp_flag = fdata;
 
-        }
+    }
 
-        uint8_t get_temp_flag_for_first_disp(void)
-        {
+    uint8_t get_temp_flag_for_first_disp(void)
+    {
 
-               return first_disp_set_temp_flag;
+           return first_disp_set_temp_flag;
 
-        }
+    }
 
-        void set_timer_flag_to_first_disp(uint8_t tdata)
-        {
+    void set_timer_flag_to_first_disp(uint8_t tdata)
+    {
 
-               first_disp_set_timer_flag = tdata;
+           first_disp_set_timer_flag = tdata;
 
-        }
+    }
 
 
-        uint8_t  get_timer_flag_for_first_disp(void)
-        {
+    uint8_t  get_timer_flag_for_first_disp(void)
+    {
 
-                 return first_disp_set_timer_flag ;
+             return first_disp_set_timer_flag ;
 
-        }
-    
+    }
+
 
    private:
    
