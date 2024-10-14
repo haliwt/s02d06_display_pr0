@@ -1,5 +1,8 @@
 #ifndef __BSP_H
 #define __BSP_H
+
+
+
 #include "main.h"
 
 
@@ -89,11 +92,6 @@ typedef struct _pro_t{
    uint8_t gTimer_power_mode_key_long;
    uint16_t gTimer_4bitsmg_blink_times;
   
-    
-   
-
-
-
 }pro_run_t;
 
 extern pro_run_t  gpro_t;
@@ -102,10 +100,6 @@ extern pro_run_t  gpro_t;
 void bsp_init(void);
 
 void power_on_handler(void);
-
-
-
-
 
 void power_off_run_handler(void);
 
@@ -134,6 +128,8 @@ void plasma_on_off_handler(void);
 
 void smartphone_app_power_on_fun(void);
 
-#endif 
+
+#endif
+
 
 

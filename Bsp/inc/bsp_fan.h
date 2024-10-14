@@ -1,5 +1,5 @@
-#ifndef __BSB_FAN_H
-#define  __BSP_FAN_H
+#ifndef __BSB_FAN_H__
+#define  __BSP_FAN_H__
 #include "main.h"
 
 
