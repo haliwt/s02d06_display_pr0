@@ -11,15 +11,22 @@ uint8_t set_timer_timing_flag ;
 
 uint8_t decoder_t3_timer_flag;
 
+uint16_t kmode_temp;
+uint8_t kpower_temp,kdec_temp,kadd_temp,kwifi_temp;
+uint8_t cnt ;
+
+
 /***********************************************************
 *
-*
+* Function Name :uint8_t KEY_Scan(void)
 *
 *
 *
 ***********************************************************/
-#if 0
 uint8_t KEY_Scan(void)
+{
+#if 0
+
 {
   uint8_t  reval = 0;
   key_t.read = _KEY_ALL_OFF; //0xFF 
@@ -138,7 +145,106 @@ uint8_t KEY_Scan(void)
 
 
 }
+#else 
 
+   
+
+   if(POWER_KEY_VALUE()  ==KEY_DOWN){
+
+     
+
+   }
+   else if( MODEL_KEY_VALUE() ==KEY_DOWN){
+
+        cnt = 0;
+        kmode_temp ++ ;
+
+        if(kmode_temp > 200){ //long key is be pressed 
+
+            kmode_temp =0;
+            SendData_Buzzer();
+            return 0x82; 
+
+          }
+        
+  }
+   
+  if(DEC_KEY_VALUE() == KEY_DOWN){
+         if(kdec_temp < 150){
+              kdec_temp ++;
+
+         }
+         SendData_Buzzer();
+
+   }
+   else{
+
+      kdec_temp =0;
+
+   }
+
+
+  
+   if(ADD_KEY_VALUE() ==KEY_DOWN){
+
+       if(kadd_temp < 150){
+
+          kadd_temp ++;
+
+       }
+       SendData_Buzzer();
+
+   }
+   else{
+
+        kadd_temp =0;
+
+
+    }
+
+
+
+   if(kdec_temp == 140){
+
+       kdec_temp = 200;
+
+       return  0x03;
+
+    }
+
+    if(kadd_temp == 140){
+
+      kadd_temp = 200;
+      return 0x04;
+
+    }
+
+
+
+   if(DEC_KEY_VALUE() == KEY_UP){
+
+      cnt++; 
+      if(cnt < 30) return 0;
+
+      cnt =0;
+
+      if(kmode_temp > 100){
+
+          kmode_temp =0;
+
+          return 0x02;  //mode key is short key be pressed.
+
+
+      }
+      else{
+
+        kmode_temp =0;
+      }
+
+   }
+
+    
+}
 #endif 
 
 /****************************************************************

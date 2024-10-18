@@ -41,16 +41,6 @@ class led_class{
 
  public:
 
-    void (*panel_led_fun)(void);
-
-    void Panel_Led_OnOff_RunCmd(void (*panelledHandler)(void));
-
-
-
-    void Panel_Led_On_Fun(void);
-
-
-
     void Breath_Led(void);
 
     void Power_Off_Led_Off(void);
@@ -64,6 +54,9 @@ class led_class{
     void led_fun_indicator_light(void);
 
 };
+
+
+extern led_class led_t;
 
 #ifdef __cplusplus
 }

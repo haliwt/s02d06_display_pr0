@@ -91,29 +91,11 @@ typedef struct __RUN{
    //fan ref
    uint8_t gFan_level;
 
- 
-  
-
-
    //dry ref 
-
-
-
-
- 
-
- 
-
-
-  
 
    uint8_t Timer_model_flag;
    uint8_t temperature_set_flag;
 
-   
-
-  
-	
    uint8_t gReal_humtemp[2];
    uint8_t rx_mb_data_tag;
  
@@ -136,14 +118,6 @@ typedef struct __RUN{
    int8_t temporary_timer_dispTime_hours;
    int8_t temporary_timer_dispTime_minutes;
   
-
- 
- 
-  
-
-
- 
-
    uint8_t works_dispTime_minutes;
    uint8_t works_dispTime_hours;
 
@@ -156,10 +130,6 @@ typedef struct __RUN{
    uint8_t set_timer_special_value;
    uint8_t gTimer_run_ico;
    uint8_t gTimer_fan_continue;
-
-    
-   
-   
 
   volatile int8_t timer_dispTime_hours;
   volatile int8_t timer_dispTime_minutes;
@@ -177,13 +147,7 @@ typedef struct __RUN{
      uint8_t gTimer_key_temp_timing;
 
     
- 
-   
-  
-
-
-   
- }RUN_T;
+}RUN_T;
 
 extern RUN_T run_t;
 

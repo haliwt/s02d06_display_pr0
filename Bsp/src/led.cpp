@@ -6,14 +6,15 @@ mouse_class mouse_t1;
 volatile uint32_t led_k,led_i;
 
 
-void (*panel_led_fun)(void);
+//void (*panel_led_fun)(void);
 
-
+#if 0
 static void DRY_LED_OnOff(uint8_t sel);
 
 static void PLASMA_LED_OnOff(uint8_t sel);
 
 static void TIME_LED_OnOff(uint8_t sel);
+#endif 
 
 static void Power_Breath_Two(void);
 
@@ -29,6 +30,7 @@ static uint8_t  Delay(int16_t count);
 *
 *
 ************************************************************/
+#if 0
 static void DRY_LED_OnOff(uint8_t sel)
 {
    if(sel==1){
@@ -55,7 +57,7 @@ static void TIME_LED_OnOff(uint8_t sel)
 
 
 }
-
+#endif 
 void KeyLed_Power_On(void)
 {
    LED_POWER_ON();
@@ -76,61 +78,7 @@ void ALL_LED_Off(void)
 
 }
 
-/*******************************************************************************************
- 	*
- 	* Function Name:void Panel_Led_OnOff_Function(void)
- 	* Function :panel of led turn on or off which key function 
- 	* Input Ref:NO
- 	* Return Ref:NO
- 	* 
-*******************************************************************************************/  
-void led_class::Panel_Led_On_Fun(void)
-{
 
-  // static uint8_t ai_changed_flag;
-   if(run_t.gTimer_run_ico > 0){ //30* 10ms =300ms
-		run_t.gTimer_run_ico=0;
-		
-	  LED_POWER_ON();
-	  TIME_LED_OnOff(1);
-
-
-    if(gpro_t.gmouse == 0 ){
-
-       mouse_t1.mouse_led_onoff(0); //display fan of grass is one 
-    } 
-    else if(gpro_t.gmouse == 1){ // && (run_t.gDry==0 && run_t.gPlasma==0)){ //WT.DEDIT 20223.09.15
-      
-          mouse_t1.mouse_led_onoff(1); //display fan of grass is two .
-           
-
-         
-    }
-	 
-	  
-    if(run_t.gDry==1){
-		 
-	     DRY_LED_OnOff(1);
-      
-       //  SendData_Set_Command(DRY_ON_NO_BUZZER); //PTC turn On
-                 
-     }
-	 else{
-	    DRY_LED_OnOff(0);
-
-	 }
-
-	 if(run_t.gPlasma==1){
-	 	
-	     PLASMA_LED_OnOff(1);
-     }
-	 else{
-	   PLASMA_LED_OnOff(0);
-
-	 }
-
-	}
-}
 /***************************************************************
 *
 *Function Name: void LED_TempHum(void)
@@ -166,7 +114,6 @@ static uint8_t  Delay(int16_t count)
 *
 **************************************************************/
 static void Power_Breath_Two(void)
-
 {
  
      static uint8_t flag,switch_flag,dec_led_flag;
@@ -289,16 +236,8 @@ static void Power_Breath_Two(void)
 void led_class::Breath_Led(void)
 {
     
-   
-   // Power_BreathOnOff();
    Power_Breath_Two();
-
-
-   
 }
-
-
-
 /***************************************************************
 *
 *Function Name: void Panel_Led_OnOff_RunCmd(void (*panelledHandler)(void))
@@ -307,14 +246,9 @@ void led_class::Breath_Led(void)
 *
 *
 **************************************************************/
-void Panel_Led_OnOff_RunCmd(void (*panelledHandler)(void))
-{
-
-	 panel_led_fun= panelledHandler;
-}
-
 void led_class::Power_Off_Led_Off(void)
 {
+
    LED_WIFI_OFF();
    LED_DRY_OFF();
    LED_TIME_OFF();
@@ -322,7 +256,6 @@ void led_class::Power_Off_Led_Off(void)
    LED_MOUSE_OFF();
    LED_POWER_OFF();
    SMG_POWER_OFF();
-
 }
 
 void led_class::Power_ON_Led(void)

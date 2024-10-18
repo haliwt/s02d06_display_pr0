@@ -6,10 +6,10 @@
   ******************************************************************************
   * @attention
   *
-  * S06 or  S04 don't  display board don't wifi fun.
+  * s02d06 the second display board codes .
   *
-  * disply "mouse" symbol
-  * mass version 1.0 no wifi displayPanel DATA.2024.06.27
+  * 
+  * 
   *
   ******************************************************************************
   */

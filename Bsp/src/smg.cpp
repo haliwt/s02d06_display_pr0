@@ -241,7 +241,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
     TM1639_STB_SetLow();
      TM1639_Write_OneByte(0X44);//To Address of fixed reg 0x44
      TM1639_STB_SetHigh();
-     led_t2.wifi_icon_fast_blink();
+     led_t.wifi_icon_fast_blink();
 	 
     //digital 1
      TM1639_Start();
@@ -254,7 +254,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
 	 	  
 	 }
      TM1639_Stop();
-     led_t2.wifi_icon_fast_blink();
+     led_t.wifi_icon_fast_blink();
 
 	 TM1639_Start();
      TM1639_Write_OneByte(0XC9);//0xC1H->GRID_1->BIT_1
@@ -266,7 +266,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
      }
      TM1639_Stop();
     
-     led_t2.wifi_icon_fast_blink();
+     led_t.wifi_icon_fast_blink();
      //dighital 2
    
      TM1639_Start();
@@ -279,7 +279,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
      	  TM1639_Write_OneByte(segNumber_Low_4bit[0x10]);
      }
      TM1639_Stop();
-   led_t2.wifi_icon_fast_blink();
+   led_t.wifi_icon_fast_blink();
 
 	TM1639_Start();
 
@@ -295,7 +295,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
 	 
     TM1639_Stop();
 	 
-   led_t2.wifi_icon_fast_blink();
+   led_t.wifi_icon_fast_blink();
      //digital 3 
      //minute 
     TM1639_Start();
@@ -308,7 +308,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
         TM1639_Write_OneByte(segNumber_Low_4bit[0x10]);
      }
     TM1639_Stop();
-    led_t2.wifi_icon_fast_blink();
+    led_t.wifi_icon_fast_blink();
     //minute 
     TM1639_Start();
     TM1639_Write_OneByte(0xCD);//0xC2H->GRID_3->BIT_3
@@ -320,7 +320,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
 	
     TM1639_Stop();
 	
-    led_t2.wifi_icon_fast_blink();
+    led_t.wifi_icon_fast_blink();
     //digital 4
 	//minute 
     TM1639_Start();
@@ -331,7 +331,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
     }
     else TM1639_Write_OneByte(segNumber_Low_4bit[0x10]);
     TM1639_Stop();
-    led_t2.wifi_icon_fast_blink();
+    led_t.wifi_icon_fast_blink();
     //minute 
     TM1639_Start();
     TM1639_Write_OneByte(0xCF);//0xC2H->GRID_4
@@ -343,14 +343,14 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
     TM1639_Stop();
 
 	
-    led_t2.wifi_icon_fast_blink();
+    led_t.wifi_icon_fast_blink();
 
 
     //open diplay
     TM1639_Start();
     TM1639_Write_OneByte(OpenDispTM1639|0x8f);//0xC2H->GRID3->BIT_3
     TM1639_Stop();
-    led_t2.wifi_icon_fast_blink();
+    led_t.wifi_icon_fast_blink();
     
 }
 

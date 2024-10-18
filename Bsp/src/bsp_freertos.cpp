@@ -19,7 +19,7 @@
 #define MODE_LONG_KEY_8         (1 << 8)
 #define DECODER_BIT_9            (1<< 9)
 
-led_class led_t1;
+
 //extern decoder_class decoder_t0;
 
 /***********************************************************************************************************
@@ -96,15 +96,13 @@ uint8_t decoder_rx_flag;
 
 
 
-/*
-*********************************************************************************************************
+/**********************************************************************************************************
 *	凄1�7 敄1�7 各1�7: vTaskTaskUserIF
 *	功能说明: 接口消息处理〄1�7
 *	彄1�7    叄1�7: pvParameters 是在创建该任务时传��的形参
 *	迄1�7 囄1�7 倄1�7: 旄1�7
-*   伄1�7 兄1�7 纄1�7: 1  (数��越小优先级越低，这个跟uCOS相反)
-*********************************************************************************************************
-*/
+*   priority: 1  (数��越小优先级越低，这个跟uCOS相反)
+**********************************************************************************************************/
 void freeRTOS_Handler(void)
 {
      /* 创建任务 */
@@ -125,7 +123,7 @@ void freeRTOS_Handler(void)
 *	返 回 值: 无
 *   优 先 级: 1  
 
-*   伄1�7 兄1�7 纄1�7: 1  (数��越小优先级越低，这个跟uCOS相反)
+*   priority: 1  (数��越小优先级越低，这个跟uCOS相反)
 **********************************************************************************************************/
 static void vTaskRunPro(void *pvParameters)
 {
@@ -182,17 +180,16 @@ static void vTaskRunPro(void *pvParameters)
         }
         else if(gpro_t.key_long_wifi_flag== 1){
             
-       
-             gl_tMsg.key_long_mode_counter =0;
-             gpro_t.gTimer_power_mode_key_long = 0;
-              gl_tMsg.key_long_wifi_counter=0;
-              gpro_t.gTimer_wifi_led_blink_time =0;
-              run_t.wifi_led_fast_blink_flag =1;  
-              gpro_t.wifi_link_net_success = 0;
-              gpro_t.get_beijing_time_flag = 0;
-              //SendData_Set_Command(0x05,0x01); //link net flag is "1"
-             /// osDelay(10);
-              gpro_t.key_long_wifi_flag++;
+            gl_tMsg.key_long_mode_counter =0;
+            gpro_t.gTimer_power_mode_key_long = 0;
+            gl_tMsg.key_long_wifi_counter=0;
+            gpro_t.gTimer_wifi_led_blink_time =0;
+            run_t.wifi_led_fast_blink_flag =1;  
+            gpro_t.wifi_link_net_success = 0;
+            gpro_t.get_beijing_time_flag = 0;
+            //SendData_Set_Command(0x05,0x01); //link net flag is "1"
+            /// osDelay(10);
+            gpro_t.key_long_wifi_flag++;
 
         }
         else if(gl_tMsg.key_add_flag == 1 || gl_tMsg.key_dec_flag == 1){
@@ -246,13 +243,13 @@ static void vTaskRunPro(void *pvParameters)
       if(run_t.gPower_On == power_on){
 
        smartphone_app_power_on_fun();
-       led_t1.led_fun_indicator_light();
+       led_t.led_fun_indicator_light();
        Display_SmgTiming_Handler();
        Set_Temperature_Value();
        RunLocal_Dht11_Data_Process();
              
        Display_TimeColon_Blink_Fun();
-       led_t1.wifi_icon_fast_blink();
+       led_t.wifi_icon_fast_blink();
        if((gpro_t.key_long_wifi_flag== 2 || gl_tMsg.key_long_mode_flag == 1) &&  gpro_t.gTimer_power_mode_key_long  > 1){
 
             if(gpro_t.key_long_wifi_flag== 2){
@@ -286,6 +283,7 @@ static void vTaskRunPro(void *pvParameters)
 *	功能说明: 创建应用任务
 *	Inpute Ref：
 *	Return Ref:
+*   priority : 2 
 **********************************************************************************************************/
 static void vTaskStart(void *pvParameters)
 {
@@ -380,11 +378,7 @@ static void vTaskStart(void *pvParameters)
 
      }
      
-    
-
-    
-
-     vTaskDelay(20);
+    vTaskDelay(20);
      
     }
 
