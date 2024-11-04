@@ -1,6 +1,7 @@
 #include "bsp.h"
 
-static void TimeColon_Smg_Blink_Fun(void);
+static void TimeColon_Smg_Blink_Fun(uint8_t data);
+
 
 
 /**********************************************************************
@@ -75,23 +76,19 @@ void Display_Error_Digital(uint8_t errnumbers,uint8_t sel)
 *Return Ref: NO
 *
 ********************************************************************************/
-static void TimeColon_Smg_Blink_Fun(void)
+static void TimeColon_Smg_Blink_Fun(uint8_t data)
 {
 	
-	static uint8_t i;
+   
 
     if(gpro_t.disp_timer_or_time_mode != SET_TIMER_ITEM || gpro_t.disp_timer_or_time_mode != PTC_WARNING || gpro_t.disp_timer_or_time_mode != FAN_WARNING){
-     i++ ;
-     if(i ==1){
-		  SmgBlink_Colon_Function(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,0);
+    
+     if(data ==0){
+		  smgblink_time_colon_fun(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,0);
      }
      else{
-          if(i > 5){
-           i=0;
-
-          }
-	
-		   SmgBlink_Colon_Function(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,1);
+          
+          smgblink_time_colon_fun(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,1);
         }
 
     }
@@ -101,12 +98,32 @@ static void TimeColon_Smg_Blink_Fun(void)
 void Display_TimeColon_Blink_Fun(void)
 {
 
-  if(run_t.gTimer_time_colon >200){ //10*20ms=300ms
+  static uint8_t blink_flag;
+  if(run_t.gTimer_time_colon < 1){ //10*20ms=300ms
 
-	   run_t.gTimer_time_colon =0;
-       
-	   TimeColon_Smg_Blink_Fun();
+	  if(blink_flag == 0){
+       blink_flag ++;
+	   TimeColon_Smg_Blink_Fun(1);
+       }
 	}
+    else if(run_t.gTimer_time_colon > 0 && run_t.gTimer_time_colon < 2){
+
+       if(blink_flag > 0){
+        
+         blink_flag=0;
+
+         TimeColon_Smg_Blink_Fun(0);
+
+       }
+
+
+    }
+    else if(run_t.gTimer_time_colon > 1){
+      TimeColon_Smg_Blink_Fun(0);
+      run_t.gTimer_time_colon =0;
+      
+
+    }
 }
 
 

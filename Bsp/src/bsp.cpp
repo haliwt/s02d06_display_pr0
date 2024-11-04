@@ -271,7 +271,6 @@ void key_add_fun(void)
     if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
     
 
-    run_t.gTimer_time_colon=0;
 
     switch(gpro_t.set_timer_timing_doing_value){
 
@@ -290,7 +289,7 @@ void key_add_fun(void)
 
         run_t.set_temperature_special_value=1;
         run_t.gTimer_key_timing =0;
-        run_t.gTimer_time_colon=0;
+
     
         run_t.gTimer_key_temp_timing=0;
 
@@ -319,7 +318,7 @@ void key_add_fun(void)
            
 
       run_t.temporary_timer_dispTime_minutes=0;
-      run_t.gTimer_time_colon =0;
+   
 
     
      run_t.hours_two_decade_bit = run_t.temporary_timer_dispTime_hours /10;
@@ -350,7 +349,7 @@ void key_dec_fun(void)
 {
     
     if(run_t.ptc_warning ==0 ){
-    run_t.gTimer_time_colon=0;
+
   
     switch(gpro_t.set_timer_timing_doing_value){
 
@@ -370,7 +369,7 @@ void key_dec_fun(void)
         //set temperature value of flag bit 
         run_t.set_temperature_special_value=1;
         run_t.gTimer_key_timing =0;
-        run_t.gTimer_time_colon=0;
+        
         run_t.gTimer_key_temp_timing=0;
 
          gpro_t.manual_turn_off_ptc_flag = 0;
@@ -400,7 +399,7 @@ void key_dec_fun(void)
       
 
    
-     run_t.gTimer_time_colon =0;
+ 
      run_t.temporary_timer_dispTime_minutes=0;
 
   

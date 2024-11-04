@@ -17,9 +17,9 @@
 #include "led.h"
 #include "bsp_fan.h"
 #include "bsp_display_dynamic.h"
-#include "display.h"
 #include "interrupt_manager.h"
 #include "delay.h"
+#include "display.h"
 #include "bsp_decoder.h"
 #include "bsp_freertos.h"
 
