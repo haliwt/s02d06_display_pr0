@@ -4,7 +4,7 @@
 
 
 key_types key_t;
-//decoder_class decoder_t0;
+
 static void set_timer_fun_led_blink(void);
 
 uint8_t set_timer_timing_flag ;

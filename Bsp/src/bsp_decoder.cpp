@@ -1,8 +1,6 @@
 #include "bsp.h"
 
-//display_state_ref g_tDisp;
 
-//decoder_class decoder_t0;
 static void first_disp_set_temp_value_fun(void);
 
 uint8_t disp_timer_first_flag;
