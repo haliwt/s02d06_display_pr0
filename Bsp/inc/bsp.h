@@ -72,6 +72,7 @@ typedef struct _pro_t{
    uint8_t disp_timer_or_time_mode;
    uint8_t manual_turn_off_ptc_flag ;
    uint8_t  key_long_wifi_flag;
+   uint8_t  gtime_colon_symbol_flag;
    
 
    uint8_t temp_switch_on_flag;

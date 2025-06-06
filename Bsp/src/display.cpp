@@ -79,18 +79,11 @@ void Display_Error_Digital(uint8_t errnumbers,uint8_t sel)
 static void TimeColon_Smg_Blink_Fun(uint8_t data)
 {
 	
-   
-
-    if(gpro_t.disp_timer_or_time_mode != SET_TIMER_ITEM || gpro_t.disp_timer_or_time_mode != PTC_WARNING || gpro_t.disp_timer_or_time_mode != FAN_WARNING){
+   if(gpro_t.disp_timer_or_time_mode != SET_TIMER_ITEM){
     
-     if(data ==0){
-		  smgblink_time_colon_fun(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,0);
-     }
-     else{
-          
-          smgblink_time_colon_fun(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,1);
-        }
-
+     
+		smgblink_time_colon_fun(run_t.hours_two_unit_bit ,run_t.minutes_one_decade_bit,gpro_t.gtime_colon_symbol_flag);
+    
     }
 }
 
@@ -98,33 +91,21 @@ static void TimeColon_Smg_Blink_Fun(uint8_t data)
 void Display_TimeColon_Blink_Fun(void)
 {
 
-  static uint8_t blink_flag;
-  if(run_t.gTimer_time_colon < 1){ //10*20ms=300ms
+ 
+  if(run_t.gTimer_time_colon > 0){
 
-	  if(blink_flag == 0){
-       blink_flag ++;
-	   TimeColon_Smg_Blink_Fun(1);
-       }
-	}
-    else if(run_t.gTimer_time_colon > 0 && run_t.gTimer_time_colon < 2){
-
-       if(blink_flag > 0){
-        
-         blink_flag=0;
-
-         TimeColon_Smg_Blink_Fun(0);
-
-       }
-
-
-    }
-    else if(run_t.gTimer_time_colon > 1){
-      TimeColon_Smg_Blink_Fun(0);
       run_t.gTimer_time_colon =0;
-      
 
-    }
+        gpro_t.gtime_colon_symbol_flag=gpro_t.gtime_colon_symbol_flag ^ 0x01;
+   
+       TimeColon_Smg_Blink_Fun(gpro_t.gtime_colon_symbol_flag);
+	
+
+   }
+
 }
+  
+
 
 
 void fan_disp_error_number(void)
