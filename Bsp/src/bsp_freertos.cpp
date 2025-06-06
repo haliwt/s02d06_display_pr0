@@ -429,7 +429,7 @@ void AppTaskCreate (void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
      static uint8_t state;
-     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+   //  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 
 

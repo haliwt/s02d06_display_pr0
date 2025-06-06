@@ -129,7 +129,7 @@ void Display_TimeColon_Blink_Fun(void)
 
 void fan_disp_error_number(void)
 {
-    static uint8_t alternate_flag;
+    
 
    if(run_t.fan_warning ==1){ //display "Er: 02"
 
@@ -147,7 +147,7 @@ void fan_disp_error_number(void)
 
 void ptc_disp_error_number(void)
 {
-    static uint8_t alternate_flag;
+ 
 
    if(run_t.ptc_warning ==1){ //display "Er: 02"
 
