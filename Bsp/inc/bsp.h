@@ -1,27 +1,34 @@
 #ifndef __BSP_H
 #define __BSP_H
-
-
-
 #include "main.h"
+#include "stdio.h"
+#include "string.h"
+#include "stdbool.h"
 
 
 #include "usart.h"
+#include "dma.h"
 
 
-
-#include "smg.h"
-#include "cmd_link.h"
-#include "run.h"
-#include "key.h"
-#include "led.h"
+#include "bsp_smg.h"
+#include "bsp_cmd_link.h"
+#include "bsp_run.h"
+#include "bsp_key.h"
+#include "bsp_led.h"
 #include "bsp_fan.h"
 #include "bsp_display_dynamic.h"
+#include "bsp_display.h"
 #include "interrupt_manager.h"
-#include "delay.h"
-#include "display.h"
-#include "bsp_decoder.h"
+#include "bsp_delay.h"
+#include "bsp_wifi.h"
+#include "bsp_power.h"
+#include "bsp_usart_dma.h"
+
+
+#include "bsp_key_app.h"
+#include "bsp_message.h"
 #include "bsp_freertos.h"
+
 
 
 
@@ -47,52 +54,72 @@
 
 typedef enum{
 
-  WORKS_TIME,
-  TIMER_SUCCESS,
-  SET_TIMER_ITEM
- 
+  TIMER_NORMAL_TIMING,
+  TIMER_SUCCESS
 
 }TIMER_STATE;
 
 
 typedef enum power_onoff_state_t{
 
-    power_off= 0,
-    power_on =0x01
+    power_off,
+    power_on
 
 
 }power_onoff_stae;
 
+
+typedef enum{
+
+  no_ai_mode,
+  ai_mode
+
+}ai_mode_typedef;
+
 typedef struct _pro_t{
 
-   uint8_t gmouse;
- 
-   uint8_t wifi_link_net_success;
-   uint8_t disp_rx_cmd_done_flag;
-   uint8_t disp_timer_or_time_mode;
-   uint8_t manual_turn_off_ptc_flag ;
-   uint8_t  key_long_wifi_flag;
-   uint8_t  gtime_colon_symbol_flag;
-   
-
-   uint8_t temp_switch_on_flag;
-   uint8_t  temp_switch_off_flag;
    
    uint8_t set_timer_timing_value_success;
    uint8_t set_timer_timing_doing_value;
-   uint8_t set_temp_value_success_flag;
+   uint8_t set_temp_value_success;
    uint8_t set_up_temperature_value;
-   
-   uint8_t answer_signal_flag;
+   uint8_t mode_Key_long_counter;
+   uint8_t  mode_key_shot_flag ;
   
-   uint8_t smart_phone_app_power_on_flag ;
-   uint8_t get_beijing_time_flag;
+   uint8_t answer_signal_flag;
+   uint8_t set_timer_first_smg_blink_flag;
 
-   uint8_t gTimer_wifi_led_blink_time ;
-   uint8_t gTimer_wifi_led_blink;
-   uint8_t gTimer_power_mode_key_long;
+   uint8_t send_ack_cmd;
+   uint8_t receive_copy_cmd;
+   uint8_t g_manual_shutoff_dry_flag;
+  
+   uint8_t input_numbers_flag;
+   uint8_t DMA_txComplete;
+  
+
+
+
+   uint8_t g_time_disp_colon_flag;
+   uint8_t smartphone_app_timer_power_on_flag;
+   uint8_t key_add_dec_pressed_flag;
+   
+
+
+   uint8_t gTimer_temp_compare_counter;
+   uint8_t gTimer_set_temperature_value;
+   uint8_t gTimer_again_send_power_on_off;
+
+   uint8_t gTimer_wifi_led_blink ;
+   uint8_t gTimer_disp_mode_switch;
+   uint8_t gTimer_mode_long_key_counter;
+
    uint16_t gTimer_4bitsmg_blink_times;
   
+   
+
+
+
+
 }pro_run_t;
 
 extern pro_run_t  gpro_t;
@@ -102,35 +129,38 @@ void bsp_init(void);
 
 void power_on_handler(void);
 
+
+void power_on_run_handler(void);
+
+
 void power_off_run_handler(void);
 
-void mode_key_handler(void);
+void plasma_key_fun(uint8_t data);
 
-void mouse_on_off_handler(void);
 
-void key_add_fun(void);
+void ai_key_fun(uint8_t data);
 
-void key_dec_fun(void);
 
-void mode_key_fun(void);
 
-void compare_temp_value(void);
+void bsp_dry_fun(uint8_t data);
 
 
 
 
 void mode_key_long_fun(void);
 
-
-void ptc_on_off_handler(void);
-
-void plasma_on_off_handler(void);
+void SetDataTemperatureValue(void);
 
 
-void smartphone_app_power_on_fun(void);
+void compare_temp_value(void);
+
+void detected_ptc_or_fan_warning_fun(void);
 
 
-#endif
+void works_run_two_hours_handler(void);
 
+void mode_key_short_fun(void);
+
+#endif 
 
 

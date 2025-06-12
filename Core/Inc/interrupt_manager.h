@@ -4,6 +4,7 @@
 
 
 
+extern uint8_t inputBuf[MAX_BUFFER_SIZE];
 
 
 

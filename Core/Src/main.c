@@ -6,8 +6,10 @@
   ******************************************************************************
   * @attention
   *
-  * s02d06 the second display board codes .
-  *
+  * S06 display board has wifi function. DATA:2025.05.07
+  *      
+  * 
+  * 
   * 
   * 
   *
@@ -20,6 +22,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "dma.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -90,16 +93,23 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM3_Init();
+  MX_DMA_Init();
+  MX_TIM17_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
    bsp_init();
-   HAL_TIM_Base_Start_IT(&htim3);
-   UART_Start_Receive_IT(&huart1,inputBuf,1);
-   //__HAL_UART_ENABLE_IT(&huart1,UART_IT_ERR);
-   
+   HAL_TIM_Base_Start_IT(&htim17);
 
+   #if USART1_INTERRUPT
+   	 UART_Start_Receive_IT(&huart1,inputBuf,1);
+   #else
+    //__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);//need manual turn of and need manual need clear flag
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart1, dmaRxBuffer,sizeof(dmaRxBuffer));//RX_BUFFER_SIZE);
+   #endif 
+	
    freeRTOS_Handler();
+
+   
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
@@ -143,8 +153,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
-  RCC_OscInitStruct.PLL.PLLN = 8;              // 8* 16MHz = 128MHz
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;  // 128 /2 = 64MHz
+  RCC_OscInitStruct.PLL.PLLN = 8;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -159,7 +169,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)// if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }

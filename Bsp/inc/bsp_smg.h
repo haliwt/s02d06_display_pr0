@@ -1,5 +1,5 @@
-#ifndef __SMG_H__
-#define __SMG_H__
+#ifndef __BSP_SMG_H__
+#define __BSP_SMG_H__
 #include "main.h"
 
 
@@ -88,6 +88,14 @@
 #define   seg_g  0x04      //SEG6   //seg_b = 0x02 
 #define   seg_h  0x08      //SEG7 -> ":"
 
+
+
+
+
+
+
+
+
 void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit,uint8_t sl);
 void TM1639_Write_2bit_TempData(uint8_t onebit,uint8_t twobit);
 void TM1639_Write_2bit_HumData(uint8_t onebit,uint8_t twobit);
@@ -98,13 +106,12 @@ void TM1639_Write_4Bit_TimerData(uint8_t onebit,uint8_t twobit,uint8_t threebit,
 void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t twobit,uint8_t sel);
 
 
-void smgblink_time_colon_fun(uint8_t onebit,uint8_t twobit,uint8_t sel);
-
+void SmgBlink_Colon_Function(uint8_t onebit,uint8_t twobit,uint8_t sel);
 
 //void TM1639_Write_4Bit_Fan_Level(uint8_t fan_level);
 void Smg_AllOff(void);
 
-void TM1639_Write_4Bit_Time_D2bit(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit,uint8_t sl);
+void TM1639_Write_4Bit_Time_sync_close(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit,uint8_t sl);
 
 
 #endif 

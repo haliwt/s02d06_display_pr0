@@ -1,5 +1,5 @@
-#ifndef __KEY_H_
-#define __KEY_H_
+#ifndef __BSP_KEY_H_
+#define __BSP_KEY_H_
 #include "main.h"
 
 
@@ -14,7 +14,7 @@
 #define ADD_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOA,ADD_KEY_Pin)
 
 
-#define MOUSE_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,FAN_KEY_Pin)
+#define MOUSE_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,MOUSE_KEY_Pin)
 #define PLASMA_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,PLASMA_KEY_Pin)
 #define DRY_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,DRY_KEY_Pin)
 #define WIFI_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,AI_KEY_Pin)
@@ -128,28 +128,27 @@ typedef enum{
 	TIMER_TIMING_DONOT_VALUE,
 	TIMER_TIMING_ITEM ,
 	set_timer_timing_item,
-	set_temperature_value
+	
 
 
 }set_timer_state;
 
 
 
+//typedef enum{
+//
+//   NO_AI_MODE,
+//   AI_MODE,
+//
+//
+//}ai_mode_state;
+
 typedef enum{
-
-   NO_AI_MODE,
-   AI_MODE,
-   NO_AI_TO_AI_MODE
-
-}ai_mode_state;
-
-typedef enum{
-
-   fan_speed_max,
-   fan_speed_min
+   wifi_connect_null,
+   wifi_connect_success
+}wifi_state_connect;
 
 
-}fan_level_state;
 
 
 typedef  struct  _state_
@@ -170,7 +169,7 @@ typedef  struct  _state_
  }state;
 }key_types;
 
-extern key_types key_t;
+
 
 uint8_t KEY_Scan(void);
 
@@ -181,13 +180,14 @@ uint8_t KEY_Normal_Scan(uint8_t mode);
 
 void Set_TimerTiming_Number_Value(void);
 
-void Set_Temperature_Value(void);
+void disp_smg_blink_set_tempeature_value(void);
 
 
-void set_temperature_led_blink_fun(void);
+void set_timer_fun_led_blink(void);
 
 
 
+//void mode_key_handler(void) ;
 
 
 #endif 
