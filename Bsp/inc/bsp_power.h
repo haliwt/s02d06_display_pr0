@@ -210,6 +210,9 @@ extern RUN_T run_t;
 
 
 void Power_Off(void);
+
+void power_on_run_handler(void);
+
 void SplitDispose_Key(uint8_t value);
 
 

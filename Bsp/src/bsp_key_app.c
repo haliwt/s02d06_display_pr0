@@ -345,15 +345,17 @@ void mode_key_handler(void)
 		   gpro_t.mode_Key_long_counter=0;
            gpro_t.mode_key_shot_flag = 1;     
 		   gpro_t.gTimer_disp_mode_switch=0;
-		   if(gpro_t.set_timer_timing_value_success==0){
-		   SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
-		   osDelay(5);
-		   }
-		   else  if(gpro_t.set_timer_timing_value_success==1){
-		       SendData_Set_Command(0x07,0x01); //reverse switch display "AI"
-			   osDelay(5);
+		   if(gpro_t.ai_flag == ai_mode){
+               gpro_t.key_disp_mode_flag = no_ai_mode;
+           }
+		   else if(gpro_t.ai_flag == no_ai_mode){
+		      gpro_t.key_disp_mode_flag = ai_mode;
 
-          }
+		   }
+		   
+		   SendData_Set_Command(0x07,0x01); //reverse switch don't displayb "AI"
+		   osDelay(5);
+		  
 		  
 
 	}
@@ -389,10 +391,7 @@ static void handle_mode_key_long_press(void)
 void wifi_mode_key_handler(void)
 {
 
-
-
-
-    if(key_t.key_wifi_flag==200){
+ if(key_t.key_wifi_flag==200){
 
 
         run_t.wifi_connect_state_flag = wifi_connect_null;

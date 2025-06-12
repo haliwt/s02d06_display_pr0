@@ -155,7 +155,7 @@ void Set_TimerTiming_Number_Value(void)
 
     if(gpro_t.set_timer_timing_doing_value==2){
     	gpro_t.set_timer_timing_doing_value++;
-		if(gpro_t.set_timer_timing_value_success  == TIMER_SUCCESS && gpro_t.key_add_dec_pressed_flag ==0){
+		if(gpro_t.set_timer_timing_value_success  == disp_timer_times && gpro_t.key_add_dec_pressed_flag ==0){
              run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
         	 run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
         	 //run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
@@ -164,7 +164,8 @@ void Set_TimerTiming_Number_Value(void)
 
 		}
 		else if(run_t.temporary_timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){
-			gpro_t.set_timer_timing_value_success  = TIMER_SUCCESS;
+			gpro_t.set_timer_timing_value_success  = disp_timer_times;
+			key_t.disp_smg_mode_flag = disp_timer_times;
 			run_t.gTimer_timer_seconds_counter = 0;
 
 			run_t.timer_dispTime_hours = run_t.temporary_timer_dispTime_hours ;
@@ -181,7 +182,7 @@ void Set_TimerTiming_Number_Value(void)
 		else{
 
 			gpro_t.set_timer_timing_value_success  = 0;
-
+            key_t.disp_smg_mode_flag = disp_works_times;
 
 
 		}
@@ -206,12 +207,13 @@ void set_timer_fun_led_blink(void)
      if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_4bitsmg_blink_times  > 300){//if has a key be pressed "+" key or "-" key
 
     	gpro_t.gTimer_4bitsmg_blink_times =0;
+    	gpro_t.main_board_set_timer_flag =0;
         time_smg_blink = time_smg_blink ^ 0x01;
         TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
 
    	
      }
-     else if(gpro_t.key_add_dec_pressed_flag ==0 && gpro_t.gTimer_4bitsmg_blink_times  > 300){// //180ms
+     else if(gpro_t.key_add_dec_pressed_flag ==0 && gpro_t.gTimer_4bitsmg_blink_times  > 300){// //180ms only smg blink ,don't key input state.
        gpro_t.gTimer_4bitsmg_blink_times =0;
 
        time_smg_blink = time_smg_blink ^ 0x01;
@@ -220,17 +222,21 @@ void set_timer_fun_led_blink(void)
 
       	run_t.timer_dispTime_hours=0;
       	run_t.timer_dispTime_minutes=0;
-
+        key_t.disp_smg_mode_flag = disp_works_times;
       	 TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
 
-      	}
-         else{
-        	 run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
-        	 run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
-        	 run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
-        	 run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
-        	 TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
-             
+      }
+      else if(gpro_t.set_timer_timing_value_success==1){
+        	 if(gpro_t.main_board_set_timer_flag ==0){
+			 	 key_t.disp_smg_mode_flag = disp_timer_times;
+			 	 run_t.gTimer_timer_seconds_counter=0;
+				 run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
+				 run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
+				 run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
+				 run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
+				 TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
+        	 }
+
          }
      
        

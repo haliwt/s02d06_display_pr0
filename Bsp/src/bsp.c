@@ -48,145 +48,6 @@ void power_off_handler(void)
 
  }
 
-/******************************************************************************
-	*
-	*Function Name:void RunPocess_Command_Handler(void)
-	*Funcion: display pannel run of process 
-	*Input Ref: NO
-	*Return Ref:NO
-	*
-******************************************************************************/
-void power_on_run_handler(void)
-{
-
- //  static uint8_t  step_state;
-   switch(run_t.gRunCommand_label){
-
-      case RUN_POWER_ON:
-          
-	  
-           run_t.gTimer_time_colon =0;
-	       run_t.set_temperature_decade_value=40;
-           
-            run_t.gTimer_detect_mb_receive_flag =0;
-			Power_On_Fun();
-			run_t.gTimer_display_dht11 = 20; //at once display temperature and humidity value.
-			gpro_t.set_timer_timing_doing_value = 0;
-            gpro_t.g_manual_shutoff_dry_flag = 0; //allow open dry function .
-            run_t.wifi_led_fast_blink=0;
-			gpro_t.gTimer_temp_compare_counter=0;
-			gpro_t.set_timer_timing_value_success=0;
-			run_t.timer_dispTime_hours=0;
-		    run_t.timer_dispTime_minutes=0;
-
-			if(run_t.wifi_connect_state_flag == wifi_connect_success){
-
-                   if(run_t.display_beijing_time_flag ==0){
-						run_t.works_dispTime_hours=0;
-						run_t.works_dispTime_minutes=0;
-						run_t.gTimer_timing_seconds_counter =0;
-					    
-
-				    }
-
-			}
-			else{
-			   
-    		   run_t.works_dispTime_hours=0;
-			   run_t.works_dispTime_minutes=0;
-			   run_t.gTimer_timing_seconds_counter =0;
-
-			}
-			gpro_t.set_temp_value_success=0;
-			
-			run_t.gRunCommand_label= SPECIAL_DISP;
-
-
-            
-	  break;
-
-      case SPECIAL_DISP:
-
-              if(gpro_t.mode_key_shot_flag ==1){
-
-                  if(gpro_t.gTimer_disp_mode_switch <  3){
-				  	
-			          mode_key_short_fun();
-
-                  }
-				  else{
-				     gpro_t.mode_key_shot_flag++;
-
-
-				  }
-
-			  }
-              else if(gpro_t.set_timer_timing_doing_value == 1 && run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-
-                   Set_TimerTiming_Number_Value();
-                   
-              }
-              else if((gpro_t.set_timer_timing_doing_value == 0 ||gpro_t.set_timer_timing_doing_value == 3 )&&  run_t.set_temperature_special_flag   >0 &&  run_t.set_temperature_special_flag != 0xff ){
-
-                   disp_smg_blink_set_tempeature_value();
-	              
-						
-             }
-             else{
-
-              switch(step_state){
-
-					case 0:
-						Led_Panel_OnOff();
-					    step_state=1;
-					break;
-
-					case 1:
-
-						 
-               			// disp_dht11_value();
-                       
-				        step_state=2;
-	                    
-				   break;
-                    
-                    case 2: //display 1:   timing times  2: timer times.
-
-					    if(gpro_t.mode_key_shot_flag == 1){
-                              if(gpro_t.gTimer_disp_mode_switch > 2){
-							  	gpro_t.gTimer_disp_mode_switch=0;
-								gpro_t.mode_key_shot_flag++;
-                                mode_key_short_fun();
-
-                              }
-					    }
-                        else if(gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3){ //WT.EDIT 2025.05.07
-                        if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
-                            
-							   Display_SmgTiming_Value();
-
-                            
-
-                         }
-                        else{
-
-                            Warning_Error_Numbers_Fun();
-
-                        }
-                        
-                        }
-
-                     step_state=0;
-                    break;
-
-              }
-            
-             }    
-      break;
-
-	}
-}
-
 
 void detected_ptc_or_fan_warning_fun(void)
 {
@@ -216,17 +77,30 @@ void mode_key_long_fun(void)
 void mode_key_short_fun(void)
 {
 
-  if(gpro_t.set_timer_timing_value_success==0){
-             
+   if(gpro_t.set_timer_timing_value_success==0 && gpro_t.key_disp_mode_flag == no_ai_mode ){
+     gpro_t.ai_flag = no_ai_mode  ; //don't AI MODE    
 	run_t.timer_dispTime_hours=0;
 	run_t.timer_dispTime_minutes=0;
 
 	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+	key_t.disp_smg_mode_flag = disp_works_times;
+	gpro_t.key_disp_mode_flag =0xff;
+    
+   }
+   else if(gpro_t.set_timer_timing_value_success==1 && gpro_t.key_disp_mode_flag == no_ai_mode){ 
+     gpro_t.ai_flag = no_ai_mode; //don't AI
 
-	}
-   else{
+	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+    key_t.disp_smg_mode_flag = disp_timer_times;
+    gpro_t.key_disp_mode_flag =0xff;
 
-        Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
+   }
+   else if(gpro_t.key_disp_mode_flag == ai_mode && gpro_t.key_disp_mode_flag == ai_mode){
+		gpro_t.ai_flag = ai_mode; //don't AI
+
+        Display_Timing(run_t.works_dispTime_minutes,run_t.works_dispTime_minutes,0);
+        key_t.disp_smg_mode_flag = disp_works_times;
+        gpro_t.key_disp_mode_flag =0xff;
 			
 			 
 
@@ -254,14 +128,7 @@ void power_off_run_handler(void)
 	     run_t.gTimer_fan_continue=0;
          run_t.gTimer_detect_mb_receive_flag=0;
 
-         
-
-         
-       
-		   
-		 
-         //  Power_Off();
-           Power_Off_Led_Off();
+          Power_Off_Led_Off();
 		 gpro_t.smartphone_app_timer_power_on_flag =0;
 		   gpro_t.set_timer_timing_value_success=0;
 			run_t.timer_dispTime_hours=0;

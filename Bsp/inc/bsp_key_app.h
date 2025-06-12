@@ -20,6 +20,7 @@ typedef struct{
   uint8_t key_plasma_flag;
   uint8_t key_dry_flag;
   uint8_t key_mouse_flag;
+  uint8_t disp_smg_mode_flag;
 
 
 }KEY_T_TYPEDEF;

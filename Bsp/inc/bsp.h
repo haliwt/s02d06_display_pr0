@@ -54,8 +54,8 @@
 
 typedef enum{
 
-  TIMER_NORMAL_TIMING,
-  TIMER_SUCCESS
+  disp_works_times,
+  disp_timer_times
 
 }TIMER_STATE;
 
@@ -95,6 +95,10 @@ typedef struct _pro_t{
   
    uint8_t input_numbers_flag;
    uint8_t DMA_txComplete;
+   uint8_t main_board_set_timer_flag ;
+
+   uint8_t key_disp_mode_flag ;
+   uint8_t ai_flag ;
   
 
 
@@ -130,7 +134,7 @@ void bsp_init(void);
 void power_on_handler(void);
 
 
-void power_on_run_handler(void);
+
 
 
 void power_off_run_handler(void);

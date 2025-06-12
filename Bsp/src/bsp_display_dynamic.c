@@ -249,7 +249,7 @@ static void Display_Works_Time_Fun(void)
 *****************************************************************/
 static void Timer_Timing_Donot_Display(void)
 {
-  if(run_t.gTimer_timer_seconds_counter > 59 && gpro_t.set_timer_timing_value_success==TIMER_SUCCESS){
+  if(run_t.gTimer_timer_seconds_counter > 59 && gpro_t.set_timer_timing_value_success==disp_timer_times){
     run_t.gTimer_timer_seconds_counter =0;
     run_t.timer_dispTime_minutes -- ;
 
@@ -284,7 +284,7 @@ static void Timer_Timing_Donot_Display(void)
 static void WorksTime_DonotDisplay_Fun(void)
 {
 //send to APP works times every minute onece
-   if(run_t.gTimer_timing_seconds_counter > 59 &&  gpro_t.set_timer_timing_value_success ==TIMER_SUCCESS ){
+   if(run_t.gTimer_timing_seconds_counter > 59 &&  gpro_t.set_timer_timing_value_success ==disp_timer_times ){
 		   run_t.gTimer_timing_seconds_counter=0;
 		 
 		   run_t.works_dispTime_minutes++; //1 minute 
@@ -347,49 +347,50 @@ void Display_SmgTiming_Value(void)
 {
   // uint8_t dataToSend[3];
 
-   switch(gpro_t.set_timer_timing_value_success){
+   switch(key_t.disp_smg_mode_flag){
 
-	   case TIMER_SUCCESS:
-
-	   
-			   if(run_t.gTimer_timer_seconds_counter > 59){
-			    run_t.gTimer_timer_seconds_counter =0;
+	   case disp_timer_times:
+                 gpro_t.ai_flag = no_ai_mode;
 			
+				if(run_t.gTimer_timer_seconds_counter > 59){
+				run_t.gTimer_timer_seconds_counter =0;
+
 				run_t.timer_dispTime_minutes -- ;
+
+				if(run_t.timer_dispTime_minutes <  0 ){
+
+				run_t.timer_dispTime_hours -- ;
+				run_t.timer_dispTime_minutes =59;
+
+				uint8_t dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据
+				SendData_ToMainboard_Data(0x5C, dataToSend, 3); // cmd=0x1A, 数据长度=3
+				osDelay(5);
+				}
+
+
+
+				if(run_t.timer_dispTime_hours < 0 ){
+
+				run_t.gTimer_timer_seconds_counter = 57 ;
+				run_t.timer_dispTime_hours=0;
+				run_t.timer_dispTime_minutes=0;
+
+				gpro_t.send_ack_cmd = check_ack_power_off;//ack_power_off;
+				gpro_t.gTimer_again_send_power_on_off =0;
+				SendData_PowerOnOff(0);//power off
+
+				}
+				}
+
+				Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+				WorksTime_DonotDisplay_Fun();
 			
-			    if(run_t.timer_dispTime_minutes <  0 ){
-					 
-				   run_t.timer_dispTime_hours -- ;
-				   run_t.timer_dispTime_minutes =59;
-				
-				   uint8_t dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据
-           			SendData_ToMainboard_Data(0x5C, dataToSend, 3); // cmd=0x1A, 数据长度=3
-                    osDelay(5);
-		         }
-
-				
-				
-				 if(run_t.timer_dispTime_hours < 0 ){
-				 
-					run_t.gTimer_timer_seconds_counter = 57 ;
-					run_t.timer_dispTime_hours=0;
-					run_t.timer_dispTime_minutes=0;
-		             
-			        gpro_t.send_ack_cmd = check_ack_power_off;//ack_power_off;
-					gpro_t.gTimer_again_send_power_on_off =0;
-					SendData_PowerOnOff(0);//power off
-					
-			      }
-		}
-
-        Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-        WorksTime_DonotDisplay_Fun();
         
 	    break;
 
-		case TIMER_NORMAL_TIMING: //NO_AI_MODE by timer timing  auto be changed AI_MODE
+		case disp_works_times: //NO_AI_MODE by timer timing  auto be changed AI_MODE
 			
-    
+           gpro_t.ai_flag = ai_mode;
           if(run_t.gTimer_timing_seconds_counter > 59){
     		   run_t.gTimer_timing_seconds_counter=0;
     		 

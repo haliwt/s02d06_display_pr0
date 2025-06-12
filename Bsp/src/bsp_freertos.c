@@ -139,10 +139,10 @@ static void vTaskDecoderPro(void *pvParameters)
 				receive_data_from_mainboard(gl_tMsg.usData);
 				}
 			    #else
-				g_msg.disp_rx_cmd_done_flag =0;//gl_tMsg.disp_rx_cmd_done_flag = 0;
-                check_code =  bcc_check(g_msg.usData,g_msg.ulid);
-
-				 receive_data_from_mainboard(g_msg.usData);
+//				g_msg.disp_rx_cmd_done_flag =0;//gl_tMsg.disp_rx_cmd_done_flag = 0;
+//                check_code =  bcc_check(g_msg.usData,g_msg.ulid);
+//
+//				 receive_data_from_mainboard(g_msg.usData);
 				 
 				#endif 
 				//memset(g_msg.usData,0,MAX_FRAME_SIZE);
@@ -205,7 +205,7 @@ static void vTaskRunPro(void *pvParameters)
 
 	  }
 
-      send_cmd_ack_hanlder();
+      //send_cmd_ack_hanlder();
 
 	  vTaskDelay(10);
      

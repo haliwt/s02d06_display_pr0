@@ -8,7 +8,7 @@
 
 static void copy_cmd_data_from_mainboard(uint8_t *pdata);
 
-
+ uint8_t recoder_counter;
 
 /******************************************************************************
 *
@@ -429,6 +429,26 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	 break;
 
+	case 0x07:
+		
+	 if(pdata[3] == 0x00){
+	
+		if(pdata[4]== 0x01 || pdata[4]== 0x02){
+           recoder_counter++;
+	        gpro_t.mode_key_shot_flag = 1;     
+		   gpro_t.gTimer_disp_mode_switch=0;
+		   if(gpro_t.ai_flag == ai_mode){
+               gpro_t.key_disp_mode_flag = no_ai_mode;
+           }
+		   else if(gpro_t.ai_flag == no_ai_mode){
+		      gpro_t.key_disp_mode_flag = ai_mode;
+
+		   }
+	      }
+	 	}
+
+	break;
+
 	case temp_warning: //temperature of high warning.
 
 		if(pdata[3] == 0x00){
@@ -475,12 +495,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
       break;
 
-	
-
-
-     //接收的是数据
-
-      case temp_hum_data: //温度,湿度数据
+ 		//接收的是数据
+	 case temp_hum_data: //温度,湿度数据
         if(pdata[3]==0x0F){
         if(pdata[4] == 0x02){ //数据,two 
             
@@ -634,18 +650,31 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	     if(pdata[3] == 0x0F){
 		  
 			if(pdata[4]== 0x01){ // one only data 
+			 
 
-		      gpro_t.set_timer_timing_doing_value = 1;
-			  run_t.gTimer_key_timing = 0;
-              run_t.gTimer_smg_blink_times =0;
-			  gpro_t.set_timer_first_smg_blink_flag=0;
+		     // gpro_t.set_timer_timing_doing_value = 1;
+			 // run_t.gTimer_key_timing = 0;
+             // run_t.gTimer_smg_blink_times =0;
+			 // gpro_t.set_timer_first_smg_blink_flag=0;
+			  gpro_t.set_timer_timing_value_success=1;
+			 // gpro_t.main_board_set_timer_flag = 1;
 				
-			 run_t.temporary_timer_dispTime_hours=pdata[5];
+			 //run_t.temporary_timer_dispTime_hours=pdata[5];
+			 key_t.disp_smg_mode_flag=disp_timer_times;
+			 gpro_t.ai_flag = no_ai_mode;
+ 
+			   run_t.timer_dispTime_hours=pdata[5];
+			   run_t.timer_dispTime_minutes=0;
 	  
-			 	 run_t.hours_two_decade_bit    = run_t.temporary_timer_dispTime_hours / 10;
-    			run_t.hours_two_unit_bit      = run_t.temporary_timer_dispTime_hours % 10;
+			 	run_t.hours_two_decade_bit    = run_t.timer_dispTime_hours / 10;
+    			run_t.hours_two_unit_bit      = run_t.timer_dispTime_hours % 10;
+				
    				 run_t.minutes_one_decade_bit  = 0;
     			run_t.minutes_one_unit_bit    = 0;
+				run_t.gTimer_timer_seconds_counter=0;
+
+				
+      	        
 				
 	  
 			 
