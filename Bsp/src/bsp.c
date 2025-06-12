@@ -98,7 +98,7 @@ void mode_key_short_fun(void)
    else if(gpro_t.key_disp_mode_flag == ai_mode && gpro_t.key_disp_mode_flag == ai_mode){
 		gpro_t.ai_flag = ai_mode; //don't AI
 
-        Display_Timing(run_t.works_dispTime_minutes,run_t.works_dispTime_minutes,0);
+        Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
         key_t.disp_smg_mode_flag = disp_works_times;
         gpro_t.key_disp_mode_flag =0xff;
 			

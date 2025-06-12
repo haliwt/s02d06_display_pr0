@@ -674,12 +674,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 				run_t.gTimer_timer_seconds_counter=0;
 
 				
-      	        
-				
-	  
-			 
-
-				}
+      	       }
 		  	}
 
 	break;
