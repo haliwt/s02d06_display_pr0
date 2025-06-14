@@ -176,6 +176,8 @@ void Set_TimerTiming_Number_Value(void)
 			}
 
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+			SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
+			osDelay(5);
 
 
 		}

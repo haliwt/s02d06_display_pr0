@@ -1,7 +1,7 @@
 /*
  * bsp_message.h
  *
- *  Created on: 2025å¹´2æœˆ19æ—¥
+ *  Created on: 2025å¹?2æœ?19æ—?
  *      Author: Administrator
  */
 
@@ -95,7 +95,7 @@ typedef enum{
 	wifi_connect_data= 0x1F,
 	dry_notice_cmd= 0x22, //don't sound
 	mainboard_set_temperature_value = 0x2A,
-	mainboard_set_timer_value= 0x4C,
+	mainboard_set_timer_value= 0x2B,
 	timer_time_sync= 0x5C, //one timer timing and second timer timing timer timing synchronization
 	copy_cmd = 0xff
 

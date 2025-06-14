@@ -128,9 +128,10 @@ void SendData_Set_Command(uint8_t cmd, uint8_t cmdData)
  * Input Ref: cmd - 命令, data - 数据
  * Return Ref: 无
  ****************************************************************************************************/
-void SendData_Tx_Data(uint8_t cmd, uint8_t data) {
+void SendData_Tx_Data(uint8_t cmd, uint8_t data) 
+{
     fillFrame(cmd, HAS_DATA, &data, 1);
-    sendUartData(outputBuf, transferSize);
+    sendUartData(outputBuf, 8);
 }
 
 /****************************************************************************************************
