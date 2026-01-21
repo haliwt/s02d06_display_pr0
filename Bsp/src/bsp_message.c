@@ -408,9 +408,9 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	 case wifi_cmd:
 
 
-	if(pdata[3] == 0x00){
+	if(pdata[3] == 0x01){
 
-		if(pdata[4]== 0x01){
+		
 
 		run_t.wifi_led_fast_blink=1;
 		run_t.wifi_connect_state_flag = wifi_connect_null;
@@ -424,7 +424,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		}
 
 
-	}
+	
 
 
 	 break;
@@ -451,38 +451,32 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	case temp_warning: //temperature of high warning.
 
-		if(pdata[3] == 0x00){
+		if(pdata[3] == 0x01){
 			
-			if(pdata[4]== 0x01){
-
-	            run_t.ptc_warning = 1;
-	            run_t.gDry =0;
-			    LED_DRY_OFF();
-	           
-
-	        }
-	        else if(pdata[4] == 0x0){ //close
-
-	           run_t.ptc_warning = 0;
-
-
-	        }
-
+			run_t.ptc_warning = 1;
+	        run_t.gDry =0;
+			LED_DRY_OFF();
 	    }
+	    else if(pdata[3] == 0x0){ //close
+
+	          run_t.ptc_warning = 0;
+
+
+	       }
 
       break;
 
       case fan_warning: //fan of default of warning.
 
-         if(pdata[3] == 0x00){  //warning
+         if(pdata[3] == 0x01){  //warning
 
-            if(pdata[4]==1){
+           
             run_t.fan_warning = 1;
 
            run_t.gDry =0;
 		   LED_DRY_OFF();
            //SendData_Set_Command(0x22,0x0); //0x22:PTC notice close .
-           }
+           
 
         }
         else if(pdata[3] == 0x0){ //close
@@ -497,7 +491,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
  		//接收的是数据
 	 case temp_hum_data: //温度,湿度数据
-        if(pdata[3]==0x0F){
+        
         if(pdata[4] == 0x02){ //数据,two 
             
              if(pdata[5] !=0){
@@ -516,12 +510,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		   
 
         }
-        else if(pdata[4] == 0x01){ //数据,one
-
-
-
-        }
-        }
+      
+        
       break;
 
       case 0x1B: //湿度数据
@@ -551,26 +541,26 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	  case wifi_connect_data: //0x1f notice is command
 	  	
-        if(pdata[3]==0x0F){ // 0xF is explain is data don't command.
-	    if(pdata[4] == 0x01){   //only 
+     
+	    if(pdata[3] == 0x01){ //0x1F ,is notice don't data--(1,2,3,4,5,6,7,9)
 
-		     if(pdata[5]==1){
+		    
              run_t.wifi_led_fast_blink=0;
 			 run_t.wifi_connect_state_flag = wifi_connect_success;
 			 run_t.gTimer_wifi_connect_counter =0; //120s counte start
 		
 			  
 	  
-			}
-			else{ //close
+		}
+		else{ //close
 	  
 		      run_t.wifi_led_fast_blink=0;
 			 run_t.wifi_connect_state_flag = wifi_connect_null;
 			 run_t.gTimer_wifi_connect_counter =0; //120s counte start
 	  
-			}
-	    	}
-	    }
+		}
+	    
+	    
   
 	  break;
 
@@ -645,21 +635,18 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		  	}
 	break;
 
-	case mainboard_set_timer_value:
+	case mainboard_set_timer_value://0x2B
 
 	     if(pdata[3] == 0x0F){
 		  
 			if(pdata[4]== 0x01){ // one only data 
 			 
 
-		     // gpro_t.set_timer_timing_doing_value = 1;
-			 // run_t.gTimer_key_timing = 0;
-             // run_t.gTimer_smg_blink_times =0;
-			 // gpro_t.set_timer_first_smg_blink_flag=0;
+	
 			  gpro_t.set_timer_timing_value_success=1;
-			 // gpro_t.main_board_set_timer_flag = 1;
+			
 				
-			 //run_t.temporary_timer_dispTime_hours=pdata[5];
+		
 			 key_t.disp_smg_mode_flag=disp_timer_times;
 			 gpro_t.ai_flag = no_ai_mode;
  

@@ -22,6 +22,7 @@
 #include "bsp_delay.h"
 #include "bsp_wifi.h"
 #include "bsp_power.h"
+#include "bsp_usart.h"
 #include "bsp_usart_dma.h"
 
 

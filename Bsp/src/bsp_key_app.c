@@ -488,7 +488,7 @@ void process_keys(void)
         if(key_t.key_wifi_flag > 130) {
             key_t.key_wifi_flag = 200;
             SendData_Buzzer();
-			osDelay(5);
+			osDelay(100);
         }
     }
 

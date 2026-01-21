@@ -3,21 +3,23 @@
 #include "main.h"
 
 
-#define TOUCH_KEY_IC_1_VALUE()      HAL_GPIO_ReadPin(GPIOC,TOUCH_KEY_IC_1_Pin)
-#define TOUCH_KEY_IC_2_VALUE()      HAL_GPIO_ReadPin(GPIOC,TOUCH_KEY_IC_2_Pin)
+//#define TOUCH_KEY_IC_1_VALUE()      HAL_GPIO_ReadPin(GPIOC,TOUCH_KEY_IC_1_Pin)
+//#define TOUCH_KEY_IC_2_VALUE()      HAL_GPIO_ReadPin(GPIOC,TOUCH_KEY_IC_2_Pin)
 
 
 
-#define POWER_KEY_VALUE()            HAL_GPIO_ReadPin(GPIOC ,POWER_KEY_Pin)
-#define MODEL_KEY_VALUE()            HAL_GPIO_ReadPin(GPIOA,MODEL_KEY_Pin)
-#define DEC_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOA,DEC_KEY_Pin)
-#define ADD_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOA,ADD_KEY_Pin)
+//#define POWER_KEY_VALUE()            HAL_GPIO_ReadPin(GPIOC ,POWER_KEY_Pin)
+#define POWER_KEY_VALUE()             ((GPIOC->IDR & KEY_POWER_Pin) ? 1U : 0U)
+
+#define MODEL_KEY_VALUE()            ((GPIOA->IDR & KEY_MODE_Pin)? 1U:0U)//HAL_GPIO_ReadPin(GPIOA,MODEL_KEY_Pin)
+#define DEC_KEY_VALUE()              ((GPIOA->IDR & KEY_DEC_Pin)? 1U:0U)//HAL_GPIO_ReadPin(GPIOA,DEC_KEY_Pin)
+#define ADD_KEY_VALUE()              ((GPIOA->IDR & KEY_ADD_Pin)? 1U:0U)//HAL_GPIO_ReadPin(GPIOA,ADD_KEY_Pin)
 
 
-#define MOUSE_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,MOUSE_KEY_Pin)
-#define PLASMA_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,PLASMA_KEY_Pin)
-#define DRY_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,DRY_KEY_Pin)
-#define WIFI_KEY_VALUE()              HAL_GPIO_ReadPin(GPIOB,AI_KEY_Pin)
+#define MOUSE_KEY_VALUE()            ((GPIOB->IDR & KEY_MOUSE_Pin)? 1U:0U)//HAL_GPIO_ReadPin(GPIOB,MOUSE_KEY_Pin)
+#define PLASMA_KEY_VALUE()           ((GPIOB->IDR & KEY_PLASMA_Pin)? 1U:0U)   //HAL_GPIO_ReadPin(GPIOB,PLASMA_KEY_Pin)
+#define DRY_KEY_VALUE()              ((GPIOB->IDR & KEY_DRY_Pin)? 1U:0U)//HAL_GPIO_ReadPin(GPIOB,DRY_KEY_Pin)
+#define WIFI_KEY_VALUE()             ((GPIOB->IDR & KEY_WIFI_Pin)? 1U:0U) ///HAL_GPIO_ReadPin(GPIOB,AI_KEY_Pin)
 
 
 

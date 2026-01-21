@@ -20,11 +20,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32g0xx_it.h"
-#include "FreeRTOS.h"
-#include "task.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "bsp.h"
+//#include "bsp.h"
 
 /* USER CODE END Includes */
 
@@ -59,8 +57,8 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim17;
-extern UART_HandleTypeDef huart1;
+extern TIM_HandleTypeDef htim16;
+
 /* USER CODE BEGIN EV */
 extern DMA_HandleTypeDef hdma_usart1_tx;
 extern DMA_HandleTypeDef hdma_usart1_rx;
@@ -71,69 +69,6 @@ extern DMA_HandleTypeDef hdma_usart1_rx;
 /******************************************************************************/
 /*           Cortex-M0+ Processor Interruption and Exception Handlers          */
 /******************************************************************************/
-/**
-  * @brief This function handles DMA1 channel 2 and channel 3 interrupts.
-  */
-void DMA1_Channel2_3_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel2_3_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel2_3_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
-  HAL_DMA_IRQHandler(&hdma_usart1_rx);
-  /* USER CODE BEGIN DMA1_Channel2_3_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel2_3_IRQn 1 */
-}
-
-
-/**
-  * @brief This function handles EXTI line 0 and line 1 interrupts.
-  */
-void EXTI0_1_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI0_1_IRQn 0 */
-
-  /* USER CODE END EXTI0_1_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(MOUSE_KEY_Pin);
-  HAL_GPIO_EXTI_IRQHandler(PLASMA_KEY_Pin);
-  /* USER CODE BEGIN EXTI0_1_IRQn 1 */
-
-  /* USER CODE END EXTI0_1_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line 2 and line 3 interrupts.
-  */
-void EXTI2_3_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI2_3_IRQn 0 */
-
-  /* USER CODE END EXTI2_3_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(DRY_KEY_Pin);
-  /* USER CODE BEGIN EXTI2_3_IRQn 1 */
-
-  /* USER CODE END EXTI2_3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line 4 to 15 interrupts.
-  */
-void EXTI4_15_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI4_15_IRQn 0 */
-
-  /* USER CODE END EXTI4_15_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(POWER_KEY_Pin);
-
-  HAL_GPIO_EXTI_IRQHandler(MODEL_KEY_Pin); 
-  HAL_GPIO_EXTI_IRQHandler(DEC_KEY_Pin);
-  HAL_GPIO_EXTI_IRQHandler(ADD_KEY_Pin);
-  /* USER CODE BEGIN EXTI4_15_IRQn 1 */
-
-  /* USER CODE END EXTI4_15_IRQn 1 */
-}
-
 /**
   * @brief This function handles Non maskable interrupt.
   */
@@ -164,28 +99,6 @@ void HardFault_Handler(void)
   }
 }
 
-/**
-  * @brief This function handles System tick timer.
-  */
-void SysTick_Handler(void)
-{
-  /* USER CODE BEGIN SysTick_IRQn 0 */
-
-  /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
-#if (INCLUDE_xTaskGetSchedulerState == 1 )
-  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
-  {
-#endif /* INCLUDE_xTaskGetSchedulerState */
-  xPortSysTickHandler();
-#if (INCLUDE_xTaskGetSchedulerState == 1 )
-  }
-#endif /* INCLUDE_xTaskGetSchedulerState */
-  /* USER CODE BEGIN SysTick_IRQn 1 */
-
-  /* USER CODE END SysTick_IRQn 1 */
-}
-
 /******************************************************************************/
 /* STM32G0xx Peripheral Interrupt Handlers                                    */
 /* Add here the Interrupt Handlers for the used peripherals.                  */
@@ -194,28 +107,59 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles TIM3 global interrupt.
+  * @brief This function handles DMA1 channel 1 interrupt.
+  */
+void DMA1_Channel1_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 0 */
+  /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM16 global interrupt.
+  */
+void TIM16_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM16_IRQn 0 */
+
+  /* USER CODE END TIM16_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim16);
+  /* USER CODE BEGIN TIM16_IRQn 1 */
+
+  /* USER CODE END TIM16_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM17 global interrupt.
   */
 void TIM17_IRQHandler(void)
 {
-  /* USER CODE BEGIN TIM3_IRQn 0 */
+  /* USER CODE BEGIN TIM17_IRQn 0 */
+    if(LL_TIM_IsActiveFlag_UPDATE(TIM17)){
+	   
+	 LL_TIM_ClearFlag_UPDATE(TIM17);
+	 tim17_isr_callback_hanlder();
+	   
+   }
+  /* USER CODE END TIM17_IRQn 0 */
+  /* USER CODE BEGIN TIM17_IRQn 1 */
 
-  /* USER CODE END TIM3_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim17);
-  /* USER CODE BEGIN TIM3_IRQn 1 */
-
-  /* USER CODE END TIM3_IRQn 1 */
+  /* USER CODE END TIM17_IRQn 1 */
 }
 
 /**
   * @brief This function handles USART1 global interrupt / USART1 wake-up interrupt through EXTI line 25.
   */
+#if 0
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
 
   /* USER CODE END USART1_IRQn 0 */
-  //HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
    #if 0
 	// 处理空闲中断
@@ -239,10 +183,10 @@ void USART1_IRQHandler(void)
     }
 	#endif 
     
-    HAL_UART_IRQHandler(&huart1);
+
   /* USER CODE END USART1_IRQn 1 */
 }
-
+#endif 
 /* USER CODE BEGIN 1 */
 /**
   * @brief This function handles EXTI line 4 to 15 interrupts.

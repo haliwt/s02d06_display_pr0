@@ -25,9 +25,29 @@
 /***********************************************************************************************************
 											函数声明
 ***********************************************************************************************************/
+#if 0
+
 static void vTaskRunPro(void *pvParameters);
 static void vTaskDecoderPro(void *pvParameters);
 static void vTaskStart(void *pvParameters);
+#else
+/*------------------ 静态任务内存定义 ------------------*/
+
+static StaticTask_t xTaskRunProTCB;
+static StackType_t xTaskRunProStack[256];
+
+static StaticTask_t xTaskDecoderProTCB;
+static StackType_t xTaskDecoderProStack[128];
+
+static StaticTask_t xTaskStartTCB;
+static StackType_t xTaskStartStack[128];
+
+
+
+
+#endif 
+
+
 static void AppTaskCreate (void);
 
 
@@ -56,19 +76,6 @@ static TaskHandle_t xHandleTaskStart = NULL;
 
 
 
-typedef struct Msg
-{
-	
-	uint8_t  usData[12];
-    uint8_t  ucMessageID;
-    uint8_t  rx_data_counter;
-    uint8_t  disp_rx_cmd_done_flag;
-    uint8_t  bcc_check_code;
-    volatile uint8_t ulid;
- 
-}MSG_T;
-
-MSG_T   gl_tMsg; /* 定义丢�个结构体用于消息队列 */
 uint8_t ucKeyCode;
 uint8_t uckey_number;
 uint8_t key_power_flag,decoder_flag ;
@@ -108,7 +115,7 @@ void freeRTOS_Handler(void)
 static void vTaskDecoderPro(void *pvParameters)
 {
     BaseType_t xResult;
-	//const TickType_t xMaxBlockTime = pdMS_TO_TICKS(5000); /* 设置最大等待时间为30ms */
+	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(3000); /* 设置最大等待时间为30ms */
 	uint32_t ulValue;
 	
 
@@ -117,9 +124,9 @@ static void vTaskDecoderPro(void *pvParameters)
 
 
 	xResult = xTaskNotifyWait(0x00000000,
-								  0xFFFFFFFF,     /* Reset the notification value to 0 on */
-								&ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
-								portMAX_DELAY);//portMAX_DELAY);  /* 阻塞时间30ms，释放CUP控制权,给其它任务执行的权限*/
+							  0xFFFFFFFF,     /* Reset the notification value to 0 on */
+							   &ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
+							   xMaxBlockTime );//portMAX_DELAY);  /* 阻塞时间30ms，释放CUP控制权,给其它任务执行的权限*/
 
 		if( xResult == pdPASS )
 		{
@@ -128,33 +135,17 @@ static void vTaskDecoderPro(void *pvParameters)
 			if((ulValue & DECODER_BIT_9) != 0){
 
 			   
-				
-                #if USART1_INTERRUPT
-				gl_tMsg.disp_rx_cmd_done_flag = 0;
-
-				check_code =  bcc_check(gl_tMsg.usData,gl_tMsg.ulid);
-
-				if(check_code == gl_tMsg.bcc_check_code ){
-
-				receive_data_from_mainboard(gl_tMsg.usData);
-				}
-			    #else
-//				g_msg.disp_rx_cmd_done_flag =0;//gl_tMsg.disp_rx_cmd_done_flag = 0;
-//                check_code =  bcc_check(g_msg.usData,g_msg.ulid);
-//
-//				 receive_data_from_mainboard(g_msg.usData);
-				 
-				#endif 
-				//memset(g_msg.usData,0,MAX_FRAME_SIZE);
+			    decoder_handler();
 			    
-			}
+			   }
 
-		}
+		   }
 
-
-    }
+       }
 
  }
+
+ 
 /**********************************************************************************************************
 *	Function Name: static void vTaskRunPro(void *pvParameters)
 *	Function: 
@@ -165,13 +156,10 @@ static void vTaskDecoderPro(void *pvParameters)
 static void vTaskRunPro(void *pvParameters)
 {
 
-	//BaseType_t xResult;
-	//const TickType_t xMaxBlockTime = pdMS_TO_TICKS(10); /* 设置最大等待时间为30ms */
-	//uint32_t ulValue;
+	
 	static uint8_t power_on_theFirst_times;
  
-	
-    while(1)
+	while(1)
     {
 
 
@@ -196,7 +184,7 @@ static void vTaskRunPro(void *pvParameters)
 
        }
      
-      // works_run_two_hours_handler();
+
 
       }
 	  else{
@@ -205,15 +193,9 @@ static void vTaskRunPro(void *pvParameters)
 
 	  }
 
-      //send_cmd_ack_hanlder();
-
-	  vTaskDelay(10);
-     
-
-       } //wihile(1) ---end
+      vTaskDelay(100);
+     } 
   }
-//}
-
 /**********************************************************************************************************
 *
 *	Function Name: vTaskStart
@@ -225,88 +207,70 @@ static void vTaskRunPro(void *pvParameters)
 **********************************************************************************************************/
 static void vTaskStart(void *pvParameters)
 {
-	BaseType_t xResult;
-    //const TickType_t xMaxBlockTime = pdMS_TO_TICKS(1000); /* 设置最大等待时间为30ms */
-	uint32_t ulValue;
-    static  uint8_t power_on_times;
-
+	
+   
     while(1)
     {
       
-		xResult = xTaskNotifyWait(0x00000000,      
-						           0xFFFFFFFF,      
-						          &ulValue,        /* 保存ulNotifiedValue到变量ulValue中 */
-								  portMAX_DELAY);  /* 最大允许延迟时间 */
-        if( xResult == pdPASS ){
-		    
-            /* 接收到消息，检测那个位被按下 */
-            if((ulValue & POWER_BIT_0 ) != 0)
-            {
-            if(power_on_times==0){
-				power_on_times++;
+    /* 接收到消息，检测那个位被按下 */
+	if(POWER_KEY_VALUE()==KEY_DOWN){
+
+		key_t.key_wifi_flag =0;
+		key_t.key_power_flag =1;
 									
-			}
-			else{
-                  key_t.key_wifi_flag =0;
-                  key_t.key_power_flag =1;
-										
-			}
-                
-            }
-            else if((ulValue & MODE_BIT_1 ) != 0){   /* 接收到消息，检测那个位被按下 */
-            	 if(run_t.gPower_On == power_on){
-                    key_t.key_mode_flag = 1;
-                    key_t.key_wifi_flag =0;
-                    gpro_t.mode_Key_long_counter=0;
+	}
+    else if(MODEL_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
+	 if(run_t.gPower_On == power_on){
+        key_t.key_mode_flag = 1;
+        key_t.key_wifi_flag =0;
+        gpro_t.mode_Key_long_counter=0;
 
-            	  }
+	  }
                
-             }
-            else if((ulValue & DEC_BIT_2 ) != 0){
-            	  if(run_t.gPower_On == power_on){
-                  key_t.key_dec_flag =1;
-                  key_t.key_wifi_flag =0;
-            
-                }
+   }
+   else if(DEC_KEY_VALUE() == KEY_DOWN){
+	if(run_t.gPower_On == power_on){
+      key_t.key_dec_flag =1;
+      key_t.key_wifi_flag =0;
+
+    }
                
-            }
-            else if((ulValue & ADD_BIT_3 ) != 0){   /* 接收到消息，检测那个位被按下 */
-            	 if(run_t.gPower_On == power_on){
-					 key_t.key_add_flag =1;
-					 key_t.key_wifi_flag =0;
-            	                  
-            	  }
+  }
+  else if(ADD_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
+	if(run_t.gPower_On == power_on){
+	 key_t.key_add_flag =1;
+	 key_t.key_wifi_flag =0;
+	              
+	}
+  }
+  else if(PLASMA_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
+   if(run_t.gPower_On == power_on){
+    key_t.key_plasma_flag =1;
+    key_t.key_wifi_flag =0;
+    	                
+    }
+  }
+  else if(DRY_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
+   if(run_t.gPower_On == power_on){
+    key_t.key_dry_flag =1;
+    key_t.key_wifi_flag =0;
+               
+  }
+   }
+   else if(MOUSE_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
+	 if(run_t.gPower_On == power_on){
+       
+	    key_t.key_mouse_flag =1;
+        key_t.key_wifi_flag =0;
+      }
+	                 
+	}
 
+    vTaskDelay(20);
 
-            }
-            else if((ulValue & PLASMA_BIT_5 ) != 0){   /* 接收到消息，检测那个位被按下 */
-            	  if(run_t.gPower_On == power_on){
-                    key_t.key_plasma_flag =1;
-                    key_t.key_wifi_flag =0;
-            	                
-            	    }
-            }
-            else if((ulValue & DRY_BIT_6 ) != 0){   /* 接收到消息，检测那个位被按下 */
-            	   if(run_t.gPower_On == power_on){
-                    key_t.key_dry_flag =1;
-                    key_t.key_wifi_flag =0;
-            	               
-            	  }
-             }
-            else if((ulValue & MOUSE_BIT_4 ) != 0){   /* 接收到消息，检测那个位被按下 */
-            	 if(run_t.gPower_On == power_on){
-                   
-            	      key_t.key_mouse_flag =1;
-                    key_t.key_wifi_flag =0;
-                     }
-            	                 
-            }
-
-          }
-		
-           
-        }
+	}
 }
+
  /**********************************************************************************************************
 *	Function Name: AppTaskCreate
 *	功能说明: 创建应用任务
@@ -315,7 +279,7 @@ static void vTaskStart(void *pvParameters)
 **********************************************************************************************************/
 void AppTaskCreate (void)
 {
-
+  #if 0
   xTaskCreate( vTaskDecoderPro,    		/* 任务函数  */
                  "vTaskDecoderPro",  		/* 任务各1�7    */
                  128,         		/* stack大小，单位word，也就是4字节 */
@@ -336,247 +300,43 @@ void AppTaskCreate (void)
                  NULL,           		/* 任务参数  */
                  3,              		/* 任务优先纄1�7 数��越小优先级越低，这个跟uCOS相反 */
                  &xHandleTaskStart );   /* 任务句柄  */
+
+  #else 
+	
+	xHandleTaskDecoderPro = xTaskCreateStatic(
+				vTaskDecoderPro,			/* 任务函数 */
+				"vTaskDecoderPro", 		/* 任务名 */
+				128,					/* 栈大小（word） */
+				NULL,					/* 参数 */
+				3,						/* 优先级 */
+				xTaskDecoderProStack,		/* 栈数组 */
+				&xTaskDecoderProTCB		/* TCB */
+		);
+	
+		
+		
+	xHandleTaskRunPro = xTaskCreateStatic(
+				vTaskRunPro, 		/* 任务函数 */
+				"vTaskRunPro",			/* 任务名 */
+				256,					/* 栈大小（word） */
+				NULL,					/* 参数 */
+				1,						/* 优先级 */
+				xTaskRunProStack,		/* 栈数组 */
+				&xTaskRunProTCB		/* TCB */
+		);
+		
+	xHandleTaskStart = xTaskCreateStatic(
+				vTaskStart,			/* 任务函数 */
+				"vTaskStart",			/* 任务名 */
+				128,					/* 栈大小（word） */
+				NULL,					/* 参数 */
+				2,						/* 优先级 */
+				xTaskStartStack,		/* 栈数组 */
+				&xTaskStartTCB 		/* TCB */
+		);
+
+  #endif 
 }
-
-
-
-
-/********************************************************************************
-	**
-	*Function Name:void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-	*Function :UART callback function  for UART interrupt for receive data
-	*Input Ref: structure UART_HandleTypeDef pointer
-	*Return Ref:NO
-	*
-*******************************************************************************/
-#if USART1_INTERRUPT
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-     static uint8_t state,rx_end_flag ;
-     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  
-
-    if(huart==&huart1) // Motor Board receive data (filter)
-	{
-
-    //   DISABLE_INT();
-       switch(state)
-		{
-		case 0:  //#0
-			if(inputBuf[0] == 0x5A){  // 0x5A --main board singla
-               gl_tMsg.rx_data_counter=0;
-               gl_tMsg.usData[gl_tMsg.rx_data_counter] = inputBuf[0];
-				state=1; //=1
-
-             }
-            else
-                state=0;
-		break;
-
-       
-		case 1: //#1
-
-            if(gl_tMsg.disp_rx_cmd_done_flag ==0){
-              /* 初始化结构体指针 */
-               gl_tMsg.rx_data_counter++;
-		     
-	          gl_tMsg.usData[gl_tMsg.rx_data_counter] = inputBuf[0];
-              
-
-              if(rx_end_flag == 1){
-
-                state = 0;
-            
-                gl_tMsg.ulid = gl_tMsg.rx_data_counter;
-                rx_end_flag=0;
-
-                gl_tMsg.rx_data_counter =0;
-
-                gl_tMsg.disp_rx_cmd_done_flag = 1 ;
-
-                gl_tMsg.bcc_check_code=inputBuf[0];
-
-              
-                xTaskNotifyFromISR(xHandleTaskDecoderPro,  /* 目标任务 */
-                                    DECODER_BIT_9,     /* 设置目标任务事件标志位bit0  */
-                                    eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-                                    &xHigherPriorityTaskWoken);
-
-                /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-                portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-                  
-              }
-
-              }
-
-              if(gl_tMsg.usData[gl_tMsg.rx_data_counter] ==0xFE && rx_end_flag == 0 &&   gl_tMsg.rx_data_counter > 4){
-                     
-                     rx_end_flag = 1 ;
-                          
-              }
-
-        break;
-
-
-			
-		}
-
-       //   ENABLE_INT();
-    __HAL_UART_CLEAR_OREFLAG(&huart1);
-	HAL_UART_Receive_IT(&huart1,inputBuf,1);//UART receive data interrupt 1 byte
-    
-   }
-}
-#endif 
-void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
-{
-
- 
-   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    __HAL_GPIO_EXTI_CLEAR_RISING_IT(GPIO_Pin);
- 
-   switch(GPIO_Pin){
-
-   case POWER_KEY_Pin:
-       // DISABLE_INT(); //WT.EDIT 2024.08.15 modify.
-        if(POWER_KEY_VALUE()  ==KEY_DOWN){
-
-     
-
-        xTaskNotifyFromISR(xHandleTaskStart,  /* 目标任务 */
-        POWER_BIT_0,      /* 设置目标任务事件标志位bit0  */
-        eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-        &xHigherPriorityTaskWoken);
-
-
-        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-
-
-        }
-            
-     //  ENABLE_INT();
-   break;
- 
-   case MODEL_KEY_Pin:
-      #if 0
-      if(WIFI_KEY_VALUE() == KEY_DOWN){
-             xTaskNotifyFromISR(xHandleTaskStart,  /* 目标任务 */
-               AI_BIT_7,     /* 设置目标任务事件标志位bit0  */
-               eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-               &xHigherPriorityTaskWoken);
-
-        /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-
-
-      }
-     #endif 
-
-	 
-       if(MODEL_KEY_VALUE() == KEY_DOWN){
-        if(run_t.gPower_On == power_on){
-        xTaskNotifyFromISR(xHandleTaskStart,  /* 目标任务 */
-               MODE_BIT_1,     /* 设置目标任务事件标志位bit0  */
-               eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-               &xHigherPriorityTaskWoken);
-
-        /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-
-
-       }
-    
-      }
-      
-   break;
-
- 
-   case DEC_KEY_Pin:
-      // DISABLE_INT();
-       if(DEC_KEY_VALUE() == KEY_DOWN){
-        if(run_t.gPower_On == power_on){
-         xTaskNotifyFromISR(xHandleTaskStart,  /* 目标任务 */
-                DEC_BIT_2,     /* 设置目标任务事件标志位bit0  */
-                eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-                &xHigherPriorityTaskWoken);
-   
-         /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
-        }
-     ///  ENABLE_INT();
-   break;
-
-   case ADD_KEY_Pin:
-      ///   DISABLE_INT();
-        if(ADD_KEY_VALUE() == KEY_DOWN){
-        if(run_t.gPower_On == power_on){
-        xTaskNotifyFromISR(xHandleTaskStart,  /* 目标任务 */
-                ADD_BIT_3,     /* 设置目标任务事件标志位bit0  */
-                eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-                &xHigherPriorityTaskWoken);
-   
-         /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-            }
-        }
-  
-   break;
-
-     case DRY_KEY_Pin:
-   
-        if(DRY_KEY_VALUE() == KEY_DOWN){
-
-       if(run_t.gPower_On == power_on){
-        xTaskNotifyFromISR(xHandleTaskStart,  /* 目标任务 */
-                DRY_BIT_6,     /* 设置目标任务事件标志位bit0  */
-                eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-                &xHigherPriorityTaskWoken);
-   
-         /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-            }
-        }
-   
-   break;
-
-   case PLASMA_KEY_Pin:
-      ///   DISABLE_INT();
-       if(PLASMA_KEY_VALUE() == KEY_DOWN){
-        if(run_t.gPower_On == power_on){
-        xTaskNotifyFromISR(xHandleTaskStart,  /* 目标任务 */
-                PLASMA_BIT_5,     /* 设置目标任务事件标志位bit0  */
-                eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-                &xHigherPriorityTaskWoken);
-   
-         /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
-        }
-    ///    ENABLE_INT();
-   break;
-
-   case MOUSE_KEY_Pin:
-      ///   DISABLE_INT();
-        if(MOUSE_KEY_VALUE() == KEY_DOWN){
-        if( run_t.gPower_On == power_on){
-        xTaskNotifyFromISR(xHandleTaskStart,  /* 目标任务 */
-                MOUSE_BIT_4,     /* 设置目标任务事件标志位bit0  */
-                eSetBits,  /* 将目标任务的事件标志位与BIT_0进行或操作， 将结果赋值给事件标志位 */
-                &xHigherPriorityTaskWoken);
-   
-         /* 如果xHigherPriorityTaskWoken = pdTRUE，那么退出中断后切到当前最高优先级任务执行 */
-         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-            }
-         }
-    ///    ENABLE_INT();
-   break;
-        
-    }
-}
-
-
-
 
 /**********************************************************************
 	*

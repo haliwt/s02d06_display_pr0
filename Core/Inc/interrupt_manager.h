@@ -4,7 +4,7 @@
 
 
 
-extern uint8_t inputBuf[MAX_BUFFER_SIZE];
+void tim17_isr_callback_hanlder(void);
 
 
 
