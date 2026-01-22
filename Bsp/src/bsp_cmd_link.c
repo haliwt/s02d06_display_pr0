@@ -2,7 +2,7 @@
 
 // 定义宏，提高代码可读性
 #define FRAME_HEADER        0xA5
-#define DEVICE_NUMBER       0x02
+#define DEVICE_NUMBER       0x01
 #define FRAME_END           0xFE
 #define NO_DATA             0x00
 #define HAS_DATA            0x0F
@@ -16,6 +16,9 @@ volatile uint8_t transferSize;
 void usart1_dma_send(uint8_t *txbuf,uint16_t txlen)
 {
 
+   
+
+
     LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_1);
 
     LL_DMA_ConfigAddresses(DMA1,LL_DMA_CHANNEL_1,
@@ -24,10 +27,16 @@ void usart1_dma_send(uint8_t *txbuf,uint16_t txlen)
                             LL_DMA_DIRECTION_MEMORY_TO_PERIPH);
     LL_DMA_SetDataLength(DMA1,LL_DMA_CHANNEL_1,txlen);
 
-    LL_DMA_ClearFlag_TC1(DMA1);//TC1 -> clear transfer complete flag
-    LL_DMA_EnableChannel(DMA1,LL_DMA_CHANNEL_1);
+   // LL_DMA_ClearFlag_TC1(DMA1);//TC1 -> clear transfer complete flag
+   // LL_DMA_EnableChannel(DMA1,LL_DMA_CHANNEL_1);
 
-    LL_USART_EnableDMAReq_TX(USART1);
+   // LL_USART_EnableDMAReq_TX(USART1);
+
+	LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PDATAALIGN_BYTE);
+	LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MDATAALIGN_BYTE);
+	
+	LL_USART_EnableDMAReq_TX(USART1);
+	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_1);
 
 }
 
@@ -41,18 +50,11 @@ void usart1_dma_send(uint8_t *txbuf,uint16_t txlen)
 static void sendUartData(uint8_t *data, uint8_t size) 
 {
 
-    #if USART1_INTERRUPT
-		if (size) {
-			while (transOngoingFlag); // 等待上一次传输完成
-			transOngoingFlag = 1;
-			HAL_UART_Transmit_IT(&huart1, data, size);
-		}
-	#else
 
 	   usart1_dma_send(data,size);
 	
 	
-   #endif 
+   
 }
 
 /****************************************************************************************************

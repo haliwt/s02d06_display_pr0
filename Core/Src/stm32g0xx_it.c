@@ -112,6 +112,15 @@ void HardFault_Handler(void)
 void DMA1_Channel1_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel1_IRQn 0 */
+  if(LL_DMA_IsActiveFlag_TC1(DMA1)){ //transfer complete -TC
+		  LL_DMA_ClearFlag_TC1(DMA1);
+		  
+		 // gpro_t.decoder_flag =1;
+   }
+
+  if(LL_DMA_IsActiveFlag_TE1(DMA1)){ //transfer Error Flag,TE)
+		  LL_DMA_ClearFlag_TE1(DMA1);
+	  }
 
   /* USER CODE END DMA1_Channel1_IRQn 0 */
   /* USER CODE BEGIN DMA1_Channel1_IRQn 1 */

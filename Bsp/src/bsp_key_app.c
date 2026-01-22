@@ -151,15 +151,16 @@ void handle_key(KeyHandler *handler)
 void power_key_handler(void) 
 {
 
-  if(POWER_KEY_VALUE()==KEY_UP){
+  if(POWER_KEY_VALUE()==KEY_UP && key_t.key_power_flag ==1){
 
-     key_t.key_power_flag=0;
+     key_t.key_power_flag++;
       key_t.key_wifi_flag=0;
     if(run_t.gPower_On == power_off){
-        SendData_PowerOnOff(1); // power on
+        SendData_Set_Command(0x01,0x01);//SendData_PowerOnOff(1); // power on
         osDelay(100); 
-    } else {
-        SendData_PowerOnOff(0); // power off
+    } 
+	else {
+        SendData_Set_Command(0x01,0); // power off
         osDelay(100);
     }
 }
@@ -451,7 +452,7 @@ void process_keys(void)
 
     // 定义所有按键处理器
     KeyHandler handlers[] = {
-        { &key_t.key_power_flag, 0, power_key_handler },
+        //{ &key_t.key_power_flag, 0, power_key_handler },
         //{ &key_t.key_mode_flag, 0, mode_key_handler },
         { &key_t.key_dec_flag, 0, key_dec_fun },
         { &key_t.key_add_flag, 0, key_add_fun },

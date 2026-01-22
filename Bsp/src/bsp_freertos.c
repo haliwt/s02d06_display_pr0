@@ -162,8 +162,10 @@ static void vTaskRunPro(void *pvParameters)
 	while(1)
     {
 
-
+	power_key_handler() ;
+   
     mode_key_handler();
+	
 	
 	process_keys() ;
 	
@@ -184,7 +186,7 @@ static void vTaskRunPro(void *pvParameters)
 
        }
     }
-	  else{
+	 else{
 
 	    power_off_run_handler();
 
