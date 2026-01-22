@@ -33,8 +33,9 @@ void SetDataTemperatureValue(void);
 
 void mode_key_handler(void);
 
-void wifi_mode_key_handler(void);
+//void wifi_mode_key_handler(void);
 
+void handle_mode_key_long_press(void);
 
 
 

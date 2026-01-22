@@ -167,8 +167,8 @@ static void vTaskRunPro(void *pvParameters)
 	
 	process_keys() ;
 	
-	if(run_t.gPower_On == power_on){
-		wifi_mode_key_handler();
+    if(run_t.gPower_On == power_on){
+		//wifi_mode_key_handler();
 
 	    power_on_run_handler();
      
@@ -183,17 +183,14 @@ static void vTaskRunPro(void *pvParameters)
          Display_DHT11_Value();
 
        }
-     
-
-
-      }
+    }
 	  else{
 
 	    power_off_run_handler();
 
 	  }
 
-      vTaskDelay(100);
+      vTaskDelay(30);
      } 
   }
 /**********************************************************************************************************
@@ -213,56 +210,103 @@ static void vTaskStart(void *pvParameters)
     {
       
     /* 接收到消息，检测那个位被按下 */
-	if(POWER_KEY_VALUE()==KEY_DOWN){
+	if(POWER_KEY_VALUE()==KEY_DOWN && key_t.key_wifi_flag < 200 ){
+          key_t.key_wifi_flag++;
+	  // 处理WiFi键
+      if( key_t.key_wifi_flag < 150 && run_t.gPower_On == power_on){
+        
+        if(key_t.key_wifi_flag > 130){
+            key_t.key_wifi_flag = 200;
+			key_t.key_power_flag=0;
+		    run_t.wifi_connect_state_flag = wifi_connect_null;
+            run_t.gTimer_wifi_connect_counter =0; //120s counte start
+            SendData_Set_Command(0x05,0x01); // link wifi of command .
+            vTaskDelay(100);
+			key_t.key_power_flag=0;
 
-		key_t.key_wifi_flag =0;
-		key_t.key_power_flag =1;
-									
-	}
-    else if(MODEL_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
-	 if(run_t.gPower_On == power_on){
-        key_t.key_mode_flag = 1;
-        key_t.key_wifi_flag =0;
-        gpro_t.mode_Key_long_counter=0;
+		}
+      	}
+	  
+       if(key_t.key_wifi_flag == 200 && run_t.gPower_On == power_on )key_t.key_power_flag =0;
+	    else{
+	       key_t.key_power_flag =1;
 
-	  }
+	    }
+	   	
+    }
+	else if(MODEL_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on && gpro_t.mode_Key_long_counter <200){   /* 接收到消息，检测那个位被按下 */
+
+         gpro_t.mode_Key_long_counter++;
+
+		if(gpro_t.mode_Key_long_counter < 200){
+
+		   
+
+	    if( run_t.wifi_led_fast_blink==1 && gpro_t.mode_Key_long_counter > 20){
+			 gpro_t.mode_Key_long_counter=200;
+	    	  handle_mode_key_long_press();
+		      key_t.key_mode_flag = 0;
+
+
+	    }
+	    else if(gpro_t.mode_Key_long_counter > 100 &&  run_t.wifi_led_fast_blink==0){
+
+		     gpro_t.mode_Key_long_counter=200;
+			 key_t.key_mode_flag = 0;
+              handle_mode_key_long_press();
+			}
+        }
+
+	
+        if(gpro_t.mode_Key_long_counter==200)key_t.key_mode_flag = 0;
+		else{
+		  key_t.key_mode_flag = 1;
+          key_t.key_wifi_flag =0;
+          gpro_t.mode_Key_long_counter=0;
+		}
+
+	  
                
    }
-   else if(DEC_KEY_VALUE() == KEY_DOWN){
-	if(run_t.gPower_On == power_on){
+   else if(DEC_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){
+	
       key_t.key_dec_flag =1;
       key_t.key_wifi_flag =0;
+      gpro_t.mode_Key_long_counter=0;
 
-    }
+    
                
   }
-  else if(ADD_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
+  else if(ADD_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
 	if(run_t.gPower_On == power_on){
 	 key_t.key_add_flag =1;
 	 key_t.key_wifi_flag =0;
-	              
+	  gpro_t.mode_Key_long_counter=0;            
 	}
   }
-  else if(PLASMA_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
-   if(run_t.gPower_On == power_on){
+  else if(PLASMA_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
+ 
     key_t.key_plasma_flag =1;
     key_t.key_wifi_flag =0;
+    gpro_t.mode_Key_long_counter=0;
     	                
-    }
+    
   }
-  else if(DRY_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
-   if(run_t.gPower_On == power_on){
+  else if(DRY_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
+
     key_t.key_dry_flag =1;
     key_t.key_wifi_flag =0;
+    gpro_t.mode_Key_long_counter=0;
                
-  }
+  
    }
-   else if(MOUSE_KEY_VALUE() == KEY_DOWN){   /* 接收到消息，检测那个位被按下 */
-	 if(run_t.gPower_On == power_on){
+   else if(MOUSE_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
+
        
 	    key_t.key_mouse_flag =1;
         key_t.key_wifi_flag =0;
-      }
+       gpro_t.mode_Key_long_counter=0;
+      
 	                 
 	}
 

@@ -152,7 +152,7 @@ void bsp_dry_fun(uint8_t data);
 
 
 
-void mode_key_long_fun(void);
+
 
 void SetDataTemperatureValue(void);
 

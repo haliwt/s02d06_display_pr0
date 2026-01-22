@@ -64,16 +64,16 @@ void detected_ptc_or_fan_warning_fun(void)
 	*Return Ref:NO
 	*
 ******************************************************************************/
-void mode_key_long_fun(void)
-{
-         gpro_t.set_timer_timing_doing_value = 1;
-		 gpro_t.key_add_dec_pressed_flag =0;
-		 run_t.gTimer_key_timing = 0;
-		 run_t.gTimer_smg_blink_times =0;
-		 gpro_t.set_timer_first_smg_blink_flag=0;
+//void mode_key_long_fun(void)
+//{
+//         gpro_t.set_timer_timing_doing_value = 1;
+//		 gpro_t.key_add_dec_pressed_flag =0;
+//		 run_t.gTimer_key_timing = 0;
+//		 run_t.gTimer_smg_blink_times =0;
+//		 gpro_t.set_timer_first_smg_blink_flag=0;
 
 
-}
+//}
 void mode_key_short_fun(void)
 {
 
@@ -85,6 +85,8 @@ void mode_key_short_fun(void)
 	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 	key_t.disp_smg_mode_flag = disp_works_times;
 	gpro_t.key_disp_mode_flag =0xff;
+	SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
+	osDelay(100);
     
    }
    else if(gpro_t.set_timer_timing_value_success==1 && gpro_t.key_disp_mode_flag == no_ai_mode){ 
@@ -93,6 +95,8 @@ void mode_key_short_fun(void)
 	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
     key_t.disp_smg_mode_flag = disp_timer_times;
     gpro_t.key_disp_mode_flag =0xff;
+	SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
+	osDelay(100);
 
    }
    else if(gpro_t.key_disp_mode_flag == ai_mode && gpro_t.key_disp_mode_flag == ai_mode){
@@ -101,6 +105,8 @@ void mode_key_short_fun(void)
         Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
         key_t.disp_smg_mode_flag = disp_works_times;
         gpro_t.key_disp_mode_flag =0xff;
+		SendData_Set_Command(0x07,0x01); //reverse switch don't displayb "AI"
+		osDelay(100);
 			
 			 
 

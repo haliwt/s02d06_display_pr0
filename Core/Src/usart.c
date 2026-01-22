@@ -90,7 +90,7 @@ void MX_USART1_UART_Init(void)
 	
   /* USER CODE END USART1_Init 1 */
   USART_InitStruct.PrescalerValue = LL_USART_PRESCALER_DIV1;
-  USART_InitStruct.BaudRate = 115200;
+  USART_InitStruct.BaudRate = 9600;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
   USART_InitStruct.Parity = LL_USART_PARITY_NONE;
@@ -114,7 +114,8 @@ void MX_USART1_UART_Init(void)
   {
   }
   /* USER CODE BEGIN USART1_Init 2 */
-	
+    LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_1);
+	 LL_USART_EnableIT_RXNE_RXFNE(USART1);
   /* USER CODE END USART1_Init 2 */
 
 }

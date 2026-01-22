@@ -217,12 +217,12 @@ void send_cmd_ack_hanlder(void)
 
 }
 /******************************************************************************
-*
-*Function Name:void receive_data_from_mainboard(uint8_t *pdata,uint8_t len)
-*Funcion: handle of tall process
-*Input Ref:
-*Return Ref:
-*
+	*
+	*Function Name:void receive_data_from_mainboard(uint8_t *pdata)
+	*Funcion: handle of tall process
+	*Input Ref:
+	*Return Ref:
+	*
 ******************************************************************************/
 void receive_data_from_mainboard(uint8_t *pdata)
 {
@@ -422,30 +422,25 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		else if(pdata[4] == 0x0){ //close
 
 		}
-
-
-	
-
-
-	 break;
+    break;
 
 	case 0x07:
 		
-	 if(pdata[3] == 0x00){
-	
-		if(pdata[4]== 0x01 || pdata[4]== 0x02){
+	  if(pdata[4]== 0x01){
            recoder_counter++;
 	        gpro_t.mode_key_shot_flag = 1;     
 		   gpro_t.gTimer_disp_mode_switch=0;
-		   if(gpro_t.ai_flag == ai_mode){
-               gpro_t.key_disp_mode_flag = no_ai_mode;
-           }
-		   else if(gpro_t.ai_flag == no_ai_mode){
-		      gpro_t.key_disp_mode_flag = ai_mode;
+		   gpro_t.key_disp_mode_flag = ai_mode;
+//		   if(gpro_t.ai_flag == ai_mode){
+//               gpro_t.key_disp_mode_flag = no_ai_mode;
+//           }
+		}
+		else if(gpro_t.ai_flag == no_ai_mode){
+		       gpro_t.key_disp_mode_flag = no_ai_mode;//gpro_t.key_disp_mode_flag = ai_mode;
 
 		   }
-	      }
-	 	}
+	     
+	 	
 
 	break;
 
@@ -674,17 +669,23 @@ void receive_data_from_mainboard(uint8_t *pdata)
      }
 
  }
-
-
+/******************************************************************************
+	*
+	*Function Name:static void copy_cmd_data_from_mainboard(uint8_t *pdata )
+	*Funcion: parse received data is copy command.
+	*Input Ref:
+	*Return Ref:
+	*
+******************************************************************************/
 static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 {
     
     switch(pdata[3]){
 
     case CMD_POWER : //power_on 
-    if(pdata[4]==0x00){ // is command don't data.
 
-	 if(pdata[5]==0x01){
+
+	 if(pdata[4]==0x01){
 	 	run_t.gPower_On = power_on;
         power_on_handler();
         
@@ -697,12 +698,12 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
        
 
      }
-    }
+    
     break;
 
     case ack_ptc:
-    if(pdata[4]==0x00){
-    if(pdata[5]==1){
+   
+    if(pdata[4]==1){
 
          gpro_t.receive_copy_cmd = 1;
 		 run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
@@ -717,13 +718,13 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
     }
 
-    }
+    
 
     break;
 
     case ack_plasma:
 
-    if(pdata[5]==1){
+    if(pdata[4]==1){
 
         gpro_t.receive_copy_cmd = 1;
     }
@@ -735,7 +736,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
     case ack_ai:
 
-    if(pdata[5]==1){
+    if(pdata[4]==1){
 
         gpro_t.receive_copy_cmd = 1;
     }
@@ -748,13 +749,14 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
     case ack_wifi: // link wifi command
 
-      if(pdata[4]==0){ //0-command ,0x0f-data
+    
 
-	  if(pdata[5] == 0x01){  // link wifi
+	  if(pdata[4] == 0x01){  // link wifi
 
-	     run_t.wifi_led_fast_blink=1;
+	    run_t.wifi_led_fast_blink=1;
 		run_t.wifi_connect_state_flag = wifi_connect_null;
 		run_t.gTimer_wifi_connect_counter =0; //120s counte start
+		key_t.key_wifi_flag=0;
 			  
 	  
 	   }
@@ -764,9 +766,9 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 	            run_t.wifi_led_fast_blink=0;
 			    run_t.display_beijing_time_flag =0;
 	  
-			}
+		}
 
-      }
+      
      
 
    break;
@@ -777,7 +779,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
     
     
     case ack_with_buzzer:
-        if(pdata[5] == 1){  //buzzer answer command
+        if(pdata[4] == 1){  //buzzer answer command
 
            
 
