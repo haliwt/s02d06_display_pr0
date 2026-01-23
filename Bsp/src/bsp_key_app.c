@@ -467,7 +467,7 @@ void process_keys(void)
         handle_key(&handlers[i]);
     }
 
-	#endif 
+	#else 
 
 
 
@@ -483,18 +483,9 @@ void process_keys(void)
     else if(MODEL_KEY_VALUE() == KEY_UP  &&  key_t.key_mode_flag==1 ){
 
           key_t.key_mode_flag++;
-//		   if(gpro_t.mode_Key_long_counter==200){
-		
-//		       gpro_t.gTimer_mode_long_key_counter=0;
-//		       gpro_t.mode_Key_long_counter=0;
-//		       gpro_t.mode_key_shot_flag =0xfe;
-//			   vTaskDelay(1000);
-	          
-//		   }
-//		   else{
-			    gpro_t.mode_Key_long_counter=0;
-                mode_key_handler();
-		   //}
+          gpro_t.mode_Key_long_counter=0;
+          mode_key_handler();
+		  
 	}
 	else if(ADD_KEY_VALUE() == KEY_UP &&  key_t.key_add_flag ==1){
        	key_t.key_add_flag++;
