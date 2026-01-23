@@ -162,20 +162,15 @@ static void vTaskRunPro(void *pvParameters)
 	while(1)
     {
 
-	//power_key_handler() ;
-   
-   // mode_key_handler();
-	
-	
-	process_keys() ;
+	 process_keys() ;
 	
     if(run_t.gPower_On == power_on){
-		//wifi_mode_key_handler();
+		
 
 	    power_on_run_handler();
      
        Display_TimeColon_Blink_Fun();
-	  // disp_dht11_value();
+	
        set_timer_fun_led_blink();
        wifi_connect_state_fun();
 	  
@@ -225,14 +220,14 @@ static void vTaskStart(void *pvParameters)
 
 		   
 
-	    if( run_t.wifi_led_fast_blink==1 && gpro_t.mode_Key_long_counter > 20){
+	    if( run_t.wifi_led_fast_blink==1 && gpro_t.mode_Key_long_counter > 30 &&  gpro_t.mode_Key_long_counter < 200){
 			 gpro_t.mode_Key_long_counter=200;
 	    	  handle_mode_key_long_press();
 		      key_t.key_mode_flag = 0;
 
 
 	    }
-	    else if(gpro_t.mode_Key_long_counter > 79 &&  run_t.wifi_led_fast_blink==0){
+	    else if(gpro_t.mode_Key_long_counter > 79 && gpro_t.mode_Key_long_counter < 200 && run_t.wifi_led_fast_blink==0){
 
 		     gpro_t.mode_Key_long_counter=200;
 			 key_t.key_mode_flag = 0;
@@ -240,13 +235,11 @@ static void vTaskStart(void *pvParameters)
 			}
         }
 
-		if(gpro_t.mode_Key_long_counter==200){
-			key_t.key_mode_flag = 0;
-		 }
-		else{
-          key_t.key_mode_flag = 1;
-          key_t.key_wifi_flag =0;
-		 }
+		if(gpro_t.mode_Key_long_counter==200) key_t.key_mode_flag = 0;
+		else
+           key_t.key_mode_flag = 1;
+         
+		 
    }
    else if(DEC_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){
 	

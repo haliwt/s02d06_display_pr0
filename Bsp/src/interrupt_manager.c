@@ -45,13 +45,13 @@ void tim17_isr_callback_hanlder(void)
 
         //usart
       
-	   run_t.gTimer_usart_error++;
+
 
       gpro_t.gTimer_mode_long_key_counter++;
-	  gpro_t.gTimer_temp_compare_counter++;
+	 
 
-      gpro_t.gTimer_again_send_power_on_off++;
-	  gpro_t.gTimer_set_temperature_value++;
+   
+	 
 	  gpro_t.gTimer_wifi_led_blink ++;
 	  gpro_t.gTimer_disp_mode_switch++;
 

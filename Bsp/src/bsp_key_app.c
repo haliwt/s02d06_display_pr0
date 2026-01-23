@@ -186,7 +186,7 @@ static void plasma_key_handler(void)
             LED_PLASMA_ON();
             gpro_t.send_ack_cmd = check_ack_plasma_on;
         }
-        gpro_t.gTimer_again_send_power_on_off = 0;
+       
     //}
 }
 /****************************************************************
@@ -233,7 +233,7 @@ static void mouse_key_handler(void)
             run_t.gMouse = 1;
             LED_MOUSE_ON();
             gpro_t.send_ack_cmd = check_ack_mouse_on;  // 假设有对应的反馈类型
-            gpro_t.gTimer_again_send_power_on_off = 0;
+      
 
         } else if(run_t.gMouse == 1) {
             // 关闭 Mouse 功能
@@ -242,7 +242,7 @@ static void mouse_key_handler(void)
             run_t.gMouse = 0;
             LED_MOUSE_OFF();
             gpro_t.send_ack_cmd = check_ack_mouse_off;  // 假设有对应的反馈类型
-            gpro_t.gTimer_again_send_power_on_off = 0;
+           
         }
    
 }
@@ -337,18 +337,13 @@ static void mode_key_handler(void)
    }
      SendData_Buzzer();
 	 osDelay(100);
-		  // SendData_Set_Command(0x07,0x01); //reverse switch don't displayb "AI"
-		  // osDelay(100);
 		  
 }
 
 // Helper function for long press actions
 void handle_mode_key_long_press(void)
 {
-
-    //gpro_t.mode_key_shot_flag = 0x81;
     key_t.key_mode_flag = 0;
-	//mode_key_long_fun();
 	gpro_t.set_timer_timing_doing_value = 1;
 	gpro_t.key_add_dec_pressed_flag =0;
 	run_t.gTimer_key_timing = 0;
@@ -460,23 +455,31 @@ void process_keys(void)
 
 	#else 
 
+
+
+
+	
+
 	if(POWER_KEY_VALUE()==KEY_UP && key_t.key_power_flag ==1){
 
        key_t.key_power_flag++;
 	   power_key_handler() ;
 
 	}
-	else if(gpro_t.mode_Key_long_counter==200){
-		
-		       gpro_t.mode_Key_long_counter=0;
-		   	   key_t.key_mode_flag=3;
-	           vTaskDelay(1000);
-	     
-    }
-	else if(MODEL_KEY_VALUE() == KEY_UP  &&  key_t.key_mode_flag==1 && gpro_t.mode_Key_long_counter!=200){
+    else if(MODEL_KEY_VALUE() == KEY_UP  &&  key_t.key_mode_flag==1 ){
 
-           key_t.key_mode_flag++;
-		    mode_key_handler();
+          key_t.key_mode_flag++;
+		   if(gpro_t.mode_Key_long_counter==200){
+		
+		       gpro_t.gTimer_mode_long_key_counter=0;
+		  
+		       gpro_t.mode_key_shot_flag =0xfe;
+	          
+		   }
+		   else{
+			    gpro_t.mode_Key_long_counter=0;
+                mode_key_handler();
+		   }
 	}
 	else if(ADD_KEY_VALUE() == KEY_UP &&  key_t.key_add_flag ==1){
        	key_t.key_add_flag++;
@@ -499,6 +502,16 @@ void process_keys(void)
 	else if(DRY_KEY_VALUE() == KEY_UP && key_t.key_dry_flag ==1) {
 		key_t.key_dry_flag ++ ;
 		dry_key_handler() ;
+
+	}
+
+
+	
+	if(gpro_t.mode_key_shot_flag ==0xfe && gpro_t.mode_Key_long_counter==200 && gpro_t.gTimer_mode_long_key_counter > 5){
+           gpro_t.mode_key_shot_flag =0xff;
+		   key_t.key_mode_flag=6;
+
+           gpro_t.mode_Key_long_counter=0;
 
 	}
 	

@@ -40,6 +40,13 @@
 
 
 #define  USE_FreeRTOS      1
+#define Enable_EventRecorder    1
+
+
+#if Enable_EventRecorder == 1
+	#include "EventRecorder.h"
+#endif
+
 
 #if USE_FreeRTOS == 1
 	//#include "FreeRTOS.h"
@@ -103,19 +110,10 @@ typedef struct _pro_t{
    uint8_t key_disp_mode_flag ;
    uint8_t ai_flag ;
   
-
-
-
    uint8_t g_time_disp_colon_flag;
    uint8_t smartphone_app_timer_power_on_flag;
    uint8_t key_add_dec_pressed_flag;
    
-
-
-   uint8_t gTimer_temp_compare_counter;
-   uint8_t gTimer_set_temperature_value;
-   uint8_t gTimer_again_send_power_on_off;
-
    uint8_t gTimer_wifi_led_blink ;
    uint8_t gTimer_disp_mode_switch;
    uint8_t gTimer_mode_long_key_counter;

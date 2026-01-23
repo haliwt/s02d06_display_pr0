@@ -448,7 +448,7 @@ void Display_SmgTiming_Value(void)
 				run_t.timer_dispTime_minutes=0;
 
 				gpro_t.send_ack_cmd = check_ack_power_off;//ack_power_off;
-				gpro_t.gTimer_again_send_power_on_off =0;
+			
 				SendData_PowerOnOff(0);//power off
                 vTaskDelay(100);
 			}

@@ -9,214 +9,7 @@
 static void copy_cmd_data_from_mainboard(uint8_t *pdata);
 
  uint8_t recoder_counter;
-#if 0
-/******************************************************************************
-*
-*Function Name:void send_cmd_ack_hanlder(void)
-*Funcion: handle of tall process
-*Input Ref:
-*Return Ref:
-*
-******************************************************************************/
-void send_cmd_ack_hanlder(void)
-{
 
-   switch(gpro_t.send_ack_cmd){
-
-    case ack_null:
-
-
-    break;
-
-    case check_ack_power_on:
-
-
-         
-     
-          if(gpro_t.receive_copy_cmd == 0x01){
-             gpro_t.receive_copy_cmd =0;
-             gpro_t.send_ack_cmd = 0;
-
-          }
-          else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-             gpro_t.gTimer_again_send_power_on_off =0;
-             SendData_PowerOnOff(1);
-		     osDelay(5);
-          }
-
-        
-
-    case check_ack_power_off:
-
-         if(gpro_t.receive_copy_cmd == ack_ok_off){
-             gpro_t.receive_copy_cmd =0;
-             gpro_t.send_ack_cmd = 0;
-
-          }
-          else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-               gpro_t.gTimer_again_send_power_on_off =0;
-               SendData_PowerOnOff(0);
-		       osDelay(5);
-           }
-             
-      
-
-    break;
-
-    case check_ack_ptc_on:
-
-//       if(gpro_t.receive_copy_cmd == ack_ok_on){
-//			gpro_t.receive_copy_cmd =0;
-//			 gpro_t.send_ack_cmd = 0;
-//
-//    	}
-//    	else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-//			  gpro_t.gTimer_again_send_power_on_off =0;
-//			  SendData_Set_Command(dry_cmd,0x01); // link wifi of command .
-//    	}
-
-
-     break;
-
-    case check_ack_ptc_off:
-
-//       if(gpro_t.receive_copy_cmd == 2){
-//    	   gpro_t.receive_copy_cmd =0;
-//    	   gpro_t.send_ack_cmd = 0;
-//
-//    	}
-//    	else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-//    		gpro_t.gTimer_again_send_power_on_off =0;
-//    		SendData_Set_Command(dry_cmd,0x0); // link wifi of command .
-//    	}
-
-
-     break;
-     
-
-    case check_ack_plasma_on:
-
-
-
-        if(gpro_t.receive_copy_cmd == 0x01){
-    			gpro_t.receive_copy_cmd =0;
-    			 gpro_t.send_ack_cmd = 0;
-        }
-        else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-    			  gpro_t.gTimer_again_send_power_on_off =0;
-    			  SendData_Set_Command(plasma_cmd,0x01); // link wifi of command .
-        }
-        break;
-
-    case check_ack_plasma_off:
-
-        if(gpro_t.receive_copy_cmd == 2){
-    			gpro_t.receive_copy_cmd =0;
-    			 gpro_t.send_ack_cmd = 0;
-        }
-        else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-    			  gpro_t.gTimer_again_send_power_on_off =0;
-    			  SendData_Set_Command(plasma_cmd,0x0); // link wifi of command .
-       
-
-     }
-    break;
-
-    case check_ack_mouse_on:
-
-            if(gpro_t.receive_copy_cmd == 1){
-        			gpro_t.receive_copy_cmd =0;
-        			 gpro_t.send_ack_cmd = 0;
-            }
-            else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-        			  gpro_t.gTimer_again_send_power_on_off =0;
-        			  SendData_Set_Command(mouse_cmd,0x01); // link wifi of command .
-            }
-     break;
-
-    case check_ack_mouse_off:
-            if(gpro_t.receive_copy_cmd == 2){
-        			gpro_t.receive_copy_cmd =0;
-        			 gpro_t.send_ack_cmd = 0;
-            }
-            else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-        			  gpro_t.gTimer_again_send_power_on_off =0;
-        			  SendData_Set_Command(mouse_cmd,0x0); // link wifi of command .        
-            }
-    break;
-  
-    case check_ack_ai_on: 
-        
-
-            if(gpro_t.receive_copy_cmd == 1){
-        			gpro_t.receive_copy_cmd =0;
-        			 gpro_t.send_ack_cmd = 0;        
-            }
-            else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-        			  gpro_t.gTimer_again_send_power_on_off =0;
-        			  SendData_Set_Command(ai_cmd,0x01); // link wifi of command .
-            }
-   break;
-
-   case check_ack_ai_off:
-                if(gpro_t.receive_copy_cmd ==2){
-            			gpro_t.receive_copy_cmd =0;
-            			 gpro_t.send_ack_cmd = 0;   
-                }
-                else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-            			  gpro_t.gTimer_again_send_power_on_off =0;
-            			  SendData_Set_Command(ai_cmd,0x0); // link wifi of command .
-                }
-     break;
-           
-    case check_ack_dry_notice_on:
-     
-//                if(gpro_t.receive_copy_cmd == 1){
-//            			gpro_t.receive_copy_cmd =0;
-//            			 gpro_t.send_ack_cmd = 0;   
-//                }
-//                else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-//            			  gpro_t.gTimer_again_send_power_on_off =0;
-//            			  SendData_Set_Command(dry_notice_cmd,0x01); // link wifi of command .
-//                }
-      break;
-
-      case check_ack_dry_notice_off:
-//                if(gpro_t.receive_copy_cmd == 2){
-//            			gpro_t.receive_copy_cmd =0;
-//            			 gpro_t.send_ack_cmd = 0;   
-//                }
-//                else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-//            			  gpro_t.gTimer_again_send_power_on_off =0;
-//            			  SendData_Set_Command(dry_notice_cmd,0x0); // link wifi of command .
-//                }
-          
-    break;
-
-    
-
-
-    case check_ack_buzzer:
-
-        if(gpro_t.receive_copy_cmd == 1){
-            gpro_t.receive_copy_cmd =0;
-            gpro_t.send_ack_cmd = 0;
-
-        }
-        else if(gpro_t.receive_copy_cmd != 0 && gpro_t.gTimer_again_send_power_on_off >1){
-            gpro_t.gTimer_again_send_power_on_off =0;
-            SendData_Set_Command(ack_with_buzzer,0x01); //buzzer sound command .
-
-        }
-
-    break;
-
-
-
-  }
-
-}
-#endif 
 /******************************************************************************
 	*
 	*Function Name:void receive_data_from_mainboard(uint8_t *pdata)
@@ -347,7 +140,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	 break;
 
-     case dry_cmd: //PTC打开关闭指令
+     case dry_cmd://0x02 //PTC打开关闭指令
        
      if(pdata[3] == 0x00){
 
@@ -371,7 +164,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
     	}
      break;
 
-     case plasma_cmd: //PLASMA 打开关闭指令
+     case plasma_cmd: //0x03//PLASMA 打开关闭指令
 
 		if(pdata[3] == 0x00){
 		
@@ -391,7 +184,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
      break;
 
 
-      case mouse_cmd: //ultrasonic  打开关闭指令
+      case mouse_cmd: //0x04//ultrasonic  打开关闭指令
 
         
 	   if(pdata[3] == 0x00){
@@ -410,7 +203,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
      break;
 
-	 case wifi_cmd:
+	 case wifi_cmd://0x05
 
 
 	if(pdata[3] == 0x01){
@@ -449,7 +242,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	break;
 
-	case temp_warning: //temperature of high warning.
+	case temp_warning://0x08 //temperature of high warning.
 
 		if(pdata[3] == 0x01){
 			
@@ -522,7 +315,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
         }
       break;
 
-      case beijing_times_data: //表示时间：小时，分，秒
+      case beijing_times_data://0x1c //表示时间：小时，分，秒
 
         if(pdata[4] == 0x03){ //数据,has three data
 

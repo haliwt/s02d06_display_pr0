@@ -34,7 +34,7 @@ void power_on_run_handler(void)
 			gpro_t.set_timer_timing_doing_value = 0;
             gpro_t.g_manual_shutoff_dry_flag = 0; //allow open dry function .
             run_t.wifi_led_fast_blink=0;
-			gpro_t.gTimer_temp_compare_counter=0;
+		
 			gpro_t.set_timer_timing_value_success=0;
 			run_t.timer_dispTime_hours=0;
 		    run_t.timer_dispTime_minutes=0;

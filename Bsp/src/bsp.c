@@ -21,6 +21,12 @@ void bsp_init(void)
     run_t.gRunCommand_label =0;
     run_t.gPower_On = power_off;
 
+#if Enable_EventRecorder == 1  
+	/* 0…60‹10‡80†40†30…4EventRecorder0…50„40†70„90‡40‹0 */
+	EventRecorderInitialize(EventRecordAll, 1U);
+	EventRecorderStart();
+#endif
+
 
 }
 
