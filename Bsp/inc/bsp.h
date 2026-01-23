@@ -43,7 +43,7 @@
 
 #define DEBUG_FALG   Enable_EventRecorder
 
-#define Enable_EventRecorder    1
+#define Enable_EventRecorder    0
 
 
 #if Enable_EventRecorder == 1

@@ -488,6 +488,8 @@ void process_keys(void)
 
           key_t.key_mode_flag++;
           gpro_t.mode_Key_long_counter=0;
+	      SendData_Set_Command(0x06,0x01);
+	      vTaskDelay(100);
           mode_key_handler();
 		  
 	}
