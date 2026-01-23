@@ -57,6 +57,8 @@ void power_on_run_handler(void)
 			   run_t.gTimer_timing_seconds_counter =0;
 
 			}
+			gpro_t.gTimer_two_hours_seconds =0;
+	        gpro_t.two_work_hours_flag = 0;
 			gpro_t.set_temp_value_success=0;
 			gpro_t.key_disp_mode_flag = 0xff;
 		    gpro_t.ai_flag = ai_mode; //don't AI
@@ -158,7 +160,14 @@ void power_on_run_handler(void)
 
 	  case 3:
           disp_dht11_value();
-		   run_t.gRunCommand_label=1;
+		   run_t.gRunCommand_label=4;
+	  break;
+
+	  case 4:
+	  	
+	  	twoHours_works_timing();
+	  run_t.gRunCommand_label=1;
+
 	  break;
 	  	
 

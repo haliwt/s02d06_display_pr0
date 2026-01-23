@@ -169,15 +169,33 @@ void power_off_run_handler(void)
 }
 
 
-
-
-
 /*******************************************************
 *
-*Function Name: void compare_temp_value()
+*Function Name: void twoHours_works_timing(void)
 *Function :
 *
 *
 *******************************************************/
+void twoHours_works_timing(void)
+{
+   if(gpro_t.gTimer_two_hours_seconds > 7119 &&  gpro_t.two_work_hours_flag ==0){
+         
+      gpro_t.gTimer_two_hours_seconds =0;
+	  gpro_t.two_work_hours_flag = 1;
+      SendData_Set_Command(0x19,0x01) ;
+	  vTaskDelay(100);
+     
+   }
+   else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_two_hours_seconds > 600){
+        gpro_t.gTimer_two_hours_seconds =0;
+		gpro_t.two_work_hours_flag = 0;
+        SendData_Set_Command(0x19,0x00) ;
+	    vTaskDelay(100);
+
+
+   }
+
+
+}
 
 

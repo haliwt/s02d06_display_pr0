@@ -74,12 +74,15 @@ void set_temperature_value(int8_t delta)
     gpro_t.g_manual_shutoff_dry_flag   = 0;
     set_temp_flag                      = 1;
 
-    SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
-    osDelay(100);
+    //SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
+    //osDelay(100);
+    gpro_t.done_set_temp_flag = 1;
 
     TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
 	
 }
+
+
 
 /*******************************************************
 	*
@@ -233,7 +236,7 @@ static void mouse_key_handler(void)
             run_t.gMouse = 1;
             LED_MOUSE_ON();
             gpro_t.send_ack_cmd = check_ack_mouse_on;  // 假设有对应的反馈类型
-      
+           
 
         } else if(run_t.gMouse == 1) {
             // 关闭 Mouse 功能
@@ -256,7 +259,7 @@ static void mouse_key_handler(void)
 *****************************************************************/
 static void key_add_fun(void)
 {
-    if(run_t.ptc_warning != 0) return;
+    if(run_t.ptc_warning == 1) return;
 
    
    
@@ -265,14 +268,15 @@ static void key_add_fun(void)
 
 	    case 3:
 		case 0:  // 设置温度增加
-            SendData_Buzzer();
-			osDelay(100);
+            //SendData_Buzzer();
+			//osDelay(100);
             set_temperature_value(+1);
+		    
             break;
 
         case 1:  // 设置定时增加（每次加60分钟）
-            SendData_Buzzer();
-			osDelay(100);
+           // SendData_Buzzer();
+			//osDelay(100);
             run_t.gTimer_key_timing = 0;
             gpro_t.key_add_dec_pressed_flag = 1;
             adjust_timer_minutes(1);  // 固定每次加60分钟
@@ -292,7 +296,7 @@ static void key_add_fun(void)
 *****************************************************************/
 static void key_dec_fun(void)
 {
-    if(run_t.ptc_warning != 0) return;
+    if(run_t.ptc_warning == 1) return;
 
 
     switch(gpro_t.set_timer_timing_doing_value)
@@ -300,14 +304,14 @@ static void key_dec_fun(void)
 
         case 3:
 		case 0:  // 设置温度减少
-            SendData_Buzzer();
-		    osDelay(100);
+           // SendData_Buzzer();
+		   // osDelay(100);
             set_temperature_value(-1);
             break;
 
         case 1:  // 设置定时减少（每次减60分钟）
-            SendData_Buzzer();
-			 osDelay(100);
+          //  SendData_Buzzer();
+			// osDelay(100);
             run_t.gTimer_key_timing = 0;
             gpro_t.key_add_dec_pressed_flag = 1;
             adjust_timer_minutes(-1);  // 固定每次减60分钟
@@ -467,7 +471,7 @@ void process_keys(void)
         handle_key(&handlers[i]);
     }
 
-	#else 
+	#endif 
 
 
 
@@ -489,15 +493,22 @@ void process_keys(void)
 	}
 	else if(ADD_KEY_VALUE() == KEY_UP &&  key_t.key_add_flag ==1){
        	key_t.key_add_flag++;
+		SendData_Set_Command(0x06,0x01);
+	    vTaskDelay(100);
+		gpro_t.gTimer_set_temp_counter = 0;
 		key_add_fun();
 	}
 	else if(DEC_KEY_VALUE() == KEY_UP &&  key_t.key_dec_flag ==1){
    	  key_t.key_dec_flag++;
+	  SendData_Set_Command(0x06,0x01);
+	  vTaskDelay(100);
+	  gpro_t.gTimer_set_temp_counter = 0;
 	  key_dec_fun();
 
 	}
 	else if(PLASMA_KEY_VALUE() == KEY_UP && key_t.key_plasma_flag ==1){
 		key_t.key_plasma_flag++;
+		
 		plasma_key_handler() ;
 
 	}
@@ -521,7 +532,13 @@ void process_keys(void)
 	
 	}
 	
+    if(gpro_t.done_set_temp_flag == 1 && gpro_t.gTimer_set_temp_counter > 2){
 
+	     gpro_t.done_set_temp_flag = 0;
+         sendCmdNote_to_Data(0x2A,gpro_t.set_up_temperature_value);
+         osDelay(100);
+
+	}
 	
 }
 

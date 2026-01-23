@@ -98,6 +98,9 @@ typedef struct _pro_t{
    uint8_t  mode_key_shot_flag ;
    uint8_t first_set_ptc_on;
    uint8_t first_rcoder_ptc_on_flag;
+
+   uint8_t two_work_hours_flag;
+   uint8_t done_set_temp_flag;
   
    uint8_t answer_signal_flag;
    uint8_t set_timer_first_smg_blink_flag;
@@ -120,6 +123,12 @@ typedef struct _pro_t{
    uint8_t gTimer_wifi_led_blink ;
    uint8_t gTimer_disp_mode_switch;
    uint8_t gTimer_mode_long_key_counter;
+
+   uint8_t  gTimer_set_temp_counter ;
+   
+   uint16_t gTimer_two_hours_seconds;
+
+   
    uint16_t mode_Key_long_counter;
 
    uint16_t gTimer_4bitsmg_blink_times;
@@ -169,6 +178,9 @@ void detected_ptc_or_fan_warning_fun(void);
 void works_run_two_hours_handler(void);
 
 void mode_key_short_fun(void);
+
+void twoHours_works_timing(void);
+
 
 #endif 
 
