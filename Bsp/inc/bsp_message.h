@@ -107,7 +107,7 @@ typedef enum{
 void receive_data_from_mainboard(uint8_t *pdata);
 
 
-void send_cmd_ack_hanlder(void);
+
 
 uint8_t bcc_check(const unsigned char *data, int len);
 

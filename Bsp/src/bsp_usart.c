@@ -100,10 +100,6 @@ static void read_isr_usart1_data(uint8_t data)
 
                 vTaskDecoder_USART1_handler();
                   
-              
-
-            
-
         break;
 
 

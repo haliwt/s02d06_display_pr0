@@ -22,7 +22,7 @@ void power_on_run_handler(void)
    static uint8_t  step_state;
    switch(run_t.gRunCommand_label){
 
-      case RUN_POWER_ON:
+      case 0:
           
 	  
            run_t.gTimer_time_colon =0;
@@ -62,13 +62,13 @@ void power_on_run_handler(void)
 		    gpro_t.ai_flag = ai_mode; //don't AI
 		    key_t.disp_smg_mode_flag=disp_works_times;
 			
-			run_t.gRunCommand_label= SPECIAL_DISP;
+			run_t.gRunCommand_label= 1;
 
 
             
 	  break;
 
-      case SPECIAL_DISP:
+      case 1:
 
               if(gpro_t.mode_key_shot_flag ==1){
 
@@ -144,8 +144,23 @@ void power_on_run_handler(void)
 
               }
             
-             }    
+             }
+
+			 run_t.gRunCommand_label=2;
       break;
+
+	  case 2:
+	    Display_SetTemperature_Value();
+
+	   run_t.gRunCommand_label=3;
+
+	  break;
+
+	  case 3:
+          disp_dht11_value();
+		   run_t.gRunCommand_label=1;
+	  break;
+	  	
 
 	}
 }

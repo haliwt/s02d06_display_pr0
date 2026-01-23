@@ -35,7 +35,7 @@ void SetDataTemperatureValue(void)
 
      //SendData_Tx_Data(0x11,gpro_t.set_up_temperature_value);
      SendData_ToMainboard_Data(0x2A,&gpro_t.set_up_temperature_value,0x01);
-     osDelay(5);
+     osDelay(100);
 	}  
 
 
@@ -75,7 +75,7 @@ void set_temperature_value(int8_t delta)
     set_temp_flag                      = 1;
 
     SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
-    osDelay(5);
+    osDelay(100);
 
     TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
 	
@@ -113,8 +113,8 @@ void adjust_timer_minutes(int8_t delta_min)
 	gpro_t.input_numbers_flag++;
 
 	copy_total_hour=(uint8_t)total_hour;
-	SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
-	osDelay(5);
+	//SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
+	//osDelay(5);
 
     
 }
@@ -148,13 +148,10 @@ void handle_key(KeyHandler *handler)
 *	形    参:  无
 *	返 回 值: 按键代码
 **********************************************************************************************************/
-void power_key_handler(void) 
+static void power_key_handler(void) 
 {
 
-  if(POWER_KEY_VALUE()==KEY_UP && key_t.key_power_flag ==1){
-
-     key_t.key_power_flag++;
-      key_t.key_wifi_flag=0;
+   key_t.key_wifi_flag=0;
     if(run_t.gPower_On == power_off){
         SendData_Set_Command(0x01,0x01);//SendData_PowerOnOff(1); // power on
         osDelay(100); 
@@ -164,7 +161,7 @@ void power_key_handler(void)
         osDelay(100);
     }
 }
-}
+
 
 
 /**********************************************************************************************************
@@ -173,9 +170,9 @@ void power_key_handler(void)
 *	形    参:  无
 *	返 回 值: 按键代码
 **********************************************************************************************************/
-void plasma_key_handler(void) 
+static void plasma_key_handler(void) 
 {
-    //if(gpro_t.set_timer_timing_doing_value==0 ||gpro_t.set_timer_timing_doing_value==3){
+    
         if(run_t.gPlasma == 1){
             run_t.gPlasma = 0;
             SendData_Set_Command(plasma_cmd, 0x00);
@@ -200,9 +197,9 @@ void plasma_key_handler(void)
 	*Retrurn Parameter :NO
 	*
 *****************************************************************/
-void dry_key_handler(void) 
+static void dry_key_handler(void) 
 {
-   // if(gpro_t.set_timer_timing_doing_value == 0 || gpro_t.set_timer_timing_doing_value == 3) {
+   
         if(run_t.gDry == 0) {
             SendData_Set_Command(dry_cmd, 0x01);//sendCommandAndAck(dry_cmd, 0x01, check_ack_ptc_on);
 			osDelay(100);
@@ -226,9 +223,9 @@ void dry_key_handler(void)
 	*Retrurn Parameter :NO
 	*
 *****************************************************************/
-void mouse_key_handler(void) 
+static void mouse_key_handler(void) 
 {
-   // if(gpro_t.set_timer_timing_doing_value == 0 || gpro_t.set_timer_timing_doing_value == 3) {
+   
         if(run_t.gMouse == 0) {
             // 开启 Mouse 功能
             SendData_Set_Command(mouse_cmd, 0x01);
@@ -247,7 +244,7 @@ void mouse_key_handler(void)
             gpro_t.send_ack_cmd = check_ack_mouse_off;  // 假设有对应的反馈类型
             gpro_t.gTimer_again_send_power_on_off = 0;
         }
-   // }
+   
 }
 /****************************************************************
 	*
@@ -257,18 +254,19 @@ void mouse_key_handler(void)
 	*Retrurn Parameter :NO
 	*
 *****************************************************************/
-void key_add_fun(void)
+static void key_add_fun(void)
 {
     if(run_t.ptc_warning != 0) return;
 
    
-
+   
     switch(gpro_t.set_timer_timing_doing_value)
     {
 
 	    case 3:
 		case 0:  // 设置温度增加
-           
+            SendData_Buzzer();
+			osDelay(100);
             set_temperature_value(+1);
             break;
 
@@ -280,6 +278,7 @@ void key_add_fun(void)
             adjust_timer_minutes(1);  // 固定每次加60分钟
             break;
     }
+   	
 }
 
 
@@ -291,7 +290,7 @@ void key_add_fun(void)
 	*Retrurn Parameter :NO
 	*
 *****************************************************************/
-void key_dec_fun(void)
+static void key_dec_fun(void)
 {
     if(run_t.ptc_warning != 0) return;
 
@@ -301,8 +300,8 @@ void key_dec_fun(void)
 
         case 3:
 		case 0:  // 设置温度减少
-            //SendData_Buzzer();
-		    // osDelay(5);
+            SendData_Buzzer();
+		    osDelay(100);
             set_temperature_value(-1);
             break;
 
@@ -323,31 +322,24 @@ void key_dec_fun(void)
 	*Retrurn Parameter :NO
 	*
 *****************************************************************/
-void mode_key_handler(void)
+static void mode_key_handler(void)
 {
 
-   
-	 if(MODEL_KEY_VALUE() == KEY_UP  &&  key_t.key_mode_flag==1 ){
+   gpro_t.mode_Key_long_counter=0;
+   gpro_t.mode_key_shot_flag = 1;     
+   gpro_t.gTimer_disp_mode_switch=0;
+   if(gpro_t.ai_flag == ai_mode){
+       gpro_t.key_disp_mode_flag = no_ai_mode;
+   }
+   else if(gpro_t.ai_flag == no_ai_mode){
+      gpro_t.key_disp_mode_flag = ai_mode;
 
-           key_t.key_mode_flag++;
-		   gpro_t.mode_Key_long_counter=0;
-           gpro_t.mode_key_shot_flag = 1;     
-		   gpro_t.gTimer_disp_mode_switch=0;
-		   if(gpro_t.ai_flag == ai_mode){
-               gpro_t.key_disp_mode_flag = no_ai_mode;
-           }
-		   else if(gpro_t.ai_flag == no_ai_mode){
-		      gpro_t.key_disp_mode_flag = ai_mode;
-
-		   }
-		     SendData_Buzzer();
-			 osDelay(100);
+   }
+     SendData_Buzzer();
+	 osDelay(100);
 		  // SendData_Set_Command(0x07,0x01); //reverse switch don't displayb "AI"
 		  // osDelay(100);
 		  
-	}
-	
-	
 }
 
 // Helper function for long press actions
@@ -447,7 +439,7 @@ void mode_key_handler(void)
 */
 void process_keys(void) 
 {
-   
+   #if 0
    uint8_t i;
 
     // 定义所有按键处理器
@@ -465,6 +457,54 @@ void process_keys(void)
     for ( i = 0; i < sizeof(handlers)/sizeof(handlers[0]); i++) {
         handle_key(&handlers[i]);
     }
+
+	#else 
+
+	if(POWER_KEY_VALUE()==KEY_UP && key_t.key_power_flag ==1){
+
+       key_t.key_power_flag++;
+	   power_key_handler() ;
+
+	}
+	else if(gpro_t.mode_Key_long_counter==200){
+		
+		       gpro_t.mode_Key_long_counter=0;
+		   	   key_t.key_mode_flag=3;
+	           vTaskDelay(1000);
+	     
+    }
+	else if(MODEL_KEY_VALUE() == KEY_UP  &&  key_t.key_mode_flag==1 && gpro_t.mode_Key_long_counter!=200){
+
+           key_t.key_mode_flag++;
+		    mode_key_handler();
+	}
+	else if(ADD_KEY_VALUE() == KEY_UP &&  key_t.key_add_flag ==1){
+       	key_t.key_add_flag++;
+		key_add_fun();
+	}
+	else if(DEC_KEY_VALUE() == KEY_UP &&  key_t.key_dec_flag ==1){
+   	  key_t.key_dec_flag++;
+	  key_dec_fun();
+
+	}
+	else if(PLASMA_KEY_VALUE() == KEY_UP && key_t.key_plasma_flag ==1){
+		key_t.key_plasma_flag++;
+		plasma_key_handler() ;
+
+	}
+	else if(MOUSE_KEY_VALUE() == KEY_UP && key_t.key_mouse_flag ==1) {
+		key_t.key_mouse_flag ++;
+		mouse_key_handler() ;
+	}
+	else if(DRY_KEY_VALUE() == KEY_UP && key_t.key_dry_flag ==1) {
+		key_t.key_dry_flag ++ ;
+		dry_key_handler() ;
+
+	}
+	
+	
+
+	#endif 
 }
 
 

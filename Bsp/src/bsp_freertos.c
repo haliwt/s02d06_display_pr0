@@ -162,9 +162,9 @@ static void vTaskRunPro(void *pvParameters)
 	while(1)
     {
 
-	power_key_handler() ;
+	//power_key_handler() ;
    
-    mode_key_handler();
+   // mode_key_handler();
 	
 	
 	process_keys() ;
@@ -175,7 +175,7 @@ static void vTaskRunPro(void *pvParameters)
 	    power_on_run_handler();
      
        Display_TimeColon_Blink_Fun();
-	   disp_dht11_value();
+	  // disp_dht11_value();
        set_timer_fun_led_blink();
        wifi_connect_state_fun();
 	  
@@ -212,30 +212,11 @@ static void vTaskStart(void *pvParameters)
     {
       
     /* 接收到消息，检测那个位被按下 */
-	if(POWER_KEY_VALUE()==KEY_DOWN && key_t.key_wifi_flag < 200 ){
-          key_t.key_wifi_flag++;
-	  // 处理WiFi键
-      if( key_t.key_wifi_flag < 150 && run_t.gPower_On == power_on){
-        
-        if(key_t.key_wifi_flag > 130){
-            key_t.key_wifi_flag = 200;
-			key_t.key_power_flag=0;
-		    run_t.wifi_connect_state_flag = wifi_connect_null;
-            run_t.gTimer_wifi_connect_counter =0; //120s counte start
-            SendData_Set_Command(0x05,0x01); // link wifi of command .
-            vTaskDelay(100);
-			key_t.key_power_flag=0;
+	if(POWER_KEY_VALUE()==KEY_DOWN ){
+        key_t.key_wifi_flag =0;
+	    key_t.key_power_flag =1;
 
-		}
-      	}
-	  
-       if(key_t.key_wifi_flag == 200 && run_t.gPower_On == power_on )key_t.key_power_flag =0;
-	    else{
-	       key_t.key_power_flag =1;
-
-	    }
-	   	
-    }
+	}
 	else if(MODEL_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on && gpro_t.mode_Key_long_counter <200){   /* 接收到消息，检测那个位被按下 */
 
          gpro_t.mode_Key_long_counter++;
@@ -251,7 +232,7 @@ static void vTaskStart(void *pvParameters)
 
 
 	    }
-	    else if(gpro_t.mode_Key_long_counter > 100 &&  run_t.wifi_led_fast_blink==0){
+	    else if(gpro_t.mode_Key_long_counter > 79 &&  run_t.wifi_led_fast_blink==0){
 
 		     gpro_t.mode_Key_long_counter=200;
 			 key_t.key_mode_flag = 0;
@@ -259,16 +240,13 @@ static void vTaskStart(void *pvParameters)
 			}
         }
 
-	
-        if(gpro_t.mode_Key_long_counter==200)key_t.key_mode_flag = 0;
+		if(gpro_t.mode_Key_long_counter==200){
+			key_t.key_mode_flag = 0;
+		 }
 		else{
-		  key_t.key_mode_flag = 1;
+          key_t.key_mode_flag = 1;
           key_t.key_wifi_flag =0;
-          gpro_t.mode_Key_long_counter=0;
-		}
-
-	  
-               
+		 }
    }
    else if(DEC_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){
 	
@@ -307,10 +285,28 @@ static void vTaskStart(void *pvParameters)
        
 	    key_t.key_mouse_flag =1;
         key_t.key_wifi_flag =0;
-       gpro_t.mode_Key_long_counter=0;
+        gpro_t.mode_Key_long_counter=0;
       
 	                 
 	}
+    else if(WIFI_KEY_VALUE()==KEY_DOWN &&  run_t.gPower_On == power_on &&  key_t.key_wifi_flag < 200 ){
+
+          key_t.key_wifi_flag++;
+	  // 处理WiFi键
+         if( key_t.key_wifi_flag < 150 && run_t.gPower_On == power_on){
+        
+        if(key_t.key_wifi_flag > 99){
+            key_t.key_wifi_flag = 200;
+			
+		    run_t.wifi_connect_state_flag = wifi_connect_null;
+            run_t.gTimer_wifi_connect_counter =0; //120s counte start
+            SendData_Set_Command(0x05,0x01); // link wifi of command .
+            vTaskDelay(100);
+		    key_t.key_wifi_flag =0;
+	     }
+      	}
+
+    }
 
     vTaskDelay(20);
 

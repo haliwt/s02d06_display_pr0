@@ -22,7 +22,7 @@
 #include "stm32g0xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//#include "bsp.h"
+#include "bsp.h"
 
 /* USER CODE END Includes */
 

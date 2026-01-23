@@ -238,6 +238,26 @@ void SendWifiData_Answer_Cmd(uint8_t cmd ,uint8_t data)
 	
 }
 
+void sendCmdNote_to_threeData(uint8_t cmd ,uint8_t h,uint8_t m,uint8_t s)
+{
+
+    outputBuf[0]=0xA5; //display board head = 0xA5
+	outputBuf[1]= DEVICE_NUMBER; //display device Number:is 0x01
+	outputBuf[2]=cmd; // command type = 0x1A -> temperature of value 
+	outputBuf[3]=0x0f; // command order -> 0x0f -> is data , don't order.
+	outputBuf[4]=0x03; // data is length: 00 ->don't data 
+	outputBuf[5]=h;// frame of end code -> 0xFE.
+	outputBuf[6]=m;
+	outputBuf[7]=s;
+	outputBuf[8]=0xFE; // frame of end code -> 0xFE.
+    outputBuf[9]= bcc_check(outputBuf,9);
+		
+	transferSize=10 ;
+	usart1_dma_send(outputBuf,transferSize);
+
+}
+
+
 
 /****************************************************************************************************
  * Function Name: HAL_UART_TxCpltCallback

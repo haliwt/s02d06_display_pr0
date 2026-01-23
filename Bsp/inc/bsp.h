@@ -86,6 +86,8 @@ typedef struct _pro_t{
    uint8_t set_up_temperature_value;
    uint8_t mode_Key_long_counter;
    uint8_t  mode_key_shot_flag ;
+   uint8_t first_set_ptc_on;
+   uint8_t first_rcoder_ptc_on_flag;
   
    uint8_t answer_signal_flag;
    uint8_t set_timer_first_smg_blink_flag;

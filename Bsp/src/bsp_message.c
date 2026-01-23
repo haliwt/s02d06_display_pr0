@@ -9,7 +9,7 @@
 static void copy_cmd_data_from_mainboard(uint8_t *pdata);
 
  uint8_t recoder_counter;
-
+#if 0
 /******************************************************************************
 *
 *Function Name:void send_cmd_ack_hanlder(void)
@@ -216,6 +216,7 @@ void send_cmd_ack_hanlder(void)
   }
 
 }
+#endif 
 /******************************************************************************
 	*
 	*Function Name:void receive_data_from_mainboard(uint8_t *pdata)
@@ -236,25 +237,24 @@ void receive_data_from_mainboard(uint8_t *pdata)
      break;
 
      case  power_cmd:
-           if(pdata[3] == 0x00){ //power on
+           if(pdata[3] == 0x01){ //power on
 
-            if(pdata[4]== 0x01){
-			run_t.gPower_On = power_on;
-            run_t.gRunCommand_label =RUN_NULL;
+            run_t.gPower_On = power_on;
+            run_t.gRunCommand_label =0;
             //gpro_t.receive_copy_cmd = 1;
             power_on_handler();
-            SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
-			osDelay(5);
+            SendWifiData_Answer_Cmd(0x01 ,0x01);//SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
+			osDelay(50);
            }
            else{ //power off
 
             run_t.gPower_On = power_off;
-            run_t.gRunCommand_label =RUN_NULL;
-            SendData_Set_Command(0x11,0x01);
-			osDelay(5);
+            run_t.gRunCommand_label =0;
+            SendWifiData_Answer_Cmd(0x01,0x0);
+			osDelay(50);
            
            }
-          }
+          
 
      break;
 
@@ -272,7 +272,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		    else{
 
 				run_t.gPower_On = power_off;
-                run_t.gRunCommand_label =RUN_NULL;
+                run_t.gRunCommand_label =0;
 
 			}
            
@@ -355,12 +355,17 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
             run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
             LED_DRY_ON();
+	        gpro_t.g_manual_shutoff_dry_flag=0;
+	       SendWifiData_Answer_Cmd(0x02,0x0);
+			osDelay(50);
         }
         else if(pdata[4] == 0x0){
 
             run_t.gDry =0;
 		    LED_DRY_OFF();
-          
+            gpro_t.g_manual_shutoff_dry_flag=1;
+		    SendWifiData_Answer_Cmd(0x02,0x0);
+		    osDelay(50);
 
         }
     	}
@@ -522,7 +527,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
         if(pdata[4] == 0x03){ //数据,has three data
 
             if(pdata[5] < 24){ //WT.EDIT 2024.11.23
-
+            run_t.wifi_connect_state_flag = wifi_connect_success;  
             run_t.display_beijing_time_flag= 1;
           
           run_t.works_dispTime_hours= pdata[5];// run_t.dispTime_hours  =  pdata[5];
@@ -574,8 +579,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	   if(pdata[4]== 0x01 && run_t.gPower_On == power_on){
 
-            run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
-           // gpro_t.g_manual_shutoff_dry_flag = 0;
+             run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
+             LED_DRY_ON();// gpro_t.g_manual_shutoff_dry_flag = 0;
         }
         else if(pdata[4] == 0x0 && run_t.gPower_On == power_on){
 
@@ -605,11 +610,11 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	  case 0x2A: //main board set temperature value 
 	  
           
-		  if(pdata[3] == 0x0F){
+		  if(pdata[3] == 0x0F){ //is data.
 		  
 			if(pdata[4]== 0x01){ // one only data 
 
-		  
+		    gpro_t.g_manual_shutoff_dry_flag=0;
 				
 			gpro_t.set_up_temperature_value =pdata[5];//warning
 	  
@@ -631,19 +636,13 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	break;
 
 	case mainboard_set_timer_value://0x2B
-
-	     if(pdata[3] == 0x0F){
-		  
-			if(pdata[4]== 0x01){ // one only data 
+          if(pdata[4]== 0x01){ // one only data 
 			 
-
+             if(pdata[5] > 0){
 	
 			  gpro_t.set_timer_timing_value_success=1;
-			
-				
-		
-			 key_t.disp_smg_mode_flag=disp_timer_times;
-			 gpro_t.ai_flag = no_ai_mode;
+			  key_t.disp_smg_mode_flag=disp_timer_times;
+			  gpro_t.ai_flag = no_ai_mode;
  
 			   run_t.timer_dispTime_hours=pdata[5];
 			   run_t.timer_dispTime_minutes=0;
@@ -654,12 +653,33 @@ void receive_data_from_mainboard(uint8_t *pdata)
    				 run_t.minutes_one_decade_bit  = 0;
     			run_t.minutes_one_unit_bit    = 0;
 				run_t.gTimer_timer_seconds_counter=0;
+             }
+			 else if(pdata[5]== 0){
 
+	             gpro_t.set_timer_timing_value_success=0;
+				 key_t.disp_smg_mode_flag=disp_works_times;
+				 gpro_t.ai_flag = ai_mode;
+	 
+				  run_t.timer_dispTime_hours=0;
+				  run_t.timer_dispTime_minutes=0;
+		 
+				  run_t.hours_two_decade_bit  = run_t.timer_dispTime_hours / 10;
+				  run_t.hours_two_unit_bit 	  = run_t.hours_two_decade_bit;//run_t.timer_dispTime_hours % 10;
+				   
+				  run_t.minutes_one_decade_bit  = 0;
+				  run_t.minutes_one_unit_bit	 = 0;
+				  run_t.gTimer_timer_seconds_counter=0;
+
+
+			 }
 				
-      	       }
-		  	}
+      	  }
+		  	
+			
 
 	break;
+
+	
 
      case copy_cmd: // copy send cmd acknowlege
           copy_cmd_data_from_mainboard(pdata);

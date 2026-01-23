@@ -90,52 +90,117 @@ void Led_Panel_OnOff(void)
 	*
 	*
 *******************************************************/
-#if 0
 void Display_SetTemperature_Value(void)
 {
-    static uint8_t temp_over_flag,set_temp_over_flag;	
-    if(gpro_t.set_temp_value_success ==1 && run_t.gTimer_temp_delay >60){
-               run_t.gTimer_temp_delay =0;
-		 
-		 // disp_smg_blink_set_tempeature_value= run_t.set_temperature_decade_value*10+ run_t.set_temperature_unit_value;
+        static uint8_t ptc_on_flag =0xff,ptc_off_flag=0xff;	
+	if(run_t.fan_warning == 1 && run_t.ptc_warning ==1) return ;
+
+	if(run_t.gReal_humtemp[1] >60 ) return ;
+
+	if(run_t.gTimer_temp_delay >6 &&  gpro_t.g_manual_shutoff_dry_flag==0){
+	      run_t.gTimer_temp_delay=0;
+
+	switch(gpro_t.set_temp_value_success){
+
+	case 1:
+    // disp_smg_blink_set_tempeature_value= run_t.set_temperature_decade_value*10+ run_t.set_temperature_unit_value;
 		  if(gpro_t.set_up_temperature_value <= run_t.gReal_humtemp[1] || run_t.gReal_humtemp[1] >39){//envirment temperature
 	  
-				run_t.gDry = 0;
-                set_temp_over_flag= 1;
-		        SendData_Set_Command(DRY_OFF_NO_BUZZER);//0x91 ->PTC turn off
+			   run_t.gDry = 0;
+			   LED_DRY_OFF();
+               if(gpro_t.first_set_ptc_on==0)gpro_t.first_set_ptc_on=1;  //the first open ptc heating //WT.DEDIT 2028.08.27 modify this flow codes
+			   else if(gpro_t.first_set_ptc_on==2)gpro_t.first_set_ptc_on=3;
+			   else if(gpro_t.first_set_ptc_on==4)gpro_t.first_set_ptc_on=5;
+
+			    if(ptc_off_flag != run_t.gDry){
+			   	   ptc_off_flag =  run_t.gDry;
+			      SendData_Set_Command(0x22,0x00); //close ptc 
+	              vTaskDelay(pdMS_TO_TICKS(100));
+
+               	}
 			    
 			    
                 
 		  }
-		  else if((gpro_t.set_up_temperature_value -3) >= run_t.gReal_humtemp[1]){
+		  else {
 
-                run_t.gDry = 1;
-                SendData_Set_Command(DRY_ON_NO_BUZZER);//0x90 -> //PTC turn On
+               if(gpro_t.first_set_ptc_on==1 || gpro_t.first_set_ptc_on==0){//the first open ptc heating //WT.DEDIT 2028.08.27 modify this flow codes
+	          
+                if(gpro_t.first_set_ptc_on==1)gpro_t.first_set_ptc_on=2;
+				else if(gpro_t.first_set_ptc_on==0)gpro_t.first_set_ptc_on=4;
+				run_t.gDry = 1;
+			    LED_DRY_ON();
+	       
+			 
+			   
+			    if(ptc_on_flag != run_t.gDry){
+			   	   ptc_on_flag = run_t.gDry;
+	               SendData_Set_Command(0x22,0x01); //open ptc 
+	               vTaskDelay(pdMS_TO_TICKS(100));
+			    }
+	          
+            
+	       }
+		   else if((gpro_t.first_set_ptc_on==3 || gpro_t.first_set_ptc_on==5) && (gpro_t.set_up_temperature_value -3) >= run_t.gReal_humtemp[1]){//WT.DEDIT 2028.08.27 modify this flow codes
+
+				 run_t.gDry = 1;
+	             LED_DRY_ON();
+		          if(ptc_on_flag != run_t.gDry){
+			   	   ptc_on_flag = run_t.gDry;
+	            	SendData_Set_Command(0x22,0x01); //open ptc 
+	            	vTaskDelay(pdMS_TO_TICKS(100));
+			     }
+	          
+			}
            }
 	  
 	    
-	}
-    else if( gpro_t.set_temp_value_success ==0){ //no define set up temperature value 
-		if(run_t.gReal_humtemp[1] >39 && run_t.gTimer_temp_delay >9){//envirment temperature
-			run_t.gTimer_temp_delay =0;
-			run_t.gDry = 0;
-			temp_over_flag=1; //the first times temperature over 39 degree.
-			SendData_Set_Command(DRY_OFF_NO_BUZZER);
+	
+	break;
 
-		}
-        else if(run_t.gReal_humtemp[1] < 38 &&  run_t.gTimer_temp_delay >12 && temp_over_flag ==1){
-			run_t.gTimer_temp_delay =0;
+	case 0:
+         if(run_t.gReal_humtemp[1] > 39){ // must be clouse ptc.
+    
+               gpro_t.first_rcoder_ptc_on_flag  = 1;
+               run_t.gDry = 0;
+		       LED_DRY_OFF();
 			
-			run_t.gDry = 1;
-			SendData_Set_Command(DRY_ON_NO_BUZZER); //PTC turn On
+	            if(ptc_off_flag != run_t.gDry ){
+			   	   ptc_off_flag = run_t.gDry ;
+               		SendData_Set_Command(0x22,0x00); //close ptc 
+               		vTaskDelay(pdMS_TO_TICKS(100));
+			     }
+          }
+          else if(gpro_t.first_rcoder_ptc_on_flag  == 1 &&  run_t.gReal_humtemp[1] < 38 ){
+               
+               
+               run_t.gDry  = 1;
+			   LED_DRY_ON();
+			   if(ptc_on_flag != run_t.gDry ){
+		   	       ptc_on_flag = run_t.gDry ;
+	               SendData_Set_Command(0x22,0x01); //open ptc 
+	               vTaskDelay(pdMS_TO_TICKS(100));
 
-        }
-             
-      }
-			    
-  }
+		     	}
+          }
+          else if(gpro_t.first_rcoder_ptc_on_flag == 0 && run_t.gReal_humtemp[1] < 40 ){ //WT.EDIT 2025.10.31
 
-#endif 
+	            run_t.gDry  = 1;
+		        LED_DRY_ON();
+		        if(ptc_on_flag != run_t.gDry ){
+			   	     ptc_on_flag = run_t.gDry ;
+				    SendData_Set_Command(0x22,0x01); //open ptc  
+				    vTaskDelay(pdMS_TO_TICKS(100));
+			     }
+		 }
+      
+	break;
+	}
+
+	}
+ }
+
+
 
 /******************************************************************************
 * 
@@ -249,6 +314,7 @@ static void Display_Works_Time_Fun(void)
 *****************************************************************/
 static void Timer_Timing_Donot_Display(void)
 {
+  //uint8_t dataToSend[3];
   if(run_t.gTimer_timer_seconds_counter > 59 && gpro_t.set_timer_timing_value_success==disp_timer_times){
     run_t.gTimer_timer_seconds_counter =0;
     run_t.timer_dispTime_minutes -- ;
@@ -268,7 +334,9 @@ static void Timer_Timing_Donot_Display(void)
     power_off_run_handler();
 
     }
-			
+		//dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据
+		sendCmdNote_to_threeData(0x6B,run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter); // cmd=0x1A, 数据长度=3
+		osDelay(100);		
   }
 
 }
@@ -284,6 +352,7 @@ static void Timer_Timing_Donot_Display(void)
 static void WorksTime_DonotDisplay_Fun(void)
 {
 //send to APP works times every minute onece
+ 
    if(run_t.gTimer_timing_seconds_counter > 59 &&  gpro_t.set_timer_timing_value_success ==disp_timer_times ){
 		   run_t.gTimer_timing_seconds_counter=0;
 		 
@@ -297,6 +366,11 @@ static void WorksTime_DonotDisplay_Fun(void)
 		   run_t.works_dispTime_hours =0;
 		   }
 	       }
+		if(run_t.wifi_connect_state_flag == wifi_connect_null){
+			//dataToSend[3] = {run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter}; // 要发送的 3 个数据
+		  sendCmdNote_to_threeData(0x6C, run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter); // cmd=0x1A, 数据长度=3
+			osDelay(100);
+        }
   }
 }
 #if 0
@@ -345,31 +419,29 @@ static void Smg_DisplayFan_Level_Value_Fun(uint8_t fan_level)
 ******************************************************************************/
 void Display_SmgTiming_Value(void)
 {
-  // uint8_t dataToSend[3];
+   //uint8_t dataToSend[3];
 
    switch(key_t.disp_smg_mode_flag){
 
 	   case disp_timer_times:
-                 gpro_t.ai_flag = no_ai_mode;
-			
-				if(run_t.gTimer_timer_seconds_counter > 59){
-				run_t.gTimer_timer_seconds_counter =0;
+		 gpro_t.ai_flag = no_ai_mode;
 
-				run_t.timer_dispTime_minutes -- ;
+		if(run_t.gTimer_timer_seconds_counter > 59){
+			run_t.gTimer_timer_seconds_counter =0;
 
-				if(run_t.timer_dispTime_minutes <  0 ){
+			run_t.timer_dispTime_minutes -- ;
+
+			if(run_t.timer_dispTime_minutes <  0 ){
 
 				run_t.timer_dispTime_hours -- ;
 				run_t.timer_dispTime_minutes =59;
 
-				uint8_t dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据
-				SendData_ToMainboard_Data(0x5C, dataToSend, 3); // cmd=0x1A, 数据长度=3
-				osDelay(5);
-				}
+				
+			}
 
 
 
-				if(run_t.timer_dispTime_hours < 0 ){
+			if(run_t.timer_dispTime_hours < 0 ){
 
 				run_t.gTimer_timer_seconds_counter = 57 ;
 				run_t.timer_dispTime_hours=0;
@@ -378,12 +450,16 @@ void Display_SmgTiming_Value(void)
 				gpro_t.send_ack_cmd = check_ack_power_off;//ack_power_off;
 				gpro_t.gTimer_again_send_power_on_off =0;
 				SendData_PowerOnOff(0);//power off
+                vTaskDelay(100);
+			}
 
-				}
-				}
+			//dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据
+			sendCmdNote_to_threeData(0x6B,run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter); // cmd=0x1A, 数据长度=3
+			osDelay(100);
+		}
 
-				Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-				WorksTime_DonotDisplay_Fun();
+		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+		WorksTime_DonotDisplay_Fun();
 			
         
 	    break;
@@ -404,6 +480,11 @@ void Display_SmgTiming_Value(void)
     		        run_t.works_dispTime_hours =0;
     		   }
     	      }
+                if(run_t.wifi_connect_state_flag == wifi_connect_null){
+				//dataToSend[3] = {run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter}; // 要发送的 3 个数据
+				sendCmdNote_to_threeData(0x6C,run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter); // cmd=0x1A, 数据长度=3
+				osDelay(100);
+                }
            }
   
             Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);

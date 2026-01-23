@@ -32,7 +32,7 @@
 
 
 #define LED_MOUSE_ON()  			 do{MOUSE_LED_EN_GPIO_Port ->BSRR = MOUSE_LED_EN_Pin ;}while(0)//HAL_GPIO_WritePin(GPIOB, MOUSE_LED_Pin,GPIO_PIN_SET)
-#define LED_MOUSE_OFF()				 do{MOUSE_LED_EN_GPIO_Port ->BSRR = MOUSE_LED_EN_Pin;}while(0)//HAL_GPIO_WritePin(GPIOB, MOUSE_LED_Pin,GPIO_PIN_RESET)
+#define LED_MOUSE_OFF()				 do{MOUSE_LED_EN_GPIO_Port ->BSRR =(uint16_t)MOUSE_LED_EN_Pin<<16;}while(0)//HAL_GPIO_WritePin(GPIOB, MOUSE_LED_Pin,GPIO_PIN_RESET)
 
 
 //control SMG supply power 

@@ -18,7 +18,7 @@ uint8_t  first_set_temperature_value;
 void bsp_init(void)
 {
 
-    run_t.gRunCommand_label =RUN_NULL;
+    run_t.gRunCommand_label =0;
     run_t.gPower_On = power_off;
 
 
@@ -30,21 +30,16 @@ void power_on_handler(void)
 	run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
 
 	run_t.gPower_On = power_on;
-	run_t.gRunCommand_label =RUN_POWER_ON;
+	run_t.gRunCommand_label =0;
 	run_t.power_off_flag = 0;
 	
-
-	
-
-
-
- }
+}
 
 void power_off_handler(void)
 {
 
     run_t.gPower_On = power_off;
-	run_t.gRunCommand_label =RUN_NULL;
+	run_t.gRunCommand_label =0L;
 
  }
 

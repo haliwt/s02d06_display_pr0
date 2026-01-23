@@ -2,17 +2,7 @@
 #define __BSP_DISPLAY_DYNAMIC_H
 #include "main.h"
 
-typedef enum {
-   
-    RUN_POWER_ON=0x01,
-	RUN_POWER_OFF,
-    UPDATE_DATA,
-    SPECIAL_DISP,
-    POWER_OFF_PROCESS,
-    RUN_WIFI_NORMAL_POWER_ON,
-    RUN_NULL
 
-}power_on_state_t;
 
 extern void (*single_ai_fun)(uint8_t cmd);
 extern void (*single_add_fun)(void);
@@ -39,7 +29,7 @@ void SplitDispose_Key_RunCmd(void(*keyHandler)(uint8_t dat));
 
 //void Smg_DisplayFan_Leve(void(*fandisplayHandler)(uint8_t fan_level));
 
-//void Display_SetTemperature_Value(void);
+void Display_SetTemperature_Value(void);
 
 void Display_SmgTiming_Value(void);
 
