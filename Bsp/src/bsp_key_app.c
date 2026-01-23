@@ -325,7 +325,14 @@ static void key_dec_fun(void)
 static void mode_key_handler(void)
 {
 
-   gpro_t.mode_Key_long_counter=0;
+ //  gpro_t.mode_Key_long_counter=0;
+   if(gpro_t.mode_key_shot_flag == 0xFE){
+   	#if DEBUG_FALG
+      printf("mode_key_shot_flag = 0xFE \r\n");
+	#endif 
+
+   }
+   else{
    gpro_t.mode_key_shot_flag = 1;     
    gpro_t.gTimer_disp_mode_switch=0;
    if(gpro_t.ai_flag == ai_mode){
@@ -335,8 +342,16 @@ static void mode_key_handler(void)
       gpro_t.key_disp_mode_flag = ai_mode;
 
    }
+   #if DEBUG_FALG
+
+    printf("sound again \r\n");
+
+
+   #endif 
+   
      SendData_Buzzer();
 	 osDelay(100);
+   	}
 		  
 }
 
@@ -350,7 +365,6 @@ void handle_mode_key_long_press(void)
 	run_t.gTimer_smg_blink_times =0;
 	gpro_t.set_timer_first_smg_blink_flag=0;
         
-	 gpro_t.mode_Key_long_counter=0;
      gpro_t.mode_key_shot_flag=0xff;
 
     SendData_Buzzer();
@@ -453,7 +467,7 @@ void process_keys(void)
         handle_key(&handlers[i]);
     }
 
-	#else 
+	#endif 
 
 
 
@@ -469,17 +483,18 @@ void process_keys(void)
     else if(MODEL_KEY_VALUE() == KEY_UP  &&  key_t.key_mode_flag==1 ){
 
           key_t.key_mode_flag++;
-		   if(gpro_t.mode_Key_long_counter==200){
+//		   if(gpro_t.mode_Key_long_counter==200){
 		
-		       gpro_t.gTimer_mode_long_key_counter=0;
-		  
-		       gpro_t.mode_key_shot_flag =0xfe;
+//		       gpro_t.gTimer_mode_long_key_counter=0;
+//		       gpro_t.mode_Key_long_counter=0;
+//		       gpro_t.mode_key_shot_flag =0xfe;
+//			   vTaskDelay(1000);
 	          
-		   }
-		   else{
+//		   }
+//		   else{
 			    gpro_t.mode_Key_long_counter=0;
                 mode_key_handler();
-		   }
+		   //}
 	}
 	else if(ADD_KEY_VALUE() == KEY_UP &&  key_t.key_add_flag ==1){
        	key_t.key_add_flag++;
@@ -505,19 +520,18 @@ void process_keys(void)
 
 	}
 
-
+  
 	
-	if(gpro_t.mode_key_shot_flag ==0xfe && gpro_t.mode_Key_long_counter==200 && gpro_t.gTimer_mode_long_key_counter > 5){
+	if(gpro_t.mode_Key_long_counter==200 && gpro_t.gTimer_mode_long_key_counter > 1){
            gpro_t.mode_key_shot_flag =0xff;
-		   key_t.key_mode_flag=6;
 
            gpro_t.mode_Key_long_counter=0;
 
+	
 	}
 	
-	
 
-	#endif 
+	
 }
 
 

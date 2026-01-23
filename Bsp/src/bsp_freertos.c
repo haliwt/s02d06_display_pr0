@@ -222,7 +222,8 @@ static void vTaskStart(void *pvParameters)
 
 	    if( run_t.wifi_led_fast_blink==1 && gpro_t.mode_Key_long_counter > 30 &&  gpro_t.mode_Key_long_counter < 200){
 			 gpro_t.mode_Key_long_counter=200;
-	    	  handle_mode_key_long_press();
+			 gpro_t.gTimer_mode_long_key_counter=0;
+	    	 handle_mode_key_long_press();
 		      key_t.key_mode_flag = 0;
 
 
@@ -231,7 +232,8 @@ static void vTaskStart(void *pvParameters)
 
 		     gpro_t.mode_Key_long_counter=200;
 			 key_t.key_mode_flag = 0;
-              handle_mode_key_long_press();
+		     gpro_t.gTimer_mode_long_key_counter=0;
+              handle_mode_key_long_press(); 
 			}
         }
 
