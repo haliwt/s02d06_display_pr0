@@ -33,7 +33,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
            if(pdata[3] == 0x01){ //power on
 
             run_t.gPower_On = power_on;
-            run_t.gRunCommand_label =0;
+            run_t.power_on_step =0;
             //gpro_t.receive_copy_cmd = 1;
             power_on_handler();
             SendWifiData_Answer_Cmd(0x01 ,0x01);//SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
@@ -42,7 +42,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
            else{ //power off
 
             run_t.gPower_On = power_off;
-            run_t.gRunCommand_label =0;
+            run_t.power_on_step =0;
             SendWifiData_Answer_Cmd(0x01,0x0);
 			osDelay(50);
            
@@ -56,7 +56,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 		   if(pdata[4]==0x01){
 
-		   run_t.wifi_connect_state_flag = wifi_connect_success;
+		   run_t.connect_wifi_state = wifi_connect_success;
 		   	
            gpro_t.smartphone_app_timer_power_on_flag =1;
 		    run_t.gPower_On = power_on;
@@ -65,7 +65,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		    else{
 
 				run_t.gPower_On = power_off;
-                run_t.gRunCommand_label =0;
+                run_t.power_on_step =0;
 
 			}
            
@@ -206,20 +206,14 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	 case wifi_cmd://0x05
 
 
-	if(pdata[3] == 0x01){
+		if(pdata[3] == 0x01){
 
-		
-
-		run_t.wifi_led_fast_blink=1;
-		run_t.wifi_connect_state_flag = wifi_connect_null;
-		run_t.gTimer_wifi_connect_counter =0; //120s counte start
-		 
-		
-
+		    run_t.wifi_led_fast_blink=1;
+			run_t.connect_wifi_state = wifi_connect_null;
+			run_t.gTimer_wifi_connect_counter =0; //120s counte start
+			 
 		}
-		else if(pdata[4] == 0x0){ //close
-
-		}
+		
     break;
 
 	case 0x07:
@@ -320,7 +314,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
         if(pdata[4] == 0x03){ //数据,has three data
 
             if(pdata[5] < 24){ //WT.EDIT 2024.11.23
-            run_t.wifi_connect_state_flag = wifi_connect_success;  
+      
+		     run_t.connect_wifi_state = wifi_connect_success;
             run_t.display_beijing_time_flag= 1;
           
           run_t.works_dispTime_hours= pdata[5];// run_t.dispTime_hours  =  pdata[5];
@@ -339,7 +334,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 		    
              run_t.wifi_led_fast_blink=0;
-			 run_t.wifi_connect_state_flag = wifi_connect_success;
+			 run_t.connect_wifi_state = wifi_connect_success;
 			 run_t.gTimer_wifi_connect_counter =0; //120s counte start
 		
 			  
@@ -348,7 +343,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		else{ //close
 	  
 		      run_t.wifi_led_fast_blink=0;
-			 run_t.wifi_connect_state_flag = wifi_connect_null;
+			 run_t.connect_wifi_state = wifi_connect_null;
 			 run_t.gTimer_wifi_connect_counter =0; //120s counte start
 	  
 		}
@@ -357,14 +352,6 @@ void receive_data_from_mainboard(uint8_t *pdata)
   
 	  break;
 
-
-	  case timer_time_sync:
-
-	      
-
-          
-
-	  break;
 
 	  case 0x22: //Command ,set temperature compare dht11 result open or close
 
@@ -428,7 +415,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		  	}
 	break;
 
-	case mainboard_set_timer_value://0x2B
+	case mainboard_set_timer_value://0x2B, timer timing value .
           if(pdata[4]== 0x01){ // one only data 
 			 
              if(pdata[5] > 0){
@@ -507,7 +494,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
      else{ //power offf
 
         run_t.gPower_On = power_off;
-        run_t.power_off_flag=0;
+        run_t.power_off_step=0;
        
 
      }
@@ -567,7 +554,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 	  if(pdata[4] == 0x01){  // link wifi
 
 	    run_t.wifi_led_fast_blink=1;
-		run_t.wifi_connect_state_flag = wifi_connect_null;
+		run_t.connect_wifi_state = wifi_connect_null;
 		run_t.gTimer_wifi_connect_counter =0; //120s counte start
 		key_t.key_wifi_flag=0;
 			  
@@ -575,7 +562,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 	   }
 	  else{ //close
 	  
-			   run_t.wifi_connect_state_flag = wifi_connect_null;
+			   run_t.connect_wifi_state = wifi_connect_null;
 	            run_t.wifi_led_fast_blink=0;
 			    run_t.display_beijing_time_flag =0;
 	  

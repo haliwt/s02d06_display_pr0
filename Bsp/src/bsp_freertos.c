@@ -293,7 +293,7 @@ static void vTaskStart(void *pvParameters)
         if(key_t.key_wifi_flag > 99){
             key_t.key_wifi_flag = 200;
 			
-		    run_t.wifi_connect_state_flag = wifi_connect_null;
+		    run_t.connect_wifi_state = wifi_connect_null;
             run_t.gTimer_wifi_connect_counter =0; //120s counte start
             SendData_Set_Command(0x05,0x01); // link wifi of command .
             vTaskDelay(100);

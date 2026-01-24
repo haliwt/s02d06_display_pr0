@@ -20,7 +20,7 @@ void power_on_run_handler(void)
 {
 
    static uint8_t  step_state;
-   switch(run_t.gRunCommand_label){
+   switch(run_t.power_on_step){
 
       case 0:
           
@@ -39,7 +39,7 @@ void power_on_run_handler(void)
 			run_t.timer_dispTime_hours=0;
 		    run_t.timer_dispTime_minutes=0;
 
-			if(run_t.wifi_connect_state_flag == wifi_connect_success){
+			if(run_t.connect_wifi_state == wifi_connect_success){
 
                    if(run_t.display_beijing_time_flag ==0){
 						run_t.works_dispTime_hours=0;
@@ -64,7 +64,7 @@ void power_on_run_handler(void)
 		    gpro_t.ai_flag = ai_mode; //don't AI
 		    key_t.disp_smg_mode_flag=disp_works_times;
 			
-			run_t.gRunCommand_label= 1;
+			run_t.power_on_step= 1;
 
 
             
@@ -148,25 +148,25 @@ void power_on_run_handler(void)
             
              }
 
-			 run_t.gRunCommand_label=2;
+			 run_t.power_on_step=2;
       break;
 
 	  case 2:
 	    Display_SetTemperature_Value();
 
-	   run_t.gRunCommand_label=3;
+	   run_t.power_on_step=3;
 
 	  break;
 
 	  case 3:
           disp_dht11_value();
-		   run_t.gRunCommand_label=4;
+		   run_t.power_on_step=4;
 	  break;
 
 	  case 4:
 	  	
 	  	twoHours_works_timing();
-	  run_t.gRunCommand_label=1;
+	  run_t.power_on_step=1;
 
 	  break;
 	  	

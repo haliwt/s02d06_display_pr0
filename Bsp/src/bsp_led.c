@@ -315,7 +315,7 @@ void Power_ON_Led(void)
    LED_MOUSE_ON();
    LED_POWER_ON();
    SMG_POWER_ON();
-	 if(run_t.wifi_connect_state_flag == wifi_connect_success){
+	 if(run_t.connect_wifi_state == wifi_connect_success){
 	        LED_WIFI_ON();
 	 }
 	 else{

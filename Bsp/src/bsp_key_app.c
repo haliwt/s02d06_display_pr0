@@ -209,14 +209,15 @@ static void dry_key_handler(void)
             run_t.gDry = 1;
             gpro_t.g_manual_shutoff_dry_flag = 0;
             LED_DRY_ON();
-        } else {
+        } 
+		else if(run_t.gDry == 1){
             SendData_Set_Command(dry_cmd, 0x00);//sendCommandAndAck(dry_cmd, 0x00, check_ack_ptc_off);
 			osDelay(100);
             run_t.gDry = 0;
             gpro_t.g_manual_shutoff_dry_flag = 1; // 手动关闭后不再自动开启
             LED_DRY_OFF();
         }
-   // }
+  
 }
 /****************************************************************
 	*
@@ -238,7 +239,7 @@ static void mouse_key_handler(void)
             gpro_t.send_ack_cmd = check_ack_mouse_on;  // 假设有对应的反馈类型
            
 
-        } else if(run_t.gMouse == 1) {
+        } else if(run_t.gMouse == 1){
             // 关闭 Mouse 功能
             SendData_Set_Command(mouse_cmd, 0x00);
             osDelay(100);
@@ -474,11 +475,7 @@ void process_keys(void)
 	#endif 
 
 
-
-
-	
-
-	if(POWER_KEY_VALUE()==KEY_UP && key_t.key_power_flag ==1){
+   if(POWER_KEY_VALUE()==KEY_UP && key_t.key_power_flag ==1){
 
        key_t.key_power_flag++;
 	   power_key_handler() ;
@@ -537,6 +534,9 @@ void process_keys(void)
     if(gpro_t.done_set_temp_flag == 1 && gpro_t.gTimer_set_temp_counter > 2){
 
 	     gpro_t.done_set_temp_flag = 0;
+
+	     if(gpro_t.set_up_temperature_value > )
+		 
          sendCmdNote_to_Data(0x2A,gpro_t.set_up_temperature_value);
          osDelay(100);
 

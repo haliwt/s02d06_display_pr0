@@ -18,7 +18,7 @@ uint8_t  first_set_temperature_value;
 void bsp_init(void)
 {
 
-    run_t.gRunCommand_label =0;
+    run_t.power_on_step =0;
     run_t.gPower_On = power_off;
 
 #if Enable_EventRecorder == 1  
@@ -36,8 +36,8 @@ void power_on_handler(void)
 	run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
 
 	run_t.gPower_On = power_on;
-	run_t.gRunCommand_label =0;
-	run_t.power_off_flag = 0;
+	run_t.power_on_step =0;
+	run_t.power_off_step = 0;
 	
 }
 
@@ -45,7 +45,7 @@ void power_off_handler(void)
 {
 
     run_t.gPower_On = power_off;
-	run_t.gRunCommand_label =0L;
+	run_t.power_on_step =0L;
 
  }
 
@@ -125,12 +125,12 @@ void mode_key_short_fun(void)
 void power_off_run_handler(void)
 {
     static uint8_t power_on_off_flag;
-    switch(run_t.power_off_flag){
+    switch(run_t.power_off_step){
      case 0://2
 	  
 		 run_t.ptc_warning =0;
 		 run_t.fan_warning =0;
-			
+		 run_t.power_on_step =0;
          run_t.gFan_RunContinue =1;
 	     run_t.gTimer_fan_continue=0;
          run_t.gTimer_detect_mb_receive_flag=0;
@@ -141,7 +141,7 @@ void power_off_run_handler(void)
 			run_t.timer_dispTime_hours=0;
 		    run_t.timer_dispTime_minutes=0;
 			
-         run_t.power_off_flag = 1;
+         run_t.power_off_step = 1;
        break;
 
        case 1://4

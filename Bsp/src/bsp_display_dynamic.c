@@ -366,9 +366,9 @@ static void WorksTime_DonotDisplay_Fun(void)
 		   run_t.works_dispTime_hours =0;
 		   }
 	       }
-		if(run_t.wifi_connect_state_flag == wifi_connect_null){
+		if(run_t.connect_wifi_state == wifi_connect_null){
 			//dataToSend[3] = {run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter}; // 要发送的 3 个数据
-		  sendCmdNote_to_threeData(0x6C, run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter); // cmd=0x1A, 数据长度=3
+		   sendCmdNote_to_threeData(0x6C, run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter); // cmd=0x1A, 数据长度=3
 			osDelay(100);
         }
   }
@@ -480,7 +480,7 @@ void Display_SmgTiming_Value(void)
     		        run_t.works_dispTime_hours =0;
     		   }
     	      }
-                if(run_t.wifi_connect_state_flag == wifi_connect_null){
+                if(run_t.connect_wifi_state == wifi_connect_null){
 				//dataToSend[3] = {run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter}; // 要发送的 3 个数据
 				sendCmdNote_to_threeData(0x6C,run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter); // cmd=0x1A, 数据长度=3
 				osDelay(100);

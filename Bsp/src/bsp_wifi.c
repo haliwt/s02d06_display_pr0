@@ -26,7 +26,7 @@ void wifi_connect_state_fun(void)
     break;
 
     case 0:
-    if(run_t.wifi_connect_state_flag == wifi_connect_null){
+    if(run_t.connect_wifi_state == wifi_connect_null){
 
 	   if(gpro_t.gTimer_wifi_led_blink > 1){
 	    gpro_t.gTimer_wifi_led_blink =0;

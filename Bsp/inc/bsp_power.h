@@ -72,8 +72,8 @@ typedef struct __RUN{
    
    uint8_t keyAdd_continue;
    uint8_t keyDec_continue;
-   uint8_t gRunCommand_label;
-   uint8_t power_off_flag;
+   uint8_t power_on_step;
+   uint8_t power_off_step;
   
 
 
@@ -154,7 +154,7 @@ typedef struct __RUN{
    uint8_t gTimer_time_colon;
  
    uint8_t ai_model_flag;
-   uint8_t wifi_connect_state_flag;
+   uint8_t connect_wifi_state;
    uint8_t wifi_led_fast_blink ;
 
 
