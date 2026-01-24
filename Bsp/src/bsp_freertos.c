@@ -214,11 +214,11 @@ static void vTaskStart(void *pvParameters)
 	}
 	else if(MODEL_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on && gpro_t.mode_Key_long_counter <200){   /* 接收到消息，检测那个位被按下 */
 
-         gpro_t.mode_Key_long_counter++;
+       
 
 		if(gpro_t.mode_Key_long_counter < 200){
 
-		   
+		     gpro_t.mode_Key_long_counter++;
 
 	    if( run_t.wifi_led_fast_blink==1 && gpro_t.mode_Key_long_counter > 30 &&  gpro_t.mode_Key_long_counter < 200){
 			 gpro_t.mode_Key_long_counter=200;

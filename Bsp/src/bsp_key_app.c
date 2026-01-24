@@ -531,7 +531,7 @@ void process_keys(void)
 	
 	}
 	
-    if(gpro_t.done_set_temp_flag == 1 && gpro_t.gTimer_set_temp_counter > 2){
+    if(gpro_t.done_set_temp_flag == 1 && gpro_t.gTimer_set_temp_counter > 2 ){
 
 	     gpro_t.done_set_temp_flag = 0;
 
