@@ -535,7 +535,16 @@ void process_keys(void)
 
 	     gpro_t.done_set_temp_flag = 0;
 
-	     if(gpro_t.set_up_temperature_value > )
+	     if(gpro_t.set_up_temperature_value > run_t.gReal_humtemp[1]){
+              
+              run_t.gDry = 1;
+			  LED_DRY_ON();
+		 }
+		 else{
+
+             run_t.gDry =0;
+			 LED_DRY_OFF();
+		 }
 		 
          sendCmdNote_to_Data(0x2A,gpro_t.set_up_temperature_value);
          osDelay(100);

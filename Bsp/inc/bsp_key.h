@@ -146,8 +146,8 @@ typedef enum{
 //}ai_mode_state;
 
 typedef enum{
-   wifi_connect_null,
-   wifi_connect_success
+   wifi_connect_null=0,
+   wifi_connect_success=1
 }wifi_state_connect;
 
 

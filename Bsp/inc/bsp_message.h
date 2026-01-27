@@ -92,7 +92,7 @@ typedef enum{
 	fan_warning=9,
 	temp_hum_data = 0x1A,
 	beijing_times_data =0x1C,
-	wifi_connect_data= 0x1F,
+	wifi_connect_notice= 0x1F,
 	dry_notice_cmd= 0x22, //don't sound
 	mainboard_set_temperature_value = 0x2A,
 	mainboard_set_timer_value= 0x2B,

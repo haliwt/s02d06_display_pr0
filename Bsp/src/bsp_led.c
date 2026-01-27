@@ -159,75 +159,7 @@ static void Power_Breath_Two(void)
 
 }
 
-#if 0
-static void Power_Breath_Two(void)
-{
-    static uint32_t i,j;
-    led_k++;
 
-	if(led_k<101){
-        i=0;
-        j=0;
-		LED_POWER_ON();
-		Delay(led_k);
-	  // LED_POWER_OFF();
-	  
-       LED_POWER_OFF();
-       Delay(200-led_k);
-
-    }
-    if(led_k>99 && led_k <201){
-        j++;
-		LED_POWER_OFF();
-		Delay(j);
-        LED_POWER_ON();
-        Delay(100-j);
-        
-
-    }
-    else if(led_k>299 && led_k <401){
-		led_i++;
-
-	  
-	   LED_POWER_ON();
-       LED_POWER_OFF();
-	   Delay(200 -led_i);
-      
-
-	}
-    else if(led_k>399){
-        led_k =300;
-        i++; 
-      if(i<500){
-          LED_POWER_OFF();
-      }
-      else{
-        led_i=0;
-		led_k=0;
-        
-        
-      }
-	}
-	
-
-}
-
-static void Delay(int16_t count)
-{
-   
-    if(count ==0 || count <0){
-       return;
-    
-    }
-    else{
-    while(count){
-
-       count--;
-   }
-   }
-
-}
-#endif 
 
 #if 0
 static void Power_BreathOnOff(void)

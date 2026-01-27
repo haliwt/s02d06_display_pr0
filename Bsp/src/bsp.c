@@ -191,11 +191,7 @@ void twoHours_works_timing(void)
 		gpro_t.two_work_hours_flag = 0;
         SendData_Set_Command(0x19,0x00) ;
 	    vTaskDelay(100);
-
-
    }
-
-
 }
 
 

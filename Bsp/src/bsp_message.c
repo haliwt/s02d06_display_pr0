@@ -63,7 +63,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			 power_on_handler();
 		   	}
 		    else{
-
+                run_t.connect_wifi_state = wifi_connect_success;
 				run_t.gPower_On = power_off;
                 run_t.power_on_step =0;
 
@@ -209,7 +209,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		if(pdata[3] == 0x01){
 
 		    run_t.wifi_led_fast_blink=1;
-			run_t.connect_wifi_state = wifi_connect_null;
+			//run_t.connect_wifi_state = wifi_connect_null;
 			run_t.gTimer_wifi_connect_counter =0; //120s counte start
 			 
 		}
@@ -327,7 +327,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
         }
       break;
 
-	  case wifi_connect_data: //0x1f notice is command
+	  case wifi_connect_notice: //0x1f notice is command
 	  	
      
 	    if(pdata[3] == 0x01){ //0x1F ,is notice don't data--(1,2,3,4,5,6,7,9)
