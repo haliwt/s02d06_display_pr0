@@ -65,39 +65,29 @@ void detected_ptc_or_fan_warning_fun(void)
 	*Return Ref:NO
 	*
 ******************************************************************************/
-//void mode_key_long_fun(void)
-//{
-//         gpro_t.set_timer_timing_doing_value = 1;
-//		 gpro_t.key_add_dec_pressed_flag =0;
-//		 run_t.gTimer_key_timing = 0;
-//		 run_t.gTimer_smg_blink_times =0;
-//		 gpro_t.set_timer_first_smg_blink_flag=0;
-
-
-//}
 void mode_key_short_fun(void)
 {
 
    if(gpro_t.set_timer_timing_value_success==0 && gpro_t.key_disp_mode_flag == no_ai_mode ){
-     gpro_t.ai_flag = no_ai_mode  ; //don't AI MODE    
-	run_t.timer_dispTime_hours=0;
-	run_t.timer_dispTime_minutes=0;
+	     gpro_t.ai_flag = no_ai_mode  ; //don't AI MODE    
+		run_t.timer_dispTime_hours=0;
+		run_t.timer_dispTime_minutes=0;
 
-	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-	key_t.disp_smg_mode_flag = disp_works_times;
-	gpro_t.key_disp_mode_flag =0xff;
-	SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
-	osDelay(100);
+		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+		key_t.disp_smg_mode_flag = disp_works_times;
+		gpro_t.key_disp_mode_flag =0xff;
+		SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
+		osDelay(100);
     
    }
    else if(gpro_t.set_timer_timing_value_success==1 && gpro_t.key_disp_mode_flag == no_ai_mode){ 
-     gpro_t.ai_flag = no_ai_mode; //don't AI
+	     gpro_t.ai_flag = no_ai_mode; //don't AI
 
-	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-    key_t.disp_smg_mode_flag = disp_timer_times;
-    gpro_t.key_disp_mode_flag =0xff;
-	SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
-	osDelay(100);
+		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+	    key_t.disp_smg_mode_flag = disp_timer_times;
+	    gpro_t.key_disp_mode_flag =0xff;
+		SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
+		osDelay(100);
 
    }
    else if(gpro_t.key_disp_mode_flag == ai_mode && gpro_t.key_disp_mode_flag == ai_mode){
@@ -162,6 +152,13 @@ void power_off_run_handler(void)
 
 		  
             Breath_Led();
+
+			if(run_t.gTimer_display_dht11 > 4){
+               run_t.gTimer_display_dht11 =0;
+			   SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
+	           vTaskDelay(pdMS_TO_TICKS(100));
+
+			}
 		 
 		 break;
        }
@@ -182,7 +179,7 @@ void twoHours_works_timing(void)
          
       gpro_t.gTimer_two_hours_seconds =0;
 	  gpro_t.two_work_hours_flag = 1;
-      SendData_Set_Command(0x19,0x01) ;
+      SendData_Set_Command(0x19,0x01) ;//works two hours ,then have a rest 10 minutes.
 	  vTaskDelay(100);
      
    }

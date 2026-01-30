@@ -153,17 +153,19 @@ void Set_TimerTiming_Number_Value(void)
 
     }
 
-    if(gpro_t.set_timer_timing_doing_value==2){
+    if(gpro_t.set_timer_timing_doing_value==2){ //stup up value by ajust
     	gpro_t.set_timer_timing_doing_value++;
+		//don't input ADD ad DEC key of none numbers
 		if(gpro_t.set_timer_timing_value_success  == disp_timer_times && gpro_t.key_add_dec_pressed_flag ==0){
              run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
         	 run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
         	 //run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
         	 //run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
         	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+			
 
 		}
-		else if(run_t.temporary_timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){
+		else if(run_t.temporary_timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
 			gpro_t.set_timer_timing_value_success  = disp_timer_times;
 			key_t.disp_smg_mode_flag = disp_timer_times;
 			run_t.gTimer_timer_seconds_counter = 0;
@@ -177,11 +179,24 @@ void Set_TimerTiming_Number_Value(void)
 
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 			SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
-			osDelay(5);
+			osDelay(100);
 
 
 		}
-		else{
+		else if(run_t.temporary_timer_dispTime_hours == 0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
+					gpro_t.set_timer_timing_value_success  = disp_works_times;
+					key_t.disp_smg_mode_flag = disp_works_times;
+					run_t.gTimer_timer_seconds_counter = 0;
+		
+					run_t.timer_dispTime_hours = 0 ;
+				    run_t.timer_dispTime_minutes = 0;
+		            Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+					SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
+					osDelay(100);
+		
+		
+		}
+        else{
 
 			gpro_t.set_timer_timing_value_success  = 0;
             key_t.disp_smg_mode_flag = disp_works_times;

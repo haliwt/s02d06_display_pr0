@@ -63,6 +63,9 @@ void power_on_run_handler(void)
 			gpro_t.key_disp_mode_flag = 0xff;
 		    gpro_t.ai_flag = ai_mode; //don't AI
 		    key_t.disp_smg_mode_flag=disp_works_times;
+
+			 SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
+	         vTaskDelay(pdMS_TO_TICKS(100));
 			
 			run_t.power_on_step= 1;
 
@@ -225,7 +228,7 @@ void Power_On_Fun(void)
 	}
 
   
-
+    
 
     run_t.time_led_flag=1;
 	Power_ON_Led();
@@ -250,7 +253,6 @@ void Power_On_Fun(void)
 	  
 	   SMG_POWER_ON(); //WT.EDIT 2023.03.02
       
-
 
 	  run_t.hours_two_unit_bit = hour_unit;
 	  run_t.minutes_one_decade_bit =  minutes_one;

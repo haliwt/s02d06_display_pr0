@@ -65,11 +65,17 @@ static void DisplayPanel_DHT11_Value(void)
 *******************************************************/
 void disp_dht11_value(void)
 {
-
-  if(run_t.gTimer_display_dht11 > 9 && (gpro_t.set_timer_timing_doing_value==0||gpro_t.set_timer_timing_doing_value==3)){
+  static uint8_t send_counter;
+  if(run_t.gTimer_display_dht11 > 2 && (gpro_t.set_timer_timing_doing_value==0||gpro_t.set_timer_timing_doing_value==3)){
 	    run_t.gTimer_display_dht11=0;
        	Display_DHT11_Value();
-       
+
+		send_counter++;
+		if(send_counter > 6){
+			send_counter =0;
+          SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
+	       vTaskDelay(pdMS_TO_TICKS(100));
+		}
      
 	}
 

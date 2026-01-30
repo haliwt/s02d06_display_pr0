@@ -94,7 +94,7 @@ void set_temperature_value(int8_t delta)
 void adjust_timer_minutes(int8_t delta_min) 
 {
     int8_t total_hour = run_t.temporary_timer_dispTime_hours ;
-	uint8_t copy_total_hour;
+	//uint8_t copy_total_hour;
     total_hour += delta_min;
 
    if(total_hour > 24){
@@ -115,7 +115,7 @@ void adjust_timer_minutes(int8_t delta_min)
     run_t.minutes_one_unit_bit    = 0;
 	gpro_t.input_numbers_flag++;
 
-	copy_total_hour=(uint8_t)total_hour;
+	//copy_total_hour=(uint8_t)total_hour;
 	//SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
 	//osDelay(5);
 
