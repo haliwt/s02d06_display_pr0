@@ -158,7 +158,16 @@ void SendData_Set_Command(uint8_t cmd, uint8_t cmdData)
  ****************************************************************************************************/
 void SendData_Tx_Data(uint8_t cmd, uint8_t data) 
 {
-    fillFrame(cmd, HAS_DATA, &data, 1);
+    outputBuf[0]=0xA5; //display board head = 0xA5
+	outputBuf[1]= DEVICE_NUMBER; //display device Number:is 0x01
+	outputBuf[2]=cmd; // command type = 0x1A -> temperature of value 
+	outputBuf[3]=0x0f; // command order -> 0x0f -> is data , don't order.
+	outputBuf[4]=0x01; // data is length: 00 ->don't data 
+	outputBuf[5]=data; // frame of end code -> 0xFE.
+	outputBuf[6]=0xFE; // frame of end code -> 0xFE.
+    outputBuf[7] = bcc_check(outputBuf,7);
+		
+	transferSize=8;
     sendUartData(outputBuf, 8);
 }
 
@@ -169,7 +178,18 @@ void SendData_Tx_Data(uint8_t cmd, uint8_t data)
  * Return Ref: 无
  ****************************************************************************************************/
 void SendData_Temp_Data(uint8_t tdata) {
-    fillFrame(0x1A, HAS_DATA, &tdata, 1);
+
+    outputBuf[0]=0xA5; //display board head = 0xA5
+	outputBuf[1]= DEVICE_NUMBER; //display device Number:is 0x01
+	outputBuf[2]=0x1A; // command type = 0x1A -> temperature of value 
+	outputBuf[3]=0x0f; // command order -> 0x0f -> is data , don't order.
+	outputBuf[4]=0x01; // data is length: 00 ->don't data 
+	outputBuf[5]=tdata; // frame of end code -> 0xFE.
+	outputBuf[6]=0xFE; // frame of end code -> 0xFE.
+    outputBuf[7] = bcc_check(outputBuf,7);
+
+	
+	transferSize=8;
     sendUartData(outputBuf, transferSize);
 }
 
@@ -203,7 +223,15 @@ void SendData_CopyCmd_Data(uint8_t cmd,uint8_t *pdata,uint8_t datalen)
  * Return Ref: 无
  ****************************************************************************************************/
 void SendData_PowerOnOff(uint8_t index) {
-    fillFrame(0x01,NO_DATA,&index,0);
+    outputBuf[0]=0xA5; //display board head = 0xA5
+	outputBuf[1]= DEVICE_NUMBER; //display device Number:is 0x01
+	outputBuf[2]=0x01; // command type = 0x01 ->power on or power off 
+	outputBuf[3]=index; // command order -> 01 - power on , 00- power off
+	outputBuf[4]=0x00; // data is length: 00 ->don't data 
+	outputBuf[5]=0xFE; // frame of end code -> 0xFE.
+	
+	outputBuf[6] = bcc_check(outputBuf,6);
+	transferSize=7;
     sendUartData(outputBuf, transferSize);
 }
 

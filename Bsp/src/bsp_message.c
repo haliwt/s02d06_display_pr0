@@ -52,9 +52,9 @@ void receive_data_from_mainboard(uint8_t *pdata)
      break;
 
 	 case 0x21: //smart phone power on or off that App timer .
-        if(pdata[3]==0x00){ //power on by smart phone APP
+       
 
-		   if(pdata[4]==0x01){
+		   if(pdata[3]==0x01){
 
 		   run_t.connect_wifi_state = wifi_connect_success;
 		   	
@@ -70,7 +70,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			}
            
              
-         }
+         
        
      break; 
 
@@ -188,7 +188,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		if(pdata[3] == 0x01){
 
 		    run_t.wifi_led_fast_blink=1;
-			//run_t.connect_wifi_state = wifi_connect_null;
+			run_t.connect_wifi_state = wifi_connect_null;
 			run_t.gTimer_wifi_connect_counter =0; //120s counte start
 			 
 		}
@@ -478,6 +478,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
 	 if(pdata[4]==0x01){
 	 	run_t.gPower_On = power_on;
+		run_t.power_on_step =0;
         power_on_handler();
         
 

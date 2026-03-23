@@ -155,7 +155,7 @@ void power_off_run_handler(void)
 
 			if(run_t.gTimer_display_dht11 > 4){
                run_t.gTimer_display_dht11 =0;
-			   SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
+			   SendData_Set_Command(0x0F,0x02); //notice thi is new version
 	           vTaskDelay(pdMS_TO_TICKS(100));
 
 			}
