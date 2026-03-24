@@ -474,122 +474,6 @@ void TM1639_Write_4Bit_Time_sync_close(uint8_t onebit,uint8_t twobit,uint8_t thr
 
 
 }
-
-/*******************************************************************************************************
-    *
-    *Function Name:void TM1640_Write_4Bit_Data(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit)
-    *Function :Smg display fan of speed "F1 01 or F2 02"
-    *Input Ref: fan_level is fan speed 1 or fan speed 2 
-    *Return Ref: NO
-    *
-********************************************************************************************************/
-#if 0
-void TM1639_Write_4Bit_Fan_Level(uint8_t fan_level)
-{
-
-	
-	 TM1639_STB_SetLow();
-	 TM1639_Write_OneByte(0X40);//To Address of fixed reg 0x44
-	 TM1639_STB_SetHigh();
-    
-    TM1639_STB_SetLow();
-     TM1639_Write_OneByte(0X44);//To Address of fixed reg 0x44
-     TM1639_STB_SetHigh();
-
-	 
-    //digital 1
-     TM1639_Start();
-     TM1639_Write_OneByte(0xC8);//0xC0H->GRID_1->BIT_1
-  
-      TM1639_Write_OneByte(segNumber_Low[0x0f]);//display "F"
-
-     TM1639_Stop();
-
-	 TM1639_Start();
-     TM1639_Write_OneByte(0XC9);//0xC1H->GRID_1->BIT_1
-    
-     TM1639_Write_OneByte(segNumber_High[0x0f]);//display "F"
-  
-     TM1639_Stop();
-    
-      
-     //dighital 2
-   
-     TM1639_Start();
-     TM1639_Write_OneByte(0xCA);//0xC1H->GRID_2->BIT_2
-     if(fan_level==0){ //fan_speed_max
-         TM1639_Write_OneByte(segNumber_Low[0x02]);//display "2 :"
-     }
-     else {
-	 	TM1639_Write_OneByte(segNumber_Low[0x01]);//display "1 :" _>fan_speed_min,
-     }
-     TM1639_Stop();
-   
-
-	TM1639_Start();
-
-    TM1639_Write_OneByte(0xCB);//0xC1H->GRID_2->BIT_2
-     if(fan_level==0){
-         TM1639_Write_OneByte(segNumber_High[0x02]|seg_h);//display "2 :"
-   
-     }
-     else {
-      
-       TM1639_Write_OneByte(segNumber_High[0x01]|seg_h);//display "1 :" _>fan_speed_min,
-	 }
-	 
-    TM1639_Stop();
-	 
-   
-     //digital 3 
-     //minute 
-    TM1639_Start();
-    TM1639_Write_OneByte(0xCC);//0xC2H->GRID_3->BIT_3
-  
-	TM1639_Write_OneByte(segNumber_Low[0]);//display "0"
-
-    TM1639_Stop();
-    
-    //minute 
-    TM1639_Start();
-    TM1639_Write_OneByte(0xCD);//0xC2H->GRID_3->BIT_3
-   
-	TM1639_Write_OneByte(segNumber_High[0]|seg_h);//display "0"
-	
-    TM1639_Stop();
-	
-    //digital 4
-	//minute 
-    TM1639_Start();
-    TM1639_Write_OneByte(0xCE);//0xC2H->GRID_4
-    if(fan_level==0){//TM1639_Write_OneByte(OFFLED);//display "NULL"
-	    TM1639_Write_OneByte(segNumber_Low[0x02]);//display "2"
-
-    }
-    else{
-        TM1639_Write_OneByte(segNumber_Low[0x01]);//display "1"
-     }
-    TM1639_Stop();
-    
-    //minute 
-    TM1639_Start();
-    TM1639_Write_OneByte(0xCF);//0xC2H->GRID_4
-    if(fan_level==0){//TM1639_Write_OneByte(OFFLED);//display "NULL"
-	    TM1639_Write_OneByte(segNumber_High[0x02]|seg_h);//display "2"
-
-    }
-    else{
-        TM1639_Write_OneByte(segNumber_High[0x01]|seg_h);//display "1"
-     }
-    TM1639_Stop();
-
-    //open diplay
-    TM1639_Start();
-    TM1639_Write_OneByte(OpenDispTM1639|0x8f);//0xC2H->GRID3->BIT_3
-    TM1639_Stop();
-    
-}
-#endif 
 /*************************************************************************
 *
 *Function Name:void SmgBlink_Colon_Function(uint8_t twobit,uint8_t threebit,uint8_t sel)
@@ -601,7 +485,7 @@ void TM1639_Write_4Bit_Fan_Level(uint8_t fan_level)
 void SmgBlink_Colon_Function(uint8_t twobit,uint8_t threebit,uint8_t sel)
 {
 
-
+     if(gpro_t.set_timer_timing_doing_value==1)return ; //WT.EIDT 2026.03.24
      TM1639_Start();
 
     TM1639_Write_OneByte(0xCB);//0xC1H->GRID_2->BIT_2
@@ -611,7 +495,7 @@ void SmgBlink_Colon_Function(uint8_t twobit,uint8_t threebit,uint8_t sel)
         TM1639_Write_OneByte(segNumber_High[twobit]|seg_h); 
       }
 	  else {
-
+      
 	      TM1639_Write_OneByte(segNumber_High[twobit]);	 
      }
 

@@ -114,13 +114,17 @@ void Display_Error_Digital(uint8_t errnumbers,uint8_t sel)
 void Display_TimeColon_Blink_Fun(void)
 {
 
-  if(run_t.gTimer_time_colon >0 && (gpro_t.set_timer_timing_doing_value==0 ||gpro_t.set_timer_timing_doing_value==3)){ //200 //10*20ms=300ms
+  if(gpro_t.set_timer_timing_doing_value==1 || gpro_t.set_timer_timing_doing_value==2) return ;
+
+  if(gpro_t.set_timer_timing_doing_value==3)
+
+  if(run_t.gTimer_time_colon >0){ //200 //10*20ms=300ms
 
 	   run_t.gTimer_time_colon =0;
        
 	 	  gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
-	
-		  SmgBlink_Colon_Function(run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,gpro_t.g_time_disp_colon_flag);
+	     
+		 SmgBlink_Colon_Function(run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,gpro_t.g_time_disp_colon_flag);
      
 	}
 }

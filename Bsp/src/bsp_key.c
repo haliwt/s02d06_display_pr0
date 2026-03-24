@@ -162,7 +162,8 @@ void Set_TimerTiming_Number_Value(void)
         	 //run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
         	 //run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
         	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-			
+			 vTaskDelay(200);
+			 
 
 		}
 		else if(run_t.temporary_timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
@@ -178,6 +179,7 @@ void Set_TimerTiming_Number_Value(void)
 			}
 
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+			vTaskDelay(200);
 			SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
 			osDelay(100);
 
@@ -191,12 +193,17 @@ void Set_TimerTiming_Number_Value(void)
 					run_t.timer_dispTime_hours = 0 ;
 				    run_t.timer_dispTime_minutes = 0;
 		            Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+					vTaskDelay(200);
 					SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
 					osDelay(100);
 		
 		
 		}
         else{
+			
+			run_t.timer_dispTime_hours = 0 ;
+			run_t.timer_dispTime_minutes = 0;
+			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
 			gpro_t.set_timer_timing_value_success  = 0;
             key_t.disp_smg_mode_flag = disp_works_times;

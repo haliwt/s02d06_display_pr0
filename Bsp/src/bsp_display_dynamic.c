@@ -66,7 +66,8 @@ static void DisplayPanel_DHT11_Value(void)
 void disp_dht11_value(void)
 {
   static uint8_t send_counter;
-  if(run_t.gTimer_display_dht11 > 2 && (gpro_t.set_timer_timing_doing_value==0||gpro_t.set_timer_timing_doing_value==3)){
+  if(gpro_t.set_timer_timing_doing_value==1 || gpro_t.set_timer_timing_doing_value==2) return ;
+  if(run_t.gTimer_display_dht11 > 2){
 	    run_t.gTimer_display_dht11=0;
        	Display_DHT11_Value();
 
