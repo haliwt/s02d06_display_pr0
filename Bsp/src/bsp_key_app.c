@@ -154,7 +154,7 @@ void handle_key(KeyHandler *handler)
 static void power_key_handler(void) 
 {
 
-   key_t.key_wifi_flag=0;
+
     if(run_t.gPower_On == power_off){
         SendData_Set_Command(0x01,0x01);//SendData_PowerOnOff(1); // power on
         osDelay(100); 
@@ -518,6 +518,11 @@ void process_keys(void)
 	else if(DRY_KEY_VALUE() == KEY_UP && key_t.key_dry_flag ==1) {
 		key_t.key_dry_flag ++ ;
 		dry_key_handler() ;
+
+	}
+    else if(WIFI_KEY_VALUE()==KEY_UP &&  run_t.gPower_On == power_on && key_t.key_wifi_flag ==200){
+       
+             key_t.key_wifi_flag =0; 
 
 	}
 

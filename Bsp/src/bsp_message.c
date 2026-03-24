@@ -121,9 +121,9 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
      case dry_cmd://0x02 //PTC打开关闭指令
        
-     if(pdata[3] == 0x00){
+    
 
-	   if(pdata[4]== 0x01 && run_t.gPower_On == power_on){
+	   if(pdata[3]== 0x01 && run_t.gPower_On == power_on){
 
             run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
             LED_DRY_ON();
@@ -131,7 +131,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	       SendWifiData_Answer_Cmd(0x02,0x0);
 			osDelay(50);
         }
-        else if(pdata[4] == 0x0){
+        else if(pdata[3] == 0x0){
 
             run_t.gDry =0;
 		    LED_DRY_OFF();
@@ -140,25 +140,25 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		    osDelay(50);
 
         }
-    	}
+    	
      break;
 
      case plasma_cmd: //0x03//PLASMA 打开关闭指令
 
-		if(pdata[3] == 0x00){
 		
-			if(pdata[4]== 0x01){
+		
+			if(pdata[3]== 0x01){
 	          
 	        run_t.gPlasma =1;
 
 
 	        }
-	        else if(pdata[4] == 0x0){
+	        else if(pdata[3] == 0x0){
 	          
 	         run_t.gPlasma =0;
 
 	        }
-		}
+		
 
      break;
 
@@ -306,13 +306,13 @@ void receive_data_from_mainboard(uint8_t *pdata)
         }
       break;
 
-	  case wifi_connect_notice: //0x1f notice is command
+	  case 0x1F: //0x1f notice is command
 	  	
      
 	    if(pdata[3] == 0x01){ //0x1F ,is notice don't data--(1,2,3,4,5,6,7,9)
 
 		    
-             run_t.wifi_led_fast_blink=0;
+             run_t.wifi_led_fast_blink = 0;
 			 run_t.connect_wifi_state = wifi_connect_success;
 			 run_t.gTimer_wifi_connect_counter =0; //120s counte start
 		
@@ -321,7 +321,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		}
 		else{ //close
 	  
-		      run_t.wifi_led_fast_blink=0;
+		      
 			 run_t.connect_wifi_state = wifi_connect_null;
 			 run_t.gTimer_wifi_connect_counter =0; //120s counte start
 	  
@@ -334,14 +334,14 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	  case 0x22: //Command ,set temperature compare dht11 result open or close
 
-	   if(pdata[3] == 0x00){
+	  
 
-	   if(pdata[4]== 0x01 && run_t.gPower_On == power_on){
+	   if(pdata[3]== 0x01 && run_t.gPower_On == power_on){
 
              run_t.gDry =1 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
              LED_DRY_ON();// gpro_t.g_manual_shutoff_dry_flag = 0;
         }
-        else if(pdata[4] == 0x0 && run_t.gPower_On == power_on){
+        else if(pdata[3] == 0x0 && run_t.gPower_On == power_on){
 
             //gpro_t.g_manual_shutoff_dry_flag = 0;
             run_t.gDry =0;
@@ -349,7 +349,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
           
 
         }
-    	}
+    	
 
 	  break;
 
@@ -548,7 +548,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 	    run_t.wifi_led_fast_blink=1;
 		run_t.connect_wifi_state = wifi_connect_null;
 		run_t.gTimer_wifi_connect_counter =0; //120s counte start
-		key_t.key_wifi_flag=0;
+	
 			  
 	  
 	   }

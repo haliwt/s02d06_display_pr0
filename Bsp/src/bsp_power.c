@@ -19,7 +19,7 @@ void Power_Off(void);
 void power_on_run_handler(void)
 {
 
-   static uint8_t  step_state;
+   static uint8_t  step_state,counter_version;
    switch(run_t.power_on_step){
 
       case 0:
@@ -63,6 +63,8 @@ void power_on_run_handler(void)
 			gpro_t.key_disp_mode_flag = 0xff;
 		    gpro_t.ai_flag = ai_mode; //don't AI
 		    key_t.disp_smg_mode_flag=disp_works_times;
+			gpro_t.fan_run_one_minute =0; 
+			gpro_t.gTimer_counter_one_minute =0;
 
 			 SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
 	         vTaskDelay(pdMS_TO_TICKS(100));
@@ -169,6 +171,11 @@ void power_on_run_handler(void)
 	  case 4:
 	  	
 	  	twoHours_works_timing();
+        if(counter_version > 20){
+			counter_version =0;
+		    SendData_Set_Command(0x0F,0x02); //notice thi is new version
+		    vTaskDelay(pdMS_TO_TICKS(50));
+        }
 	  run_t.power_on_step=1;
 
 	  break;

@@ -115,6 +115,7 @@ typedef struct _pro_t{
 
    uint8_t key_disp_mode_flag ;
    uint8_t ai_flag ;
+   uint8_t fan_run_one_minute; 
   
    uint8_t g_time_disp_colon_flag;
    uint8_t smartphone_app_timer_power_on_flag;
@@ -125,6 +126,9 @@ typedef struct _pro_t{
    uint8_t gTimer_mode_long_key_counter;
 
    uint8_t  gTimer_set_temp_counter ;
+
+ 
+   uint8_t gTimer_counter_one_minute;
    
    uint16_t gTimer_two_hours_seconds;
 

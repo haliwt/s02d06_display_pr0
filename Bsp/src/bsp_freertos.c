@@ -208,7 +208,7 @@ static void vTaskStart(void *pvParameters)
       
     /* 接收到消息，检测那个位被按下 */
 	if(POWER_KEY_VALUE()==KEY_DOWN ){
-        key_t.key_wifi_flag =0;
+   
 	    key_t.key_power_flag =1;
 
 	}
@@ -266,7 +266,7 @@ static void vTaskStart(void *pvParameters)
    else if(DEC_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){
 	
       key_t.key_dec_flag =1;
-      key_t.key_wifi_flag =0;
+  
       gpro_t.mode_Key_long_counter=0;
 
     
@@ -275,14 +275,13 @@ static void vTaskStart(void *pvParameters)
   else if(ADD_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
 	if(run_t.gPower_On == power_on){
 	 key_t.key_add_flag =1;
-	 key_t.key_wifi_flag =0;
+	
 	  gpro_t.mode_Key_long_counter=0;            
 	}
   }
   else if(PLASMA_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
  
     key_t.key_plasma_flag =1;
-    key_t.key_wifi_flag =0;
     gpro_t.mode_Key_long_counter=0;
     	                
     
@@ -290,7 +289,7 @@ static void vTaskStart(void *pvParameters)
   else if(DRY_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
 
     key_t.key_dry_flag =1;
-    key_t.key_wifi_flag =0;
+
     gpro_t.mode_Key_long_counter=0;
                
   
@@ -299,7 +298,7 @@ static void vTaskStart(void *pvParameters)
 
        
 	    key_t.key_mouse_flag =1;
-        key_t.key_wifi_flag =0;
+ 
         gpro_t.mode_Key_long_counter=0;
       
 	                 
@@ -318,7 +317,7 @@ static void vTaskStart(void *pvParameters)
             run_t.gTimer_wifi_connect_counter =0; //120s counte start
             SendData_Set_Command(0x05,0x01); // link wifi of command .
             vTaskDelay(100);
-		    key_t.key_wifi_flag =0;
+
 	     }
       	}
 

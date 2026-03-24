@@ -52,6 +52,8 @@ void tim17_isr_callback_hanlder(void)
 	
       gpro_t.gTimer_two_hours_seconds++;
 	   gpro_t.gTimer_set_temp_counter ++;
+	   gpro_t.gTimer_counter_one_minute++;
+	   
 
    
 	 
