@@ -314,7 +314,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		    
              run_t.wifi_led_fast_blink = 0;
 			 run_t.connect_wifi_state = wifi_connect_success;
-			 run_t.gTimer_wifi_connect_counter =0; //120s counte start
+			// run_t.gTimer_wifi_connect_counter =0; //120s counte start
 		
 			  
 	  
@@ -323,7 +323,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 	  
 		      
 			 run_t.connect_wifi_state = wifi_connect_null;
-			 run_t.gTimer_wifi_connect_counter =0; //120s counte start
+			 //run_t.gTimer_wifi_connect_counter =0; //120s counte start
 	  
 		}
 	    
