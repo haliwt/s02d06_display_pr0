@@ -34,13 +34,13 @@ static void vTaskStart(void *pvParameters);
 /*------------------ 静态任务内存定义 ------------------*/
 
 static StaticTask_t xTaskRunProTCB;
-static StackType_t xTaskRunProStack[256];
+static StackType_t xTaskRunProStack[512];
 
 static StaticTask_t xTaskDecoderProTCB;
-static StackType_t xTaskDecoderProStack[128];
+static StackType_t xTaskDecoderProStack[256];
 
 static StaticTask_t xTaskStartTCB;
-static StackType_t xTaskStartStack[128];
+static StackType_t xTaskStartStack[256];
 
 
 
@@ -363,7 +363,7 @@ void AppTaskCreate (void)
 	xHandleTaskDecoderPro = xTaskCreateStatic(
 				vTaskDecoderPro,			/* 任务函数 */
 				"vTaskDecoderPro", 		/* 任务名 */
-				128,					/* 栈大小（word） */
+				256,					/* 栈大小（word） */
 				NULL,					/* 参数 */
 				3,						/* 优先级 */
 				xTaskDecoderProStack,		/* 栈数组 */
@@ -375,7 +375,7 @@ void AppTaskCreate (void)
 	xHandleTaskRunPro = xTaskCreateStatic(
 				vTaskRunPro, 		/* 任务函数 */
 				"vTaskRunPro",			/* 任务名 */
-				256,					/* 栈大小（word） */
+				512,					/* 栈大小（word） */
 				NULL,					/* 参数 */
 				1,						/* 优先级 */
 				xTaskRunProStack,		/* 栈数组 */
@@ -385,7 +385,7 @@ void AppTaskCreate (void)
 	xHandleTaskStart = xTaskCreateStatic(
 				vTaskStart,			/* 任务函数 */
 				"vTaskStart",			/* 任务名 */
-				128,					/* 栈大小（word） */
+				256,					/* 栈大小（word） */
 				NULL,					/* 参数 */
 				2,						/* 优先级 */
 				xTaskStartStack,		/* 栈数组 */
