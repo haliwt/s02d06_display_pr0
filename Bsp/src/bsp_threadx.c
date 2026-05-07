@@ -526,6 +526,7 @@ static void vTaskStart(ULONG thread_input)
              dry_key_handler();
 		 }
 		 else if(flags & KEY_MOUSE_SHORT){
+		 	mouse_key_handler() ;
 
 		 }
 		 else if(flags & KEY_WIFI_LONG){

@@ -358,8 +358,7 @@ void mode_key_handler(void)
 
    #endif 
    
-     SendData_Buzzer();
-	 tx_thread_sleep(10);
+    
    	}
 		  
 }
