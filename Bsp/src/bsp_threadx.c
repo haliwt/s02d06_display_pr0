@@ -372,7 +372,6 @@ static void vTaskStart(ULONG thread_input)
 			   run_t.gTimer_key_timing = 0;
 			   run_t.gTimer_smg_blink_times =0;
 			   gpro_t.set_timer_first_smg_blink_flag=0;
-			   gpro_t.mode_key_shot_flag=0xff;
 
 			  SendData_Set_Command(0x06,0x01);
 	          tx_thread_sleep(10);

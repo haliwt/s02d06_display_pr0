@@ -240,7 +240,7 @@ void mouse_key_handler(void)
             tx_thread_sleep(10);
             run_t.gMouse = 1;
             LED_MOUSE_ON();
-            gpro_t.send_ack_cmd = check_ack_mouse_on;  // 假设有对应的反馈类型
+            //gpro_t.send_ack_cmd = check_ack_mouse_on;  // 假设有对应的反馈类型
            
 
         } else if(run_t.gMouse == 1){
@@ -249,7 +249,7 @@ void mouse_key_handler(void)
             tx_thread_sleep(10);
             run_t.gMouse = 0;
             LED_MOUSE_OFF();
-            gpro_t.send_ack_cmd = check_ack_mouse_off;  // 假设有对应的反馈类型
+            //gpro_t.send_ack_cmd = check_ack_mouse_off;  // 假设有对应的反馈类型
            
         }
    

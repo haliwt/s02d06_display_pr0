@@ -70,6 +70,7 @@ void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 /* Private defines -----------------------------------------------------------*/
+/* Private defines -----------------------------------------------------------*/
 #define SMG_POWER_Pin LL_GPIO_PIN_1
 #define SMG_POWER_GPIO_Port GPIOA
 #define TM1639_STB_Pin LL_GPIO_PIN_4
