@@ -231,7 +231,7 @@ static void vTaskStart(ULONG thread_input)
 	
 
 	/* ================= MODE 键 ================= */
-        if(MOUSE_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on)
+        if(MODEL_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on)
         {
             mode_cnt++;
             if(mode_cnt == LONG_PRESS_TIME){
@@ -360,7 +360,7 @@ static void vTaskStart(ULONG thread_input)
               power_key_handler() ;
 		 }
 		 else if(flags & KEY_MODE_SHORT){
-			 gpro_t.mode_Key_long_counter=0;
+			
 		      SendData_Set_Command(0x06,0x01);
 		      tx_thread_sleep(10);
 	          mode_key_handler();
