@@ -331,135 +331,7 @@ static void vTaskStart(ULONG thread_input)
     }
 
 }
-
-
- #if 0
-	
-      
-    /* 接收到消息，检测那个位被按下 */
-	if(POWER_KEY_VALUE()==KEY_DOWN ){
-   
-	    key_t.key_power_flag =1;
-
-	}
-	else if(MODEL_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
-
-       
-
-		if(gpro_t.mode_Key_long_counter < 200){
-
-		     gpro_t.mode_Key_long_counter++;
-
-	    if( run_t.wifi_led_fast_blink==1 && gpro_t.mode_Key_long_counter > 30 &&  gpro_t.mode_Key_long_counter < 200){
-			 gpro_t.mode_Key_long_counter=200;
-			 gpro_t.gTimer_mode_long_key_counter=0;
-
-		      gpro_t.set_timer_timing_doing_value = 1;
-			   gpro_t.key_add_dec_pressed_flag =0;
-			   run_t.gTimer_key_timing = 0;
-			   run_t.gTimer_smg_blink_times =0;
-			   gpro_t.set_timer_first_smg_blink_flag=0;
-			    gpro_t.mode_key_shot_flag=0xff;
-
-			  SendData_Set_Command(0x06,0x01);
-	          tx_thread_sleep(10);
-		     
-
-
-	    }
-	    else if(gpro_t.mode_Key_long_counter > 79 && gpro_t.mode_Key_long_counter < 200 && run_t.wifi_led_fast_blink==0){
-
-		     gpro_t.mode_Key_long_counter=200;
-			 key_t.key_mode_flag = 0;
-		     gpro_t.gTimer_mode_long_key_counter=0;
-		
-		     gpro_t.set_timer_timing_doing_value = 1;
-			   gpro_t.key_add_dec_pressed_flag =0;
-			   run_t.gTimer_key_timing = 0;
-			   run_t.gTimer_smg_blink_times =0;
-			   gpro_t.set_timer_first_smg_blink_flag=0;
-			    gpro_t.mode_key_shot_flag=0xff;
-
-			    SendData_Set_Command(0x06,0x01);
-	             tx_thread_sleep(10);
-		
-			 
-           }
-        }
-
-		if(gpro_t.mode_Key_long_counter==200) key_t.key_mode_flag = 0;
-		else
-           key_t.key_mode_flag = 1;
-         
-		 
-   }
-   else if(DEC_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){
-	
-      key_t.key_dec_flag =1;
-  
-      gpro_t.mode_Key_long_counter=0;
-
-    
-               
-  }
-  else if(ADD_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
-	if(run_t.gPower_On == power_on){
-	 key_t.key_add_flag =1;
-	
-	  gpro_t.mode_Key_long_counter=0;            
-	}
-  }
-  else if(PLASMA_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
- 
-    key_t.key_plasma_flag =1;
-    gpro_t.mode_Key_long_counter=0;
-    	                
-    
-  }
-  else if(DRY_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
-
-    key_t.key_dry_flag =1;
-
-    gpro_t.mode_Key_long_counter=0;
-               
-  
-   }
-   else if(MOUSE_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
-
-       
-	    key_t.key_mouse_flag =1;
- 
-        gpro_t.mode_Key_long_counter=0;
-      
-	                 
-	}
-    else if(WIFI_KEY_VALUE()==KEY_DOWN &&  run_t.gPower_On == power_on ){
-
-        
-	     // 处理WiFi键
-         if( key_t.key_wifi_flag < 150 && run_t.gPower_On == power_on){
-		 	  key_t.key_wifi_flag++;
-        
-         if(key_t.key_wifi_flag > 99){
-            key_t.key_wifi_flag = 200;
-			
-		    run_t.connect_wifi_state = wifi_connect_null;
-            run_t.gTimer_wifi_connect_counter =0; //120s counte start
-            SendData_Set_Command(0x05,0x01); // link wifi of command .
-            tx_thread_sleep(10);
-
-	     }
-      	}
-
-    }
-  #if 0
-    tx_thread_sleep(2);
-
-	}
-}
-#endif
-#endif 
- /**********************************************************************************************************
+/**********************************************************************************************************
  *	 Function Name: 
  *	 Function:
  *	 Input Ref: pvParameters 是在创建该任务时传的形参
@@ -522,7 +394,7 @@ static void vTaskStart(ULONG thread_input)
 		 else if(flags & KEY_PLASMA_SHORT){
              plasma_key_handler() ;
 		 }   
-		 else if(flags & KEY_DRY_Pin){
+		 else if(flags & KEY_DRY_SHORT){
              dry_key_handler();
 		 }
 		 else if(flags & KEY_MOUSE_SHORT){

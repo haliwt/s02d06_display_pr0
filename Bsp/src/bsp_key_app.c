@@ -375,8 +375,7 @@ void handle_mode_key_long_press(void)
         
      gpro_t.mode_key_shot_flag=0xff;
 
-    SendData_Buzzer();
-    tx_thread_sleep(10);
+ 
     
 }
 
