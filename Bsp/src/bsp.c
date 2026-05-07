@@ -77,7 +77,7 @@ void mode_key_short_fun(void)
 		key_t.disp_smg_mode_flag = disp_works_times;
 		gpro_t.key_disp_mode_flag =0xff;
 		SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
-		osDelay(100);
+		tx_thread_sleep(10);
     
    }
    else if(gpro_t.set_timer_timing_value_success==1 && gpro_t.key_disp_mode_flag == no_ai_mode){ 
@@ -87,7 +87,7 @@ void mode_key_short_fun(void)
 	    key_t.disp_smg_mode_flag = disp_timer_times;
 	    gpro_t.key_disp_mode_flag =0xff;
 		SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
-		osDelay(100);
+		tx_thread_sleep(10);
 
    }
    else if(gpro_t.key_disp_mode_flag == ai_mode && gpro_t.key_disp_mode_flag == ai_mode){
@@ -97,7 +97,7 @@ void mode_key_short_fun(void)
         key_t.disp_smg_mode_flag = disp_works_times;
         gpro_t.key_disp_mode_flag =0xff;
 		SendData_Set_Command(0x07,0x01); //reverse switch don't displayb "AI"
-		osDelay(100);
+		tx_thread_sleep(10);
 			
 			 
 
@@ -114,7 +114,7 @@ void mode_key_short_fun(void)
 ******************************************************************************/
 void power_off_run_handler(void)
 {
-    static uint8_t power_on_off_flag;
+    static uint8_t power_on_off_flag,counter_flag = 0;
     switch(run_t.power_off_step){
      case 0://2
 	  
@@ -134,6 +134,9 @@ void power_off_run_handler(void)
 			gpro_t.gTimer_counter_one_minute =0;
 			
          run_t.power_off_step = 1;
+		 
+	    SendData_Set_Command(0x11,0x01); //notice thi is new version
+		tx_thread_sleep((10));
        break;
 
        case 1://4
@@ -149,9 +152,9 @@ void power_off_run_handler(void)
 				   run_t.gFan_RunContinue =2;
                  
 			       SendData_Set_Command(0x12,1); //turn off fun .mainboard.WT.EDIT 2026.01.04
-				   vTaskDelay(pdMS_TO_TICKS(100)); //WT.EDIT 2026.01.04
+				   tx_thread_sleep((10)); //WT.EDIT 2026.01.04
 				   SendData_Set_Command(0x10,0); //power off mainboard.WT.EDIT 2026.01.04
-                   vTaskDelay(pdMS_TO_TICKS(100)); //WT.EDIT 2026.01.04
+                   tx_thread_sleep((10)); //WT.EDIT 2026.01.04
 
 			}
 
@@ -159,13 +162,30 @@ void power_off_run_handler(void)
 		  
             Breath_Led();
 
-			if(run_t.gTimer_display_dht11 > 5){
+		
+		    run_t.power_off_step = 2;
+		 break;
+
+		 case 2:
+
+		 	if(run_t.gTimer_display_dht11 > 2){
                run_t.gTimer_display_dht11 =0;
+			   counter_flag = counter_flag ^ 0x01;
+
+			   if(counter_flag ==1){
 			   SendData_Set_Command(0x0F,0x02); //notice thi is new version
-	           vTaskDelay(pdMS_TO_TICKS(100));
+	           tx_thread_sleep((10));
+			   }
+			   else{
+                 SendData_Set_Command(0x11,0x01); //notice thi is new version
+	             tx_thread_sleep((10));
+
+			   }
 
 			}
-		 
+
+		    run_t.power_off_step = 1;
+
 		 break;
        }
 
@@ -190,7 +210,7 @@ void twoHours_works_timing(void)
       gpro_t.fan_run_one_minute =1; //one minute is flag .
 	  gpro_t.gTimer_counter_one_minute =0;
       SendData_Set_Command(0x19,0x01) ;//works two hours ,then have a rest 10 minutes.
-	  vTaskDelay(100);
+	  tx_thread_sleep(10);
      
    }
    else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_two_hours_seconds > 600){
@@ -198,9 +218,9 @@ void twoHours_works_timing(void)
 		gpro_t.two_work_hours_flag = 0;
         gpro_t.fan_run_one_minute =3; //one minute is flag .
         SendData_Set_Command(0x19,0x0);
-	    vTaskDelay(50);
+	    tx_thread_sleep(10);
 	     SendData_Set_Command(0x18,0x0);//fan run .
-	    vTaskDelay(50);
+	    tx_thread_sleep(10);
    }
 
    if(gpro_t.two_work_hours_flag == 1)counter_send++;
@@ -209,23 +229,23 @@ void twoHours_works_timing(void)
   if(gpro_t.fan_run_one_minute==1 && gpro_t.gTimer_counter_one_minute >59){
 		  gpro_t.fan_run_one_minute++;
 		  SendData_Set_Command(0x18,0x01);//fan stop run .
-		  vTaskDelay(50);
+		  tx_thread_sleep(10);
  }
  else if(gpro_t.fan_run_one_minute==3){
 	
 		   gpro_t.fan_run_one_minute++;
 		   SendData_Set_Command(0x18,0x0);//fan run .
-		   vTaskDelay(50);
+		   tx_thread_sleep(10);
 	
 	 }
 	 else if(gpro_t.two_work_hours_flag ==1 && counter_send >5 &&	gpro_t.fan_run_one_minute ==2){
 		 counter_send=0;
 	
 		 SendData_Set_Command(0x19,0x01);
-		 vTaskDelay(50);
+		 tx_thread_sleep(10);
 		 if(gpro_t.fan_run_one_minute==2){
 			SendData_Set_Command(0x18,0x01);//fan stop run .
-			vTaskDelay(50);
+			tx_thread_sleep(10);
 		 }
 	
 	 }

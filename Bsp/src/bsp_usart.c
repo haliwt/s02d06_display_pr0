@@ -68,9 +68,21 @@ static void read_isr_usart1_data(uint8_t data)
             else
                 state=0;
 		break;
+            
+        case 1:
+            if(data == 0x10){  // 0x5A --main board singla
+                gl_tMsg.rx_data_counter++;
+				gl_tMsg.usData[gl_tMsg.rx_data_counter] = data;
+                state = 2;
+            }
+            else{
+              state = 0;
+            }
+            
+        break;
 
        
-		case 1: //#1
+		case 2: //#1
 
            // if(gl_tMsg.disp_rx_cmd_done_flag ==0){
               /* 初始化结构体指针 */
@@ -79,12 +91,12 @@ static void read_isr_usart1_data(uint8_t data)
 	          gl_tMsg.usData[gl_tMsg.rx_data_counter] = data;
 
 			  if(gl_tMsg.usData[gl_tMsg.rx_data_counter] ==0xFE){
-                state = 2;
+                state = 3;
               }
           //  }
 	    break;
 
-	   case 2:
+	   case 3:
 	           gl_tMsg.rx_data_counter++;
 	           gl_tMsg.usData[gl_tMsg.rx_data_counter]=data;
                state = 0;

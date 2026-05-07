@@ -31,15 +31,25 @@ void process_keys(void) ;
 
 void SetDataTemperatureValue(void);
 
-void mode_key_handler(void);
 
-//void wifi_mode_key_handler(void);
+
+void plasma_key_handler(void) ;
+
 
 void handle_mode_key_long_press(void);
 
 
 void power_key_handler(void) ;
 
+void dry_key_handler(void) ;
+
+void mouse_key_handler(void) ;
+
+void key_add_fun(void);
+
+void key_dec_fun(void);
+
+void mode_key_handler(void);
 
 
 #endif /* BSP_INC_BSP_KEY_APP_H_ */

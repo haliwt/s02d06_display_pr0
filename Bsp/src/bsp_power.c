@@ -67,7 +67,7 @@ void power_on_run_handler(void)
 			gpro_t.gTimer_counter_one_minute =0;
 
 			 SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
-	         vTaskDelay(pdMS_TO_TICKS(100));
+	         tx_thread_sleep((10));
 			
 			run_t.power_on_step= 1;
 
@@ -174,7 +174,7 @@ void power_on_run_handler(void)
         if(counter_version > 20){
 			counter_version =0;
 		    SendData_Set_Command(0x0F,0x02); //notice thi is new version
-		    vTaskDelay(pdMS_TO_TICKS(50));
+		    tx_thread_sleep((10));
         }
 	  run_t.power_on_step=1;
 

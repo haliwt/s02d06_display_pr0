@@ -69,6 +69,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+/* Private defines -----------------------------------------------------------*/
 #define SMG_POWER_Pin LL_GPIO_PIN_1
 #define SMG_POWER_GPIO_Port GPIOA
 #define TM1639_STB_Pin LL_GPIO_PIN_4
@@ -105,6 +106,7 @@ void Error_Handler(void);
 #define KEY_DEC_GPIO_Port GPIOA
 #define KEY_ADD_Pin LL_GPIO_PIN_12
 #define KEY_ADD_GPIO_Port GPIOA
+
 
 /* USER CODE BEGIN Private defines */
 

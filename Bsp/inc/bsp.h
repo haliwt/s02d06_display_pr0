@@ -28,18 +28,16 @@
 
 #include "bsp_key_app.h"
 #include "bsp_message.h"
-#include "bsp_freertos.h"
+#include "bsp_threadx.h"
+
+
+#include "app_threadx.h"
 
 
 
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "cmsis_os.h"
 
-
-
-#define  USE_FreeRTOS      1
+#define  tx_thread_rtos      0
 
 #define DEBUG_FALG   Enable_EventRecorder
 
@@ -51,11 +49,11 @@
 #endif
 
 
-#if USE_FreeRTOS == 1
-	//#include "FreeRTOS.h"
-	///#include "task.h"
-	#define DISABLE_INT()    taskENTER_CRITICAL()
-	#define ENABLE_INT()     taskEXIT_CRITICAL()
+#if tx_thread_rtos == 1
+static UINT _tx_posture;
+
+#define DISABLE_INT()    _tx_posture = tx_interrupt_control(TX_INT_DISABLE)
+#define ENABLE_INT()     tx_interrupt_control(_tx_posture)
 #else
 	/* ����ȫ���жϵĺ� */
 	#define ENABLE_INT()	__set_PRIMASK(0)	/* ʹ��ȫ���ж� */

@@ -162,7 +162,7 @@ void Set_TimerTiming_Number_Value(void)
         	 //run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
         	 //run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
         	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-			 vTaskDelay(200);
+			 tx_thread_sleep(20);
 			 
 
 		}
@@ -179,9 +179,9 @@ void Set_TimerTiming_Number_Value(void)
 			}
 
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-			vTaskDelay(200);
+			tx_thread_sleep(20);
 			SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
-			osDelay(100);
+			tx_thread_sleep(10);
 
 
 		}
@@ -193,9 +193,9 @@ void Set_TimerTiming_Number_Value(void)
 					run_t.timer_dispTime_hours = 0 ;
 				    run_t.timer_dispTime_minutes = 0;
 		            Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-					vTaskDelay(200);
+					tx_thread_sleep(20);
 					SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
-					osDelay(100);
+					tx_thread_sleep(10);
 		
 		
 		}
@@ -377,7 +377,7 @@ void mode_key_handler(void)
             gpro_t.look_over_timer_state = 1;
 		     gpro_t.mode_key_shot_flag =1;
             SendData_Buzzer();
-            //osDelay(DEBOUNCE_DELAY_MS);
+            //tx_thread_sleep(DEBOUNCE_DELAY_MS);
             //mode_key_short_fun();
 			
            // short_press_cooldown = SHORT_PRESS_COOLDOWN; // 设置冷却时间
@@ -397,7 +397,7 @@ void mode_key_handler(void)
             if (!long_press_handled) {
 				key_t.key_mode_flag ++;
                 SendData_Buzzer();
-                osDelay(DEBOUNCE_DELAY_MS);
+                tx_thread_sleep(DEBOUNCE_DELAY_MS);
                 mode_key_long_fun();
                 long_press_handled = true;
             }
@@ -431,7 +431,7 @@ void mode_key_handler(void)
         if (last_key_state == KEY_UP) {
             // 立即触发短按功能
             SendData_Buzzer();
-            osDelay(DEBOUNCE_DELAY_MS);
+            tx_thread_sleep(DEBOUNCE_DELAY_MS);
             mode_key_short_fun();
             
             // 重置长按计数器
@@ -447,7 +447,7 @@ void mode_key_handler(void)
         // 长按触发
         if (gpro_t.mode_Key_long_counter >= KEY_LONG_PRESS_THRESHOLD && !long_press_handled) {
             SendData_Buzzer();
-            osDelay(DEBOUNCE_DELAY_MS);
+            tx_thread_sleep(DEBOUNCE_DELAY_MS);
             mode_key_long_fun();
             long_press_handled = true;
         }
