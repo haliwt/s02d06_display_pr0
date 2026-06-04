@@ -64,7 +64,8 @@ void set_timer_value_handler(uint8_t hours,uint8_t minutes)
 	run_t.minutes_one_decade_bit= minutes/10 ;
 	q=  minutes%10;
 	gpro_t.g_time_disp_colon_flag = 1;
-	TM1639_Write_4Bit_Time(m,run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,q,0) ; //timer is default 12 hours "12:00"
+	//TM1639_Write_4Bit_Time(m,run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,q,0) ; //timer is default 12 hours "12:00"
+	TM1639_Write_4Bit_Set_Time(m,run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,q) ;
 
 
 }
