@@ -119,21 +119,21 @@ typedef struct _pro_t{
    uint8_t smartphone_app_timer_power_on_flag;
    uint8_t key_add_dec_pressed_flag;
    
-   uint8_t gTimer_wifi_led_blink ;
-   uint8_t gTimer_disp_mode_switch;
-   uint8_t gTimer_mode_long_key_counter;
+  
+ volatile  uint8_t gTimer_disp_mode_switch;
+ volatile  uint8_t gTimer_mode_long_key_counter;
 
-   uint8_t  gTimer_set_temp_counter ;
+ volatile  uint8_t  gTimer_set_temp_counter ;
 
  
-   uint8_t gTimer_counter_one_minute;
+ volatile  uint8_t gTimer_counter_one_minute;
    
-   uint16_t gTimer_two_hours_seconds;
+ volatile  uint16_t gTimer_two_hours_seconds;
 
    
-   uint16_t mode_Key_long_counter;
+ volatile  uint16_t mode_Key_long_counter;
 
-   uint16_t gTimer_4bitsmg_blink_times;
+  volatile uint16_t gTimer_4bitsmg_blink_times;
   
    
 

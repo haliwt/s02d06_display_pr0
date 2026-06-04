@@ -6,52 +6,34 @@ static void  wifi_ico_fast_blink(void);
 void wifi_connect_state_fun(void)
 {
 
-    static uint8_t wifi_led_blink;
-	switch(run_t.wifi_led_fast_blink){
+  volatile static uint8_t wifi_counter= 0;
+  if(run_t.wifi_led_fast_blink == 1 && run_t.connect_wifi_state==0 && run_t.gPower_On == power_on){
     
-    case 0x01:
-
         if(run_t.gTimer_wifi_connect_counter <120){
            
             LED_WIFI_TOGGLE() ;
-            tx_thread_sleep(10);
+            
         }
         else{
             run_t.wifi_led_fast_blink =0;
            
         }
 
+  	}
+    else if(run_t.wifi_led_fast_blink == 0 && run_t.connect_wifi_state == wifi_connect_null && run_t.gPower_On == power_on){
 
-
-    break;
-
-    case 0:
-    if(run_t.connect_wifi_state == wifi_connect_null){
-
-	   if(gpro_t.gTimer_wifi_led_blink > 1){
-	    gpro_t.gTimer_wifi_led_blink =0;
-
-	      wifi_led_blink = wifi_led_blink ^ 0x01;
-	      if(wifi_led_blink ==1){
-	   	     LED_WIFI_ON() ;
-	       }
-		   else{
-             LED_WIFI_OFF();
-
+	     
+		   if(++wifi_counter > 9){//100ms * 10 = 1000ms = 1s.
+		   	 wifi_counter =0;
+	         LED_WIFI_TOGGLE() ;
 		   }
-	   }
-    }
-    else{
-        LED_WIFI_ON();
-    }
-
-    break;
-
-
-
 
     }
+    else if(run_t.connect_wifi_state == 1 && run_t.gPower_On == power_on){
 
+         LED_WIFI_ON()  ;  
+	 }
+   
 }
 
 

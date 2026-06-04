@@ -24,10 +24,13 @@
 
 
 
-#define STACK_SIZE_DECODER  256//256//128//1792//3072//2048//1024//896//768
+#define STACK_SIZE_DECODER  512//384//256//256//128//1792//3072//2048//1024//896//768
 #define STACK_SIZE_UI  896//1024//384//256
 #define STACK_SIZE_KEY  256
-#define STACK_SIZE_EVENT   256
+#define STACK_SIZE_EVENT   512//256
+
+#define  DEBUG_ENABLE     1
+
 
 
 /*在 ThreadX 里，优先级数字越小，优先级越高：*/
@@ -41,6 +44,8 @@ static TX_THREAD thread_key_event;
 TX_SEMAPHORE decoder_semaphore;
 
 TX_EVENT_FLAGS_GROUP key_event;
+
+//TX_TIMER buzzer_timer;
 
 /*队列*/
 //static TX_QUEUE uart1_rx_queue;
@@ -60,6 +65,7 @@ static void vTaskUiPro(ULONG thread_input);
 static void vTaskStart(ULONG thread_input);
 static void vTaskDecoderPro(ULONG thread_input);
 static void vTaskKeyEvent(ULONG thread_input);
+//static void buzzer_timer_callback(ULONG input);
 
 
 static void threadx_handler(void);
@@ -67,6 +73,20 @@ static void threadx_handler(void);
 static void tx_thread_stack_error_handler(TX_THREAD *thread_ptr);
 
 
+#if DEBUG_ENABLE
+
+static void debug_stack_ui_check(void);
+
+static void debug_stack_key_check(void);
+
+static void debug_stack_decoder_check(void);
+
+static void debug_stack_event_check(void);
+
+
+#endif 
+
+ULONG unused,unused_key,unused_decoder,unused_key_event ;
 
 
 
@@ -89,6 +109,7 @@ void tx_application_define(void *first_unused_memory)
     memset(stack_ui_pro, 0xEF, sizeof(stack_ui_pro));
     memset(stack_start_pro, 0xEF, sizeof(stack_start_pro));
 	memset(stack_decoder_pro, 0xEF, sizeof(stack_decoder_pro));
+	memset(stack_key_event, 0xEF, sizeof(stack_key_event));
     #endif 
 
     /* 3. 注册堆栈错误回调（推荐保持） */
@@ -133,6 +154,9 @@ static void vTaskDecoderPro(ULONG thread_input)
 
 			   
 		decoder_handler();
+		 #if DEBUG_ENABLE
+              debug_stack_decoder_check();
+          #endif 
 			    
 	  }
 
@@ -159,26 +183,24 @@ static void vTaskUiPro(ULONG thread_input)
     if(run_t.gPower_On == power_on){
 		
 
-	    power_on_run_handler();
+	   power_on_run_handler();
      
        Display_TimeColon_Blink_Fun();
 	
        set_timer_fun_led_blink();
-       wifi_connect_state_fun();
+     
 	  
 	 
-       if(power_on_theFirst_times < 10 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){
-         power_on_theFirst_times ++;
-         Display_DHT11_Value();
-
-       }
+      
     }
 	 else{
 
 	    power_off_run_handler();
 
 	  }
-
+        #if DEBUG_ENABLE
+              debug_stack_ui_check();
+          #endif 
       tx_thread_sleep(1);
      } 
   }
@@ -207,7 +229,7 @@ static void vTaskStart(ULONG thread_input)
 	static uint8_t mouse_cnt = 0;
 	static uint8_t wifi_cnt = 0;
 
-    const uint16_t LONG_PRESS_TIME = 200;   // 300 * 10ms = 3000ms
+    const uint16_t LONG_PRESS_TIME = 130;   // 300 * 10ms = 3000ms
 
    
     while(1)
@@ -220,114 +242,90 @@ static void vTaskStart(ULONG thread_input)
 			  counter_power_flag++;
 			 
 		  }
-		  else
-		  {
-			  if(power_cnt > 0 )
+		  else if(power_cnt > 0 ){
 				  tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
 	
 			  power_cnt = 0;
 		  }
-
-	
-
-	/* ================= MODE 键 ================= */
-        if(MODEL_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on)
-        {
+          else if(MODEL_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on)
+          {
             mode_cnt++;
             if(mode_cnt == LONG_PRESS_TIME){
 				tx_event_flags_set(&key_event, KEY_MODE_LONG, TX_OR);
                
             }
-        }
-        else
-        {
-            if(mode_cnt > 0 && mode_cnt < LONG_PRESS_TIME)
+          }
+          else  if(mode_cnt > 0){
+		  	   if(mode_cnt < LONG_PRESS_TIME)
                 tx_event_flags_set(&key_event, KEY_MODE_SHORT, TX_OR);
             mode_cnt = 0;
-        }
-
-         /* ================= plasma 键 ================= */
-		 if(PLASMA_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){
+          } 
+          else if(PLASMA_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){
 
               plasma_cnt++;
            
 
 		 }
-		 else{
-
-		       if(plasma_cnt > 0 )
+		 else if(plasma_cnt > 0 ){
 						 tx_event_flags_set(&key_event, KEY_PLASMA_SHORT, TX_OR);
 				plasma_cnt = 0;
 
 		 }
-		 /* ================= dry 键 ================= */
-         if(DRY_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){ 
+	     else if(DRY_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){ 
 
               dry_cnt++;
 		 }
-		 else{
-		      if(dry_cnt > 0 )
+		 else  if(dry_cnt > 0 ){
 					tx_event_flags_set(&key_event, KEY_DRY_SHORT, TX_OR);
-			dry_cnt = 0;
+			    dry_cnt = 0;
 
 
 		 }
-		 /* ================= UP 键 ================= */
-          if(MOUSE_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){ 
+		 else if(MOUSE_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){ 
              mouse_cnt ++;
 
 		 }
-		 else{
-		      if(mouse_cnt > 0 )
+		 else if(mouse_cnt > 0 ){
 					tx_event_flags_set(&key_event, KEY_MOUSE_SHORT, TX_OR);
 			mouse_cnt = 0;
 
 
 		 }
+         else if(ADD_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on)
+	     {
+	            up_cnt++;
+	           
+	     }
+	     else if(up_cnt > 0 ){
+	                tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
 
-      /* ================= UP 键 ================= */
-        if(ADD_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on)
-        {
-            up_cnt++;
-           
-        }
-        else
-        {
-            if(up_cnt > 0 )
-                tx_event_flags_set(&key_event, KEY_UP_SHORT, TX_OR);
-
-            up_cnt = 0;
-        }
-
-        /* ================= DOWN 键 ================= */
-        if(DEC_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on)
+	            up_cnt = 0;
+	     }
+        else if(DEC_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on)
         {
             down_cnt++;
             
         }
-        else
-        {
-            if(down_cnt > 0)
+        else  if(down_cnt > 0){
                 tx_event_flags_set(&key_event, KEY_DOWN_SHORT, TX_OR);
 
             down_cnt = 0;
         }
-
-		 /* ================= wifi 键 ================= */
-
-		 if(WIFI_KEY_VALUE()==KEY_DOWN &&  run_t.gPower_On == power_on ){
+		else if(WIFI_KEY_VALUE()==KEY_DOWN &&  run_t.gPower_On == power_on ){
 
              wifi_cnt++;
 			  if(wifi_cnt == LONG_PRESS_TIME && run_t.gPower_On == power_on){
 				  tx_event_flags_set(&key_event, KEY_WIFI_LONG, TX_OR);
 			   }
 		 }
-		 else{
-             wifi_cnt = 0;
+		 else if(wifi_cnt >0){
+		     wifi_cnt  =0;
 
 		 }
-       
-		tx_thread_sleep(2);
+        #if DEBUG_ENABLE
+              debug_stack_key_check();
+          #endif 
+		tx_thread_sleep(5);
     }
 
 }
@@ -348,11 +346,11 @@ static void vTaskStart(ULONG thread_input)
    while(1)
    {
  
-	  status = tx_event_flags_get(&key_event,
-							0xFFFFFFFF,
-							TX_OR_CLEAR,
-							&flags,
-							TX_WAIT_FOREVER);//TX_NO_WAIT);//TX_WAIT_FOREVER);//
+	  status = tx_event_flags_get(&key_event,    // 事件标志组控制块
+							0xFFFFFFFF,          // 等待掩码 (Wait Mask)
+							TX_OR_CLEAR,         // 选项 (Option)
+							&flags,				 // 实际读取到的标志值
+							TX_WAIT_FOREVER);//TX_NO_WAIT);//TX_WAIT_FOREVER);// 等待时间
 							
 	  if(status == TX_SUCCESS){
  
@@ -362,7 +360,7 @@ static void vTaskStart(ULONG thread_input)
 		 else if(flags & KEY_MODE_SHORT){
 			
 		      SendData_Set_Command(0x06,0x01);
-		      tx_thread_sleep(10);
+		      tx_thread_sleep(1);
 	          mode_key_handler();
 
 		 }
@@ -374,18 +372,18 @@ static void vTaskStart(ULONG thread_input)
 			   gpro_t.set_timer_first_smg_blink_flag=0;
 
 			  SendData_Set_Command(0x06,0x01);
-	          tx_thread_sleep(10);
+	          tx_thread_sleep(1);
 		 }
 		 else if(flags & KEY_UP_SHORT){
 		 	SendData_Set_Command(0x06,0x01);
-		    tx_thread_sleep(10);
+		    tx_thread_sleep(1);
 			gpro_t.gTimer_set_temp_counter = 0;
 			key_add_fun();
 
 		 }
 		 else if(flags & KEY_DOWN_SHORT){
 		 	SendData_Set_Command(0x06,0x01);
-		    tx_thread_sleep(10);
+		    tx_thread_sleep(1);
 			gpro_t.gTimer_set_temp_counter = 0;
 			key_dec_fun();
 
@@ -405,10 +403,12 @@ static void vTaskStart(ULONG thread_input)
             run_t.connect_wifi_state = wifi_connect_null;
             run_t.gTimer_wifi_connect_counter =0; //120s counte start
             SendData_Set_Command(0x05,0x01); // link wifi of command .
-            tx_thread_sleep(10);
+            tx_thread_sleep(1);
 		 }
 		 
- 
+          #if DEBUG_ENABLE
+              debug_stack_event_check();
+          #endif 
 		
 	  }
 	 
@@ -437,8 +437,8 @@ void threadx_handler(void)
 					0,
 					stack_decoder_pro,
 					STACK_SIZE_DECODER,
-					0,
-					0,
+					1,
+					1,
 					TX_NO_TIME_SLICE,
 					TX_AUTO_START);
 				
@@ -460,8 +460,8 @@ void threadx_handler(void)
                      0,                            /* 传递给任务的参数 */
                      stack_start_pro,              /* 堆栈基地址 */
                      STACK_SIZE_KEY,			   /* 堆栈空间大小 */  
-                     1, 						   /* 任务优先级*/
-                     1, 						   /* 任务抢占阀值 */
+                     0, 						   /* 任务优先级*/
+                     0, 						   /* 任务抢占阀值 */
                      TX_NO_TIME_SLICE, 			   /* 不开启时间片 */
                      TX_AUTO_START);               /* 创建后立即启动 */
   #endif 
@@ -476,6 +476,17 @@ void threadx_handler(void)
 					  2,							/* 任务抢占阀值 */
 					  TX_NO_TIME_SLICE, 			/* 不开启时间片 */
 					  TX_AUTO_START);				/* 创建后立即启动 */
+
+  #if 0
+	tx_timer_create(&buzzer_timer,
+		            "Buzzer_Timer",
+		            buzzer_timer_callback,
+		            0,
+		            2,               // 2ms 后关闭
+		            0,               //0-表示单次触发,不自动重载循环
+		            TX_NO_ACTIVATE);  //初始化不启动
+   #endif 
+   
   
 }
 
@@ -525,7 +536,93 @@ void tx_thread_stack_error_handler(TX_THREAD *thread_ptr)
 }
 
 
+#if DEBUG_ENABLE
+static void debug_stack_ui_check(void)
+{
+    ULONG i;
+   // ULONG unused = 0;
+   ULONG temp_unused = 0; // 使用局部变量进行统计
 
+  
+    // 从数组起始位置（栈底/低地址）开始数连续的 0xEF
+    for (i = 0; i < STACK_SIZE_UI; i++)
+    {
+        if (stack_ui_pro[i] == 0xEF)
+            temp_unused++;
+        else
+            break; 
+    }
+  
+ 
+	
+	unused = temp_unused;  // 统计完后再赋值给全局变量，方便 Watch 窗口查看
+    // 剩下的 unused 就是你安全的“护城河”
+    // 如果 unused < 100 字节，你的 G030 就危险了！
+}
+
+static void debug_stack_key_check(void)
+{
+    ULONG i;
+   // ULONG unused = 0;
+   ULONG temp_unused = 0; // 使用局部变量进行统计
+
+
+    // 从数组起始位置（栈底/低地址）开始数连续的 0xEF
+    for (i = 0; i < STACK_SIZE_KEY; i++)
+    {
+        if (stack_start_pro[i] == 0xEF)
+            temp_unused++;
+        else
+            break; 
+    }
+    unused_key = temp_unused;  // 统计完后再赋值给全局变量，方便 Watch 窗口查看
+    // 剩下的 unused 就是你安全的“护城河”
+    // 如果 unused < 100 字节，你的 G030 就危险了！
+}
+
+static void debug_stack_decoder_check(void)
+{
+    ULONG i;
+   // ULONG unused = 0;
+   ULONG temp_unused = 0; // 使用局部变量进行统计
+
+
+    // 从数组起始位置（栈底/低地址）开始数连续的 0xEF
+    for (i = 0; i < STACK_SIZE_DECODER; i++)
+    {
+        if (stack_decoder_pro[i] == 0xEF)
+            temp_unused++;
+        else
+            break; 
+    }
+    unused_decoder = temp_unused;  // 统计完后再赋值给全局变量，方便 Watch 窗口查看
+    // 剩下的 unused 就是你安全的“护城河”
+    // 如果 unused < 100 字节，你的 G030 就危险了！
+}
+
+
+static void debug_stack_event_check(void)
+{
+    ULONG i;
+   // ULONG unused = 0;
+   ULONG temp_unused = 0; // 使用局部变量进行统计
+
+
+    // 从数组起始位置（栈底/低地址）开始数连续的 0xEF
+    for (i = 0; i < STACK_SIZE_EVENT; i++)
+    {
+        if (stack_key_event[i] == 0xEF)
+            temp_unused++;
+        else
+            break; 
+    }
+    unused_key_event = temp_unused;  // 统计完后再赋值给全局变量，方便 Watch 窗口查看
+    // 剩下的 unused 就是你安全的“护城河”
+    // 如果 unused < 100 字节，你的 G030 就危险了！
+}
+
+
+#endif 
 
 
 

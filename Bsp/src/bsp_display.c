@@ -122,10 +122,11 @@ void Display_TimeColon_Blink_Fun(void)
 	   run_t.gTimer_time_colon =0;
        
 	 	  gpro_t.g_time_disp_colon_flag = gpro_t.g_time_disp_colon_flag ^ 0x01;
-	     
-		 SmgBlink_Colon_Function(run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,gpro_t.g_time_disp_colon_flag);
-     
-	}
+  	   
+
+      SmgBlink_Colon_Function(run_t.hours_two_unit_bit,run_t.minutes_one_decade_bit,gpro_t.g_time_disp_colon_flag);
+  } 
+	
 }
 
 

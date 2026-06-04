@@ -191,18 +191,17 @@ typedef struct __RUN{
    volatile   uint8_t minutes_one_unit_bit;
    uint8_t set_temperature_special_flag;
    uint8_t set_timer_special_value;
-   uint8_t gTimer_run_ico;
-   uint8_t gTimer_fan_continue;
-   uint8_t gTimer_detect_mb_receive_flag;
-   uint8_t gTimer_wifi_connect_counter;
+
+
+   
+ volatile   uint8_t gTimer_run_ico;
+ volatile  uint8_t gTimer_fan_continue;
+ volatile  uint8_t gTimer_detect_mb_receive_flag;
+ volatile   uint8_t gTimer_wifi_connect_counter;
  
- 
-  
-	
-  
-    uint8_t gTimes_minutes_temp;
-	uint16_t gTimer_error_digital ;
-    uint16_t gTimer_smg_blink_times;
+ volatile   uint8_t gTimes_minutes_temp;
+ volatile 	uint16_t gTimer_error_digital ;
+ volatile   uint16_t gTimer_smg_blink_times;
    
   
 

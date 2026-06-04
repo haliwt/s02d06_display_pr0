@@ -12,15 +12,21 @@
 *******************************************************************************/
 void tim17_isr_callback_hanlder(void)
 {
-  static uint16_t tm0;
-  static uint8_t tm1;
+  volatile  static uint16_t tm0;
+  volatile  static uint8_t tm1,tm2;
 
     tm0++;
-	
+	tm2++;
     run_t.gTimer_smg_blink_times++;
 	gpro_t.gTimer_4bitsmg_blink_times++;
+	if(tm2 > 9){ //10ms * 10 = 100ms
+	   tm2  =0 ;
+       wifi_connect_state_fun();
+
+    }
 	
-    if(tm0>999){ //100 *10ms = 1000ms = 1s
+	
+    if(tm0>99){ //100ms *100 = 1000ms = 1s
 		tm0=0;
 		tm1++;
 
@@ -57,7 +63,7 @@ void tim17_isr_callback_hanlder(void)
 
    
 	 
-	  gpro_t.gTimer_wifi_led_blink ++;
+
 	  gpro_t.gTimer_disp_mode_switch++;
 
        
