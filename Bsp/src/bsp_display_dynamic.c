@@ -19,50 +19,9 @@ void (*dispose_key)(uint8_t dsdat);
 void (*display_fan_speed_value)(uint8_t fan_level);
 
 
-
-
-
-//static void DisplayPanel_DHT11_Value(void);
-
 static void Display_Works_Time_Fun(void);
 static void WorksTime_DonotDisplay_Fun(void);
 static void Timer_Timing_Donot_Display(void);
-
-//static void Smg_DisplayFan_Level_Value_Fun(uint8_t fan_level);
-
-
-//
-//void Smg_DisplayFan_Speed_Level_Init(void)
-//{
-//      Smg_DisplayFan_Leve(Smg_DisplayFan_Level_Value_Fun);
-//
-//}
-
-
-
-/******************************************************************************
-*
-*Function Name:void Single_RunCmd(void)
-*Funcion: handle of receive by usart data
-*
-*
-******************************************************************************/
-#if 0
-static void DisplayPanel_DHT11_Value(void)
-{
-  if(run_t.first_power_on_times==1){
-      run_t.first_power_on_times++;
-       Display_DHT11_Value();
-  
-  }
-  if(run_t.gTimer_display_dht11 > 9){
-	    run_t.gTimer_display_dht11=0;
-       	Display_DHT11_Value();
-        compare_temp_value();
-     
-	}
-}
-#endif 
 
 /*******************************************************
 	*
@@ -76,7 +35,7 @@ void disp_dht11_value(void)
 {
   static uint8_t send_counter;
   if(gpro_t.set_timer_timing_doing_value==1 || gpro_t.set_timer_timing_doing_value==2) return ;
-  if(run_t.gTimer_display_dht11 > 2){
+ 
 	    run_t.gTimer_display_dht11=0;
        	Display_DHT11_Value();
 
@@ -86,10 +45,7 @@ void disp_dht11_value(void)
           SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
 	       tx_thread_sleep(1);
 		}
-     
-	}
-
-}
+ }
 
 
 
@@ -100,7 +56,7 @@ void Led_Panel_OnOff(void)
 }
 /*******************************************************
 	*
-	*Function Name: static void disp_dht11_value(void)
+	*Function Name: 
 	*Function : display pannel display conetent
 	*
 	*

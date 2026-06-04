@@ -243,7 +243,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
     //digital 1
      TM1639_Start();
      TM1639_Write_OneByte(0xC8);//0xC0H->GRID_1->BIT_1
-    if(sl ==0)
+    if(sl==0)
          TM1639_Write_OneByte(segNumber_Low_4bit[onebit]);//display "10"
      else{
 	 	   

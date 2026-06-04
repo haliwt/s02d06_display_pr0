@@ -1,12 +1,13 @@
 #include "bsp.h"
 
 // --- 1. 定义任务的时间周期（单位：毫秒，假设基础Tick为1ms） ---
-#define PERIOD_KEY_MODE_STATE      3    // 10ms*2 = 20ms = 3s
-#define PERIOD_DISP_TIME           120    // 10ms*100 = 2000ms = 2s
-#define PERIOD_DISP_TEMP           50    //  10ms*150 = 1500ms = 1.5s
-#define PERIOD_WORKS_TIME          200    //  10ms*250 = 2500ms = 2.5s
-#define PERIOD_SET_TIMER           4    //   10ms * 500 = 50000ms = 5s 
-#define PERIOD_SET_DISP_TIMER      100
+#define PERIOD_KEY_MODE_STATE      3    // 10ms*3 = 
+#define PERIOD_DISP_TIME           100    // 10ms*100 = 
+#define PERIOD_DISP_TEMP           50    //  10ms*150 =
+#define PERIOD_WORKS_TIME          200    //  10ms*250 = 
+#define PERIOD_SET_TIMER           4    //   10ms * 4 = 
+#define PERIOD_SET_DISP_TIMER      4
+#define PERIOD_COMPAR_TEMP         150
 
 
 // --- 2. 定义分时任务控制结构体 ---
@@ -25,6 +26,8 @@ static void handler_disp_temperature(void);
 static void handler_works_time(void);
 static void handler_set_disp_timer(void);
 
+static void handler_comparison_temperature(void);
+
 
 
 
@@ -35,7 +38,8 @@ TimeSharingTask_t g_tasks[] = {
     {0, PERIOD_DISP_TEMP,            handler_disp_temperature},
     {0, PERIOD_WORKS_TIME,           handler_works_time},
     {0, PERIOD_SET_TIMER,            handler_set_timer},
-	{0, PERIOD_SET_DISP_TIMER ,      handler_set_disp_timer}
+	{0, PERIOD_SET_DISP_TIMER ,      handler_set_disp_timer},
+    {0, PERIOD_COMPAR_TEMP,          handler_comparison_temperature}
   
    
  };
@@ -185,6 +189,7 @@ static void power_on_cycle_handler(void)
 **/
 static void handler_set_timer(void)
 {
+
   set_timer_value();
 
 }
@@ -253,10 +258,14 @@ static void handler_smg_disp(void)
 **/
 static void handler_disp_temperature(void)
 {
-	
-	 comparison_value_temperature();
-
 	 disp_dht11_value();
+	
+}
+
+static void handler_comparison_temperature(void)
+{
+
+	comparison_value_temperature();
 		 
 }
 

@@ -216,9 +216,9 @@ void Set_TimerTiming_Number_Value(void)
 void set_timer_value(void)
 {
 
-    if(gpro_t.set_timer_timing_doing_value==1 && gpro_t.key_add_dec_pressed_flag ==1 ){
+    if(gpro_t.set_timer_timing_doing_value==1){
 
-        Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+       set_timer_value_handler(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
 
      
      }

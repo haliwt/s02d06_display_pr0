@@ -97,6 +97,7 @@ void adjust_timer_minutes(int8_t delta_min)
         run_t.timer_dispTime_hours = 0 ;  // 循环处理负值
     }
     run_t.timer_dispTime_minutes = 0;
+	
 
  }
 

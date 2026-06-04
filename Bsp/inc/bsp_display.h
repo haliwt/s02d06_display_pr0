@@ -21,6 +21,7 @@ void Display_TimeColon_Blink_Fun(void);
 
 void Warning_Error_Numbers_Fun(void);
 
+void set_timer_value_handler(uint8_t hours,uint8_t minutes);
 
 
 #endif 
