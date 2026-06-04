@@ -13,7 +13,6 @@ KEY_T_TYPEDEF key_t;
 
 
 
-uint8_t  set_temp_flag;
 
 
 
@@ -34,13 +33,12 @@ typedef struct {
  **********************************************************************************/
 void SetDataTemperatureValue(void)
 {
-    if(set_temp_flag ==1){
-	 set_temp_flag++;
+    
 
      //SendData_Tx_Data(0x11,gpro_t.set_up_temperature_value);
      SendData_ToMainboard_Data(0x2A,&gpro_t.set_up_temperature_value,0x01);
      tx_thread_sleep(1);
-	}  
+	 
 
 
 }
@@ -54,33 +52,24 @@ void SetDataTemperatureValue(void)
 void set_temperature_value(int8_t delta) 
 {
     uint8_t new_temp;
-	static uint8_t temperature_init_value;
 
-	if(temperature_init_value == 0 && gpro_t.set_temp_value_success==0){
-        temperature_init_value++;
-        gpro_t.set_up_temperature_value = (delta > 0) ? 20 : 40;
-	    new_temp = gpro_t.set_up_temperature_value;
-    }
-	else{
 
-	   	new_temp = gpro_t.set_up_temperature_value + delta;
-	    if (new_temp < 20) new_temp = 20;
-        if (new_temp > 40) new_temp = 40;
-   }
+	 new_temp = gpro_t.set_up_temperature_value + delta;
+	 if (new_temp < 20) new_temp = 20;
+     if (new_temp > 40) new_temp = 40;
+  
 
 	gpro_t.set_up_temperature_value = new_temp;
 
     run_t.set_temperature_decade_value = new_temp / 10;
     run_t.set_temperature_unit_value   = new_temp % 10;
 
-    run_t.set_temperature_special_flag = 1;
+    run_t.set_temperature_f = 1;
     run_t.gTimer_key_temp_timing       = 0;
     gpro_t.g_manual_shutoff_dry_flag   = 0;
-    set_temp_flag                      = 1;
+    gpro_t.first_set_ptc_on =0;
 
-    //SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
-    //tx_thread_sleep(1);
-    gpro_t.done_set_temp_flag = 1;
+
 
     TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
 	
@@ -523,9 +512,9 @@ void process_keys(void)
 	
 	}
 	
-    if(gpro_t.done_set_temp_flag == 1 && gpro_t.gTimer_set_temp_counter > 2 ){
+    if( gpro_t.gTimer_set_temp_counter > 2 ){
 
-	     gpro_t.done_set_temp_flag = 0;
+	   
 
 	     if(gpro_t.set_up_temperature_value > run_t.gReal_humtemp[1]){
               

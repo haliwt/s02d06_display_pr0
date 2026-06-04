@@ -118,9 +118,10 @@ static void power_on_init_handler(void)
 	   run_t.gTimer_timing_seconds_counter =0;
 
 	}
+
 	gpro_t.gTimer_two_hours_seconds =0;
 	gpro_t.two_work_hours_flag = 0;
-	gpro_t.set_temp_value_success=0;
+	
 	gpro_t.key_disp_mode_flag = 0xff;
 	gpro_t.ai_flag = ai_mode; //don't AI
 	key_t.disp_smg_mode_flag=disp_works_times;
@@ -145,7 +146,14 @@ static void power_on_init_handler(void)
 ******************************************************************************/
 static void power_on_cycle_handler(void) 
 {
-    // 获取当前系统的绝对时间戳
+
+
+	 if(run_t.set_temperature_f ==1){
+	 	run_t.set_temperature_f++;
+         direct_comparison_temp();
+     }
+
+       // 获取当前系统的绝对时间戳
       uint32_t current_tick = tx_time_get();
 
       // 第二步：通过时间片轮询核心算法，分时调用各个功能模块
@@ -246,7 +254,7 @@ static void handler_smg_disp(void)
 static void handler_disp_temperature(void)
 {
 	
-	 Display_SetTemperature_Value();
+	 comparison_value_temperature();
 
 	 disp_dht11_value();
 		 
@@ -328,7 +336,7 @@ void Power_On_Fun(void)
 	
     run_t.gTimer_timer_seconds_counter=0;
     gpro_t.set_timer_timing_value_success =0 ;
-    gpro_t.set_temp_value_success = 0;
+  
     run_t.timer_dispTime_hours =0;
 	run_t.timer_dispTime_minutes=0;
 		

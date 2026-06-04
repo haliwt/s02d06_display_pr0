@@ -188,10 +188,6 @@ static void vTaskUiPro(ULONG thread_input)
        Display_TimeColon_Blink_Fun();
 	
       
-     
-	  
-	 
-      
     }
 	 else{
 

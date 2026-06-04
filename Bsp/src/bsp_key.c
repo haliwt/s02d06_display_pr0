@@ -195,7 +195,7 @@ void Set_TimerTiming_Number_Value(void)
 			run_t.timer_dispTime_hours = 0 ;
 			run_t.timer_dispTime_minutes = 0;
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-
+            tx_thread_sleep(100);
 			gpro_t.set_timer_timing_value_success  = 0;
             key_t.disp_smg_mode_flag = disp_works_times;
 
@@ -216,122 +216,14 @@ void Set_TimerTiming_Number_Value(void)
 void set_timer_value(void)
 {
 
-  #if 0
-   static uint8_t time_smg_blink;
- 
-   if(gpro_t.set_timer_timing_doing_value==1){
-
-     if(gpro_t.key_add_dec_pressed_flag ==1 && gpro_t.gTimer_4bitsmg_blink_times  > 300){//if has a key be pressed "+" key or "-" key
-
-    	gpro_t.gTimer_4bitsmg_blink_times =0;
-    	gpro_t.main_board_set_timer_flag =0;
-        time_smg_blink = time_smg_blink ^ 0x01;
-        TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
-
-   	
-     }
-     else if(gpro_t.key_add_dec_pressed_flag ==0 && gpro_t.gTimer_4bitsmg_blink_times  > 300){// //180ms only smg blink ,don't key input state.
-       gpro_t.gTimer_4bitsmg_blink_times =0;
-
-       time_smg_blink = time_smg_blink ^ 0x01;
-
-       if(gpro_t.set_timer_timing_value_success==0){
-
-      	run_t.timer_dispTime_hours=0;
-      	run_t.timer_dispTime_minutes=0;
-        key_t.disp_smg_mode_flag = disp_works_times;
-      	 TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
-
-      }
-      else if(gpro_t.set_timer_timing_value_success==1){
-        	 if(gpro_t.main_board_set_timer_flag ==0){
-			 	 key_t.disp_smg_mode_flag = disp_timer_times;
-			 	 run_t.gTimer_timer_seconds_counter=0;
-				 run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
-				 run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
-				 run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
-				 run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
-				 TM1639_Write_4Bit_Time_sync_close(run_t.hours_two_decade_bit,run_t.hours_two_unit_bit, run_t.minutes_one_decade_bit,run_t.minutes_one_unit_bit,time_smg_blink) ;
-        	 }
-
-         }
-     
-       
-    }
-
-   }
-   #else 
-     static uint8_t time_smg_blink;
- 
-   if(gpro_t.set_timer_timing_doing_value==1 && gpro_t.key_add_dec_pressed_flag ==1 ){
+    if(gpro_t.set_timer_timing_doing_value==1 && gpro_t.key_add_dec_pressed_flag ==1 ){
 
         Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
      
      }
-	 #endif 
+	 
  }
-/****************************************************************
-	*
-	*Function Name :void disp_smg_blink_set_tempeature_value(void)
-	*Function : set timer timing how many ?
-	*Input Parameters :NO
-	*Retrurn Parameter :NO
-	*
-*****************************************************************/
-void disp_smg_blink_set_tempeature_value(void)
-{
-     static uint8_t counter_times;
-	  //waiting for 4 s 
-	  if(run_t.gTimer_key_temp_timing > 1 && run_t.set_temperature_special_flag ==1 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){
-			
-			
-			run_t.set_temperature_special_flag =2;
-			run_t.gTimer_set_temp_times =0; //couter time of smg blink timing 
-
-	 }
-	 //temperature of smg of LED blink .
-	  if(run_t.set_temperature_special_flag ==2 && (gpro_t.set_timer_timing_doing_value==0 ||gpro_t.set_timer_timing_doing_value==3)){
-	  	
-	  	 
-		  if(run_t.gTimer_set_temp_times  > 0  && run_t.set_temperature_special_flag !=0xff){ // 15ms * 4 =60ms
-                 run_t.gTimer_set_temp_times=0;
-                 counter_times++ ;  
-
-			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
-
-		  }
-
-
-		  
-       
-   
-
-           if(counter_times > 1){
-			 
-           		counter_times=0;
-          
-			 gpro_t.set_temp_value_success=1;
-			 
-	         run_t.set_temperature_special_flag =0xff;
-			  run_t.gTimer_temp_delay = 70; //at once shut down ptc  funciton
-			  run_t.gTimer_display_dht11 = 90;
-		   
-			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
-		      
-			  Display_DHT11_Value();
-              gpro_t.g_manual_shutoff_dry_flag=0; //WT.EDIT 2025.05.28
-
-		
-			
-			  
-              
-             }
-		  
-	     }
-
-
-}
 
 
 /****************************************************************

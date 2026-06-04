@@ -182,7 +182,7 @@ uint8_t KEY_Normal_Scan(uint8_t mode);
 
 void Set_TimerTiming_Number_Value(void);
 
-void disp_smg_blink_set_tempeature_value(void);
+
 
 
 void set_timer_value(void);

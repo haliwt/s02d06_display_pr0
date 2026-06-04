@@ -90,15 +90,15 @@ typedef struct _pro_t{
    
    uint8_t set_timer_timing_value_success;
    uint8_t set_timer_timing_doing_value;
-   uint8_t set_temp_value_success;
+  
    uint8_t set_up_temperature_value;
   
    uint8_t  mode_key_shot_flag ;
    uint8_t first_set_ptc_on;
-   uint8_t first_rcoder_ptc_on_flag;
+
 
    uint8_t two_work_hours_flag;
-   uint8_t done_set_temp_flag;
+ 
   
    uint8_t answer_signal_flag;
    uint8_t set_timer_first_smg_blink_flag;

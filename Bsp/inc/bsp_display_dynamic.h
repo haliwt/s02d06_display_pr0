@@ -29,7 +29,7 @@ void SplitDispose_Key_RunCmd(void(*keyHandler)(uint8_t dat));
 
 //void Smg_DisplayFan_Leve(void(*fandisplayHandler)(uint8_t fan_level));
 
-void Display_SetTemperature_Value(void);
+void comparison_value_temperature(void);
 
 void Display_SmgTiming_Value(void);
 
@@ -37,6 +37,7 @@ void Led_Panel_OnOff(void);
 
 void disp_dht11_value(void);
 
+void direct_comparison_temp(void);
 
 
 

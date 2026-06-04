@@ -1,5 +1,14 @@
 #include "bsp.h"
 
+#define DEFAULT_TEMP    40 
+
+typedef enum{
+
+  PTC_STATE_OFF = 0,
+  PTC_STATE_ON  = 1
+}PTC_State;
+
+static PTC_State ptc_state = PTC_STATE_OFF ;
 
 
 void (*single_ai_fun)(uint8_t cmd);
@@ -97,118 +106,107 @@ void Led_Panel_OnOff(void)
 	*
 	*
 *******************************************************/
-void Display_SetTemperature_Value(void)
+void comparison_value_temperature(void)
 {
-        static uint8_t ptc_on_flag =0xff,ptc_off_flag=0xff;	
-	if(run_t.fan_warning == 1 && run_t.ptc_warning ==1) return ;
 
-	if(run_t.gReal_humtemp[1] >60 ) return ;
-
-	if(run_t.gTimer_temp_delay >6 &&  gpro_t.g_manual_shutoff_dry_flag==0){
-	      run_t.gTimer_temp_delay=0;
-
-	switch(gpro_t.set_temp_value_success){
-
-	case 1:
-    // disp_smg_blink_set_tempeature_value= run_t.set_temperature_decade_value*10+ run_t.set_temperature_unit_value;
-		  if(gpro_t.set_up_temperature_value <= run_t.gReal_humtemp[1] || run_t.gReal_humtemp[1] >39){//envirment temperature
-	  
-			   run_t.gDry = 0;
-			   LED_DRY_OFF();
-               if(gpro_t.first_set_ptc_on==0)gpro_t.first_set_ptc_on=1;  //the first open ptc heating //WT.DEDIT 2028.08.27 modify this flow codes
-			   else if(gpro_t.first_set_ptc_on==2)gpro_t.first_set_ptc_on=3;
-			   else if(gpro_t.first_set_ptc_on==4)gpro_t.first_set_ptc_on=5;
-
-			    if(ptc_off_flag != run_t.gDry){
-			   	   ptc_off_flag =  run_t.gDry;
-			      SendData_Set_Command(0x22,0x00); //close ptc 
-	              tx_thread_sleep(1);
-
-               	}
-			    
-			    
-                
-		  }
-		  else {
-
-               if(gpro_t.first_set_ptc_on==1 || gpro_t.first_set_ptc_on==0){//the first open ptc heating //WT.DEDIT 2028.08.27 modify this flow codes
-	          
-                if(gpro_t.first_set_ptc_on==1)gpro_t.first_set_ptc_on=2;
-				else if(gpro_t.first_set_ptc_on==0)gpro_t.first_set_ptc_on=4;
-				run_t.gDry = 1;
-			    LED_DRY_ON();
-	       
-			 
-			   
-			    if(ptc_on_flag != run_t.gDry){
-			   	   ptc_on_flag = run_t.gDry;
-	               SendData_Set_Command(0x22,0x01); //open ptc 
-	               tx_thread_sleep(1);
-			    }
-	          
-            
-	       }
-		   else if((gpro_t.first_set_ptc_on==3 || gpro_t.first_set_ptc_on==5) && (gpro_t.set_up_temperature_value -3) >= run_t.gReal_humtemp[1]){//WT.DEDIT 2028.08.27 modify this flow codes
-
-				 run_t.gDry = 1;
-	             LED_DRY_ON();
-		          if(ptc_on_flag != run_t.gDry){
-			   	   ptc_on_flag = run_t.gDry;
-	            	SendData_Set_Command(0x22,0x01); //open ptc 
-	            	tx_thread_sleep(1);
-			     }
-	          
-			}
-           }
-	  
-	    
-	
-	break;
-
-	case 0:
-         if(run_t.gReal_humtemp[1] > 39){ // must be clouse ptc.
     
-               gpro_t.first_rcoder_ptc_on_flag  = 1;
-               run_t.gDry = 0;
-		       LED_DRY_OFF();
-			
-	            if(ptc_off_flag != run_t.gDry ){
-			   	   ptc_off_flag = run_t.gDry ;
-               		SendData_Set_Command(0x22,0x00); //close ptc 
-               		tx_thread_sleep(1);
-			     }
-          }
-          else if(gpro_t.first_rcoder_ptc_on_flag  == 1 &&  run_t.gReal_humtemp[1] < 38 ){
-               
-               
-               run_t.gDry  = 1;
-			   LED_DRY_ON();
-			   if(ptc_on_flag != run_t.gDry ){
-		   	       ptc_on_flag = run_t.gDry ;
-	               SendData_Set_Command(0x22,0x01); //open ptc 
-	               tx_thread_sleep(1);
+	uint8_t real_temp =  run_t.gReal_humtemp[1]; //gpro_t.set_up_temperature_value;
+    uint8_t target_temp = gpro_t.set_up_temperature_value;
+	
+	if(run_t.fan_warning == 1 && run_t.ptc_warning ==1 ) return ;
 
-		     	}
-          }
-          else if(gpro_t.first_rcoder_ptc_on_flag == 0 && run_t.gReal_humtemp[1] < 40 ){ //WT.EDIT 2025.10.31
 
-	            run_t.gDry  = 1;
-		        LED_DRY_ON();
-		        if(ptc_on_flag != run_t.gDry ){
-			   	     ptc_on_flag = run_t.gDry ;
-				    SendData_Set_Command(0x22,0x01); //open ptc  
-				    tx_thread_sleep(1);
-			     }
-		 }
-      
-	break;
+
+	if(real_temp >= target_temp ){
+
+          run_t.gDry = 0;
+		  LED_DRY_OFF();
+		  ptc_state = PTC_STATE_OFF ;
+	      gpro_t.first_set_ptc_on  = 1;
+		  SendData_Set_Command(0x22,0x00); //close ptc 
+	      tx_thread_sleep(1);
+	    
+  
+		  return ;
 	}
 
+	
+	if(ptc_state == PTC_STATE_OFF){
+	
+			if(gpro_t.first_set_ptc_on ==0 || gpro_t.first_set_ptc_on ==1){
+	
+				if(real_temp < target_temp){
+				   run_t.gDry = 1;
+				   if(gpro_t.g_manual_shutoff_dry_flag==0){
+				     LED_DRY_ON();
+					 SendData_Set_Command(0x22,0x01); //close ptc 
+	                 tx_thread_sleep(1);
+				   }
+				   ptc_state = PTC_STATE_ON ;
+				   if(gpro_t.first_set_ptc_on ==1)gpro_t.first_set_ptc_on  = 2;
+				   
+				    
+				   
+				}
+			}
+			else{
+				if(real_temp < (target_temp -2)){
+	
+					 run_t.gDry = 1;
+					  if(gpro_t.g_manual_shutoff_dry_flag==0){
+					    LED_DRY_ON();
+						SendData_Set_Command(0x22,0x01); //close ptc 
+	                     tx_thread_sleep(1);
+					  }
+					 ptc_state = PTC_STATE_ON ;
+				      
+				  
+	
+				}
+	
+	
+			}
+	
+		}
+		else{
+			if(real_temp >= target_temp){
+				run_t.gDry = 0;
+	            LED_DRY_OFF();
+			   ptc_state = PTC_STATE_OFF ;
+			   SendData_Set_Command(0x22,0); //close ptc 
+	            tx_thread_sleep(1);
+			  
+			}
+	
+		}
+	
+}
+
+
+/**
+*@brief 
+*@notice
+*@param 
+**/
+void direct_comparison_temp(void)
+{
+   if(gpro_t.set_up_temperature_value <=  run_t.gReal_humtemp[1]){// && gpro_t.smart_phone_turn_off_ptc_flag ==0){
+
+		run_t.gDry = 0;
+	     LED_DRY_OFF();
+		SendData_Set_Command(0x22,0x00); //close ptc 
+		tx_thread_sleep(1);
 	}
- }
+	else{
+
+		run_t.gDry = 1;
+	     LED_DRY_ON();
+		SendData_Set_Command(0x22,0x01); //open ptc 
+		tx_thread_sleep(1);
 
 
-
+	}
+}
 /******************************************************************************
 * 
 * Function Name: static void Timer_Timing_Donot_Display(void)
@@ -380,41 +378,7 @@ static void WorksTime_DonotDisplay_Fun(void)
         }
   }
 }
-#if 0
-static void Smg_DisplayFan_Level_Value_Fun(uint8_t fan_level)
-{
 
-    static uint8_t fan_max=0xff,fan_min=0xff;
-
-    if(fan_level ==fan_speed_max){
-    
-    if(fan_max != run_t.fan_key_max){
-       fan_max = run_t.fan_key_max;
-      SendData_Set_Command(MOUSE_RUN);
-
-     }
-   }
-   else{
-
-       if(fan_min != run_t.fan_key_min){
-          fan_min = run_t.fan_key_min;
-          SendData_Set_Command(FAN_LEVEL_MIN);
-   
-        }
-   }
-    
-    TM1639_Write_4Bit_Fan_Level(fan_level);
-    if(run_t.gTimer_display_fan_level > 2){
-        run_t.gTimer_display_fan_level=0;
-        gpro_t.gmouse =0;
-        Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes);
-
-    }
- 
-
-}
-
-#endif 
 
 /******************************************************************************
 *

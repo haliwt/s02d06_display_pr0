@@ -378,7 +378,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			gpro_t.set_up_temperature_value =pdata[5];//warning
 	  
 			 gpro_t.g_manual_shutoff_dry_flag = 0 ;//  allow open dry function
-             gpro_t.set_temp_value_success=1;//
+             
 
 			 if(gpro_t.set_up_temperature_value <= run_t.gReal_humtemp[1] ){
                  run_t.gDry =0 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
