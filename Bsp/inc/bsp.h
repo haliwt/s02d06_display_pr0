@@ -107,9 +107,9 @@ typedef struct _pro_t{
    uint8_t receive_copy_cmd;
    uint8_t g_manual_shutoff_dry_flag;
   
-   uint8_t input_numbers_flag;
+
    uint8_t DMA_txComplete;
-   uint8_t main_board_set_timer_flag ;
+   
 
    uint8_t key_disp_mode_flag ;
    uint8_t ai_flag ;
@@ -133,7 +133,7 @@ typedef struct _pro_t{
    
  volatile  uint16_t mode_Key_long_counter;
 
-  volatile uint16_t gTimer_4bitsmg_blink_times;
+ 
   
    
 

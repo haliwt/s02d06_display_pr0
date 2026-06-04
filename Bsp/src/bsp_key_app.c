@@ -97,34 +97,19 @@ void set_temperature_value(int8_t delta)
 *******************************************************/
 void adjust_timer_minutes(int8_t delta_min) 
 {
-    int8_t total_hour = run_t.temporary_timer_dispTime_hours ;
+   
 	//uint8_t copy_total_hour;
-    total_hour += delta_min;
+   run_t.timer_dispTime_hours += delta_min;
 
-   if(total_hour > 24){
-         total_hour =0;
+   if(run_t.timer_dispTime_hours > 24){
+         run_t.timer_dispTime_hours =24;
    	}
-	else if (total_hour < 0) {
-        total_hour = 24 ;  // 循环处理负值
+	else if (run_t.timer_dispTime_hours < 0) {
+        run_t.timer_dispTime_hours = 0 ;  // 循环处理负值
     }
+    run_t.timer_dispTime_minutes = 0;
 
-   // total_hour %= 24 ;  // 保证在一天范围内
-
-    run_t.temporary_timer_dispTime_hours   = total_hour;
-    run_t.temporary_timer_dispTime_minutes = 0;
-
-    run_t.hours_two_decade_bit    = run_t.temporary_timer_dispTime_hours / 10;
-    run_t.hours_two_unit_bit      = run_t.temporary_timer_dispTime_hours % 10;
-    run_t.minutes_one_decade_bit  = 0;
-    run_t.minutes_one_unit_bit    = 0;
-	gpro_t.input_numbers_flag++;
-
-	//copy_total_hour=(uint8_t)total_hour;
-	//SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
-	//tx_thread_sleep(5);
-
-    
-}
+ }
 
 /****************************************************************
 	*

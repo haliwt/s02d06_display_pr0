@@ -187,7 +187,7 @@ static void vTaskUiPro(ULONG thread_input)
      
        Display_TimeColon_Blink_Fun();
 	
-       set_timer_fun_led_blink();
+      
      
 	  
 	 
@@ -229,7 +229,7 @@ static void vTaskStart(ULONG thread_input)
 	static uint8_t mouse_cnt = 0;
 	static uint8_t wifi_cnt = 0;
 
-    const uint16_t LONG_PRESS_TIME = 130;   // 300 * 10ms = 3000ms
+    const uint8_t LONG_PRESS_TIME = 40;   // 300 * 10ms = 3000ms
 
    
     while(1)

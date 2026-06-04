@@ -247,7 +247,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
          TM1639_Write_OneByte(segNumber_Low_4bit[onebit]);//display "10"
      else{
 	 	   
-            TM1639_Write_OneByte(segNumber_Low_4bit[0x10]);//display "10"
+            TM1639_Write_OneByte(segNumber_Low_4bit[0x10]);// don't display numbers .
 	 	  
 	 }
      TM1639_Stop();

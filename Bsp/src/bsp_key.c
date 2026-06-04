@@ -162,17 +162,12 @@ void Set_TimerTiming_Number_Value(void)
 			 
 
    		}
-   		else if(run_t.temporary_timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
+   		else if( run_t.timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
 			gpro_t.set_timer_timing_value_success  = disp_timer_times;
 			key_t.disp_smg_mode_flag = disp_timer_times;
 			run_t.gTimer_timer_seconds_counter = 0;
 
-			run_t.timer_dispTime_hours = run_t.temporary_timer_dispTime_hours ;
-			if(default_numbers != gpro_t.input_numbers_flag){
-				default_numbers = gpro_t.input_numbers_flag;
-			     run_t.timer_dispTime_minutes = 0;
-
-			}
+		
 
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 			tx_thread_sleep(20);
@@ -181,7 +176,7 @@ void Set_TimerTiming_Number_Value(void)
 
 
    		}
-   		else if(run_t.temporary_timer_dispTime_hours == 0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
+   		else if(run_t.timer_dispTime_hours == 0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
 					gpro_t.set_timer_timing_value_success  = disp_works_times;
 					key_t.disp_smg_mode_flag = disp_works_times;
 					run_t.gTimer_timer_seconds_counter = 0;
@@ -212,14 +207,16 @@ void Set_TimerTiming_Number_Value(void)
 }
 /***********************************************************************************
 	 *
-	 * Function Name:void set_timer_fun_led_blink(void)
+	 * Function Name:void set_timer_value(void)
 	 * Function:
 	 * Input Ref:NO
 	 * Return Ref:NO
 	 *
 ************************************************************************************/
-void set_timer_fun_led_blink(void)
+void set_timer_value(void)
 {
+
+  #if 0
    static uint8_t time_smg_blink;
  
    if(gpro_t.set_timer_timing_doing_value==1){
@@ -263,11 +260,17 @@ void set_timer_fun_led_blink(void)
     }
 
    }
-  
-}
+   #else 
+     static uint8_t time_smg_blink;
+ 
+   if(gpro_t.set_timer_timing_doing_value==1 && gpro_t.key_add_dec_pressed_flag ==1 ){
 
+        Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
-
+     
+     }
+	 #endif 
+ }
 /****************************************************************
 	*
 	*Function Name :void disp_smg_blink_set_tempeature_value(void)
@@ -294,14 +297,7 @@ void disp_smg_blink_set_tempeature_value(void)
 		  if(run_t.gTimer_set_temp_times  > 0  && run_t.set_temperature_special_flag !=0xff){ // 15ms * 4 =60ms
                  run_t.gTimer_set_temp_times=0;
                  counter_times++ ;  
-// cancel display temperature SMG number led blink function.
-//                 every_times ++;
-//          if(every_times ==1){
-//               
-//		        TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,1);
-//          }
-//		  else{
-//		  	   every_times=0;
+
 			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
 
 		  }

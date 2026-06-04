@@ -2,11 +2,11 @@
 
 // --- 1. 定义任务的时间周期（单位：毫秒，假设基础Tick为1ms） ---
 #define PERIOD_KEY_MODE_STATE      3    // 10ms*2 = 20ms = 3s
-#define PERIOD_DISP_TIME           100    // 10ms*100 = 2000ms = 2s
-#define PERIOD_DISP_TEMP           10    //  10ms*150 = 1500ms = 1.5s
+#define PERIOD_DISP_TIME           120    // 10ms*100 = 2000ms = 2s
+#define PERIOD_DISP_TEMP           50    //  10ms*150 = 1500ms = 1.5s
 #define PERIOD_WORKS_TIME          200    //  10ms*250 = 2500ms = 2.5s
-#define PERIOD_SET_TIMER           5    //   10ms * 500 = 50000ms = 5s 
-
+#define PERIOD_SET_TIMER           4    //   10ms * 500 = 50000ms = 5s 
+#define PERIOD_SET_DISP_TIMER      100
 
 
 // --- 2. 定义分时任务控制结构体 ---
@@ -23,6 +23,7 @@ static void handler_set_timer(void);
 
 static void handler_disp_temperature(void);
 static void handler_works_time(void);
+static void handler_set_disp_timer(void);
 
 
 
@@ -33,7 +34,8 @@ TimeSharingTask_t g_tasks[] = {
     {0, PERIOD_DISP_TIME,             handler_smg_disp},
     {0, PERIOD_DISP_TEMP,            handler_disp_temperature},
     {0, PERIOD_WORKS_TIME,           handler_works_time},
-    {0, PERIOD_SET_TIMER,            handler_set_timer}
+    {0, PERIOD_SET_TIMER,            handler_set_timer},
+	{0, PERIOD_SET_DISP_TIMER ,      handler_set_disp_timer}
   
    
  };
@@ -173,6 +175,13 @@ static void power_on_cycle_handler(void)
 *@retrval
 *
 **/
+static void handler_set_timer(void)
+{
+  set_timer_value();
+
+}
+
+
 static void handler_key_short_mode(void)
 {
     
@@ -188,23 +197,12 @@ static void handler_key_short_mode(void)
 }
 
 
-static void handler_set_timer(void)
+static void handler_set_disp_timer(void)
 {
 
-	
-	if(gpro_t.set_timer_timing_doing_value == 1 && run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+	if(run_t.ptc_warning ==1 || run_t.fan_warning ==1) return ;
 
-	Set_TimerTiming_Number_Value();
-
-	}
-	else if((gpro_t.set_timer_timing_doing_value == 0 ||gpro_t.set_timer_timing_doing_value == 3 )&&  run_t.set_temperature_special_flag   >0 &&  run_t.set_temperature_special_flag != 0xff ){
-
-	  disp_smg_blink_set_tempeature_value();
-
-
-	}
-
-	
+	 Set_TimerTiming_Number_Value();
 }
 
 /**

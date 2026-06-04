@@ -9,8 +9,8 @@ void wifi_connect_state_fun(void)
   volatile static uint8_t wifi_counter= 0;
   if(run_t.wifi_led_fast_blink == 1 && run_t.connect_wifi_state==0 && run_t.gPower_On == power_on){
     
-        if(run_t.gTimer_wifi_connect_counter <120){
-           
+        if(run_t.gTimer_wifi_connect_counter <120 && ++wifi_counter > 0){
+            wifi_counter=0;
             LED_WIFI_TOGGLE() ;
             
         }

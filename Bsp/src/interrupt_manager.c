@@ -18,7 +18,6 @@ void tim17_isr_callback_hanlder(void)
     tm0++;
 	tm2++;
     run_t.gTimer_smg_blink_times++;
-	gpro_t.gTimer_4bitsmg_blink_times++;
 	if(tm2 > 9){ //10ms * 10 = 100ms
 	   tm2  =0 ;
        wifi_connect_state_fun();
