@@ -33,7 +33,7 @@ void bsp_init(void)
 void power_on_handler(void)
 {
 
-	run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
+	
 
 	run_t.gPower_On = power_on;
 	run_t.power_on_step =0;
@@ -65,7 +65,7 @@ void detected_ptc_or_fan_warning_fun(void)
 	*Return Ref:NO
 	*
 ******************************************************************************/
-void mode_key_short_fun(void)
+void modke_key_short_handler(void)
 {
 
    if(gpro_t.set_timer_timing_value_success==0 && gpro_t.key_disp_mode_flag == no_ai_mode ){
@@ -219,8 +219,8 @@ void twoHours_works_timing(void)
         gpro_t.fan_run_one_minute =3; //one minute is flag .
         SendData_Set_Command(0x19,0x0);
 	    tx_thread_sleep(1);
-	     SendData_Set_Command(0x18,0x0);//fan run .
-	    tx_thread_sleep(1);
+	    //SendData_Set_Command(0x18,0x0);//fan run .
+	    //tx_thread_sleep(1);
    }
 
    if(gpro_t.two_work_hours_flag == 1)counter_send++;

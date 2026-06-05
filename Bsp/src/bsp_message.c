@@ -35,7 +35,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
             run_t.gPower_On = power_on;
             run_t.power_on_step =0;
-            run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
+         
             run_t.power_off_step = 0;
             SendWifiData_Answer_Cmd(0x01 ,0x01);//SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
 			tx_thread_sleep(1);
@@ -44,6 +44,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
             run_t.gPower_On = power_off;
             run_t.power_on_step =0;
+		    run_t.power_off_step = 0;
             SendWifiData_Answer_Cmd(0x01,0x0);
 			tx_thread_sleep(1);
            
@@ -59,14 +60,17 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 		   run_t.connect_wifi_state = wifi_connect_success;
 		   	
-           gpro_t.smartphone_app_timer_power_on_flag =1;
+            gpro_t.smartphone_app_timer_power_on_flag =1;
 		    run_t.gPower_On = power_on;
-			 power_on_handler();
+
+            run_t.power_on_step =0;
+	        run_t.power_off_step = 0;
 		   	}
 		    else{
                 run_t.connect_wifi_state = wifi_connect_success;
 				run_t.gPower_On = power_off;
                 run_t.power_on_step =0;
+				run_t.power_off_step = 0;
 
 			}
            
@@ -75,48 +79,25 @@ void receive_data_from_mainboard(uint8_t *pdata)
        
      break; 
 
-	 case 0x20: //手机定时开机，发送的数据，3个。
+	 case 0x20: //手机普通开机
 
-	     if(pdata[3]==0x0F){ //power on by smart phone APP
+	    if(pdata[3] == 0x01){ //power on
+             run_t.connect_wifi_state = wifi_connect_success;
+            run_t.gPower_On = power_on;
+            run_t.power_on_step =0;
+            run_t.power_off_step = 0;
+           
+           }
+           else{ //power off
+			run_t.connect_wifi_state = wifi_connect_success;
 
-		   if(pdata[4]==0x03){
-
-                run_t.gDry =pdata[5];
-				if(run_t.gDry == 0){
-                  gpro_t.g_manual_shutoff_dry_flag =1;
-                  LED_DRY_OFF();
-				}
-				else{
-                   LED_DRY_ON();
-				}
-
-				run_t.gPlasma=pdata[6];
-				if(run_t.gPlasma ==1){
-                  LED_PLASMA_ON();
-				}
-				else{
-				   LED_PLASMA_OFF();
-
-				}
-		       
-                run_t.gMouse =pdata[7];
-				if(run_t.gMouse==1){
-					LED_MOUSE_ON();
-				}
-				 else{
-                   LED_MOUSE_OFF();
-
-				}
-
-
-
-		   	}
-
-	     }
+            run_t.gPower_On = power_off;
+            run_t.power_on_step =0;
+            run_t.power_off_step = 0;
+           
+           }
 	 
-
-
-	 break;
+      break;
 
 	 
 
@@ -195,24 +176,15 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		}
 		
     break;
-
-	case 0x07:
 		
-	  if(pdata[4]== 0x01){
-           recoder_counter++;
-	       gpro_t.mode_key_shot_flag = 1;     
-		   gpro_t.gTimer_disp_mode_switch=0;
-		   gpro_t.key_disp_mode_flag = ai_mode;
-//		   if(gpro_t.ai_flag == ai_mode){
-//               gpro_t.key_disp_mode_flag = no_ai_mode;
-//           }
-		}
-		else if(gpro_t.ai_flag == no_ai_mode){
-		       gpro_t.key_disp_mode_flag = no_ai_mode;//gpro_t.key_disp_mode_flag = ai_mode;
 
-		   }
-	     
-	 	
+	case 0x07://AI mode
+
+	case 0x27:
+		
+	  if(pdata[3]== 0x01 || pdata[3]== 0 ||pdata[3]==0x02){
+         mode_key_handler();
+	  }
 
 	break;
 
@@ -478,7 +450,7 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 	 if(pdata[4]==0x01){
 	 	run_t.gPower_On = power_on;
 		run_t.power_on_step =0;
-        run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
+  
         run_t.power_off_step = 0;
         
 

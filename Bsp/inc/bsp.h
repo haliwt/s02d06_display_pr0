@@ -179,7 +179,7 @@ void detected_ptc_or_fan_warning_fun(void);
 
 void works_run_two_hours_handler(void);
 
-void mode_key_short_fun(void);
+void modke_key_short_handler(void);
 
 void twoHours_works_timing(void);
 

@@ -1,12 +1,12 @@
 #include "bsp.h"
 
 // --- 1. 定义任务的时间周期（单位：毫秒，假设基础Tick为1ms） ---
-#define PERIOD_KEY_MODE_STATE      4    // 10ms*3 = 
+#define PERIOD_KEY_MODE_STATE      4      // 10ms*4 = 
 #define PERIOD_DISP_TIME           100    // 10ms*100 = 
-#define PERIOD_DISP_TEMP           80    //  10ms*150 =
+#define PERIOD_DISP_TEMP           80     //  10ms*150 =
 #define PERIOD_WORKS_TIME          200    //  10ms*250 = 
-#define PERIOD_SET_TIMER           4    //   10ms * 4 = 
-#define PERIOD_SET_DISP_TIMER      5
+#define PERIOD_SET_TIMER           5      //   10ms * 4 = 
+#define PERIOD_SET_DISP_TIMER      6
 #define PERIOD_COMPAR_TEMP         300
 
 
@@ -34,7 +34,7 @@ static void handler_comparison_temperature(void);
 // --- 4. 初始化分时任务表 ---
 TimeSharingTask_t g_tasks[] = {
     {0, PERIOD_KEY_MODE_STATE,       handler_key_short_mode},
-    {0, PERIOD_DISP_TIME,             handler_smg_disp},
+    {0, PERIOD_DISP_TIME,            handler_smg_disp},
     {0, PERIOD_DISP_TEMP,            handler_disp_temperature},
     {0, PERIOD_WORKS_TIME,           handler_works_time},
     {0, PERIOD_SET_TIMER,            handler_set_timer},
@@ -72,6 +72,7 @@ void power_on_run_handler(void)
 {
    if(run_t.power_on_step < 20){
 	 power_on_init_handler();
+	 
    }
    else
    	  power_on_cycle_handler() ;
@@ -88,8 +89,8 @@ void power_on_run_handler(void)
 ******************************************************************************/
 static void power_on_init_handler(void)
 {
-   static uint8_t  step_state,counter_version;
- 
+   static uint8_t  step_state,counter_version,i;
+   uint32_t boot_tick ;
     run_t.gTimer_time_colon =0;
 
 	run_t.gTimer_detect_mb_receive_flag =0;
@@ -135,6 +136,10 @@ static void power_on_init_handler(void)
 	
 	// SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
 	// tx_thread_sleep(1);
+	boot_tick = tx_time_get();
+    for (i = 0; i < TASK_NUM; i++) {
+        g_tasks[i].last_tick = boot_tick;
+    }
 
 	run_t.power_on_step= 0xff;
 
@@ -198,14 +203,14 @@ static void handler_set_timer(void)
 static void handler_key_short_mode(void)
 {
     
-	if(gpro_t.mode_key_shot_flag ==1  && gpro_t.gTimer_disp_mode_switch <  3){
-        mode_key_short_fun();
+	if(gpro_t.mode_key_shot_flag ==1  && gpro_t.gTimer_disp_mode_switch <  5){
+        modke_key_short_handler();
 
 	}
-	else if(gpro_t.mode_key_shot_flag ==1 && gpro_t.gTimer_disp_mode_switch > 2){
+	else if(gpro_t.mode_key_shot_flag ==1 && gpro_t.gTimer_disp_mode_switch > 4){
 		gpro_t.gTimer_disp_mode_switch=0;
 	    gpro_t.mode_key_shot_flag = 2;
-	    mode_key_short_fun();
+	    modke_key_short_handler();
     }
 }
 

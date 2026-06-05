@@ -317,24 +317,22 @@ void mode_key_handler(void)
 
    }
    else{
-   gpro_t.mode_key_shot_flag = 1;     
-   gpro_t.gTimer_disp_mode_switch=0;
-   if(gpro_t.ai_flag == ai_mode){
-       gpro_t.key_disp_mode_flag = no_ai_mode;
+	   gpro_t.mode_key_shot_flag = 1;     
+	   gpro_t.gTimer_disp_mode_switch=0;
+	   if(gpro_t.ai_flag == ai_mode){
+	       gpro_t.key_disp_mode_flag = no_ai_mode;
+	   }
+	   else if(gpro_t.ai_flag == no_ai_mode){
+	      gpro_t.key_disp_mode_flag = ai_mode;
+
+	   }
+	   #if DEBUG_FALG
+
+	    printf("sound again \r\n");
+
+
+	   #endif 
    }
-   else if(gpro_t.ai_flag == no_ai_mode){
-      gpro_t.key_disp_mode_flag = ai_mode;
-
-   }
-   #if DEBUG_FALG
-
-    printf("sound again \r\n");
-
-
-   #endif 
-   
-    
-   	}
 		  
 }
 
@@ -395,7 +393,7 @@ void mode_key_handler(void)
 		    gpro_t.mode_key_shot_flag = 1;
             SendData_Buzzer();
 			tx_thread_sleep(5);
-           // mode_key_short_fun();
+           // modke_key_short_handler();
             gpro_t.mode_Key_long_counter=0;
     }
     else if (current_state == KEY_DOWN && gpro_t.mode_Key_long_counter< 60) {// 长按计数及触发

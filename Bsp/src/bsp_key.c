@@ -262,7 +262,7 @@ void mode_key_handler(void)
 		     gpro_t.mode_key_shot_flag =1;
             SendData_Buzzer();
             //tx_thread_sleep(DEBOUNCE_DELAY_MS);
-            //mode_key_short_fun();
+            //modke_key_short_handler();
 			
            // short_press_cooldown = SHORT_PRESS_COOLDOWN; // 设置冷却时间
         }
@@ -316,7 +316,7 @@ void mode_key_handler(void)
             // 立即触发短按功能
             SendData_Buzzer();
             tx_thread_sleep(DEBOUNCE_DELAY_MS);
-            mode_key_short_fun();
+            modke_key_short_handler();
             
             // 重置长按计数器
             gpro_t.mode_Key_long_counter = 0;

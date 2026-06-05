@@ -47,7 +47,7 @@ void tim17_isr_callback_hanlder(void)
 		
 		run_t.gTimer_key_temp_timing++ ;
 		run_t.gTimer_wifi_connect_counter ++;
-		run_t.gTimer_set_temp_times++;
+	
 
         //usart
       

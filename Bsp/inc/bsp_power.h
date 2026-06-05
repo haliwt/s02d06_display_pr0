@@ -195,7 +195,7 @@ typedef struct __RUN{
    volatile uint8_t gTimer_key_temp_timing;
 
 
- volatile   uint8_t gTimer_set_temp_times;
+
  volatile   uint8_t gTimer_run_ico;
  volatile  uint8_t gTimer_fan_continue;
  volatile  uint8_t gTimer_detect_mb_receive_flag;
