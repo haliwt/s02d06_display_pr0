@@ -354,52 +354,67 @@ static void vTaskStart(ULONG thread_input)
               power_key_handler() ;
 		 }
 		 else if(flags & KEY_MODE_SHORT){
-			
+			  if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
 		      SendData_Set_Command(0x06,0x01);
 		      tx_thread_sleep(1);
 	          mode_key_handler();
-
+			  }
 		 }
 		 else if(flags & KEY_MODE_LONG){
-              gpro_t.set_timer_timing_doing_value = 1;
-			   gpro_t.key_add_dec_pressed_flag =0;
-			   run_t.gTimer_key_timing = 0;
-			   run_t.gTimer_smg_blink_times =0;
-			   gpro_t.set_timer_first_smg_blink_flag=0;
+		 	  if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+	              gpro_t.set_timer_timing_doing_value = 1;
+				   gpro_t.key_add_dec_pressed_flag =0;
+				   run_t.gTimer_key_timing = 0;
+				   run_t.gTimer_smg_blink_times =0;
+				   gpro_t.set_timer_first_smg_blink_flag=0;
 
-			  SendData_Set_Command(0x06,0x01);
-	          tx_thread_sleep(1);
+				  SendData_Set_Command(0x06,0x01);
+		          tx_thread_sleep(1);
+		 	  }
 		 }
 		 else if(flags & KEY_UP_SHORT){
-		 	SendData_Set_Command(0x06,0x01);
-		    tx_thread_sleep(1);
-			gpro_t.gTimer_set_temp_counter = 0;
-			key_add_fun();
+		 if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+			 	SendData_Set_Command(0x06,0x01);
+			    tx_thread_sleep(1);
+				gpro_t.gTimer_set_temp_counter = 0;
+			
+				key_add_fun();
+			}
 
 		 }
 		 else if(flags & KEY_DOWN_SHORT){
-		 	SendData_Set_Command(0x06,0x01);
-		    tx_thread_sleep(1);
-			gpro_t.gTimer_set_temp_counter = 0;
-			key_dec_fun();
+		 	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+			 	SendData_Set_Command(0x06,0x01);
+			    tx_thread_sleep(1);
+				gpro_t.gTimer_set_temp_counter = 0;
+				key_dec_fun();
+		 	}
 
 		 }
 		 else if(flags & KEY_PLASMA_SHORT){
+		 	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
              plasma_key_handler() ;
+		 		}
 		 }   
 		 else if(flags & KEY_DRY_SHORT){
+		 	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
              dry_key_handler();
+		 		}
 		 }
 		 else if(flags & KEY_MOUSE_SHORT){
-		 	mouse_key_handler() ;
+		 	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
+		 	    mouse_key_handler() ;
+		 	}
 
 		 }
 		 else if(flags & KEY_WIFI_LONG){
+		 	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
 
-            run_t.connect_wifi_state = wifi_connect_null;
-            run_t.gTimer_wifi_connect_counter =0; //120s counte start
-            SendData_Set_Command(0x05,0x01); // link wifi of command .
-            tx_thread_sleep(1);
+	            run_t.connect_wifi_state = wifi_connect_null;
+	            run_t.gTimer_wifi_connect_counter =0; //120s counte start
+	            SendData_Set_Command(0x05,0x01); // link wifi of command .
+	            tx_thread_sleep(1);
+		 	}
 		 }
 		 
           #if DEBUG_ENABLE

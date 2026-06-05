@@ -781,10 +781,14 @@ void TM1639_Write_2bit_TempData(uint8_t onebit,uint8_t twobit)
 	
 
 
-void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t twobit,uint8_t sel)
+void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t sel)
 {
+    static uint8_t temp_decade=0, temp_uint=0 ;
+    
+	 temp_decade = onebit / 10;
+	 temp_uint	=  onebit % 10;
 
-	
+
 	 TM1639_STB_SetLow();
 	 TM1639_Write_OneByte(DisplayReg);//To write display register 0x40
 	 TM1639_STB_SetHigh();
@@ -799,7 +803,7 @@ void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t twobit,uint8_t sel)
      TM1639_Start();
      TM1639_Write_OneByte(AddrC0H);//0xC4H->GRID7->BIT_1
      if(sel==0)
-         TM1639_Write_OneByte(segNumber_Low[onebit]);//display ""
+         TM1639_Write_OneByte(segNumber_Low[temp_decade]);//display ""
      else{
 		TM1639_Write_OneByte(segNumber_Low[0x10]);
 
@@ -809,7 +813,7 @@ void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t twobit,uint8_t sel)
 	 TM1639_Start();
      TM1639_Write_OneByte(AddrC1H);//0xC4H->GRID7->BIT_1
      if(sel==0)
-        TM1639_Write_OneByte(segNumber_High[onebit]);//display ""
+        TM1639_Write_OneByte(segNumber_High[temp_decade]);//display ""
      else{
 		  TM1639_Write_OneByte(segNumber_High[0x10]);
 	 }
@@ -820,7 +824,7 @@ void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t twobit,uint8_t sel)
 	 TM1639_Start();
      TM1639_Write_OneByte(AddrC2H);//0xC7H->GRID8->BIT_2
      if(sel==0)
-     	TM1639_Write_OneByte(segNumber_Low[twobit]);//display ""
+     	TM1639_Write_OneByte(segNumber_Low[temp_uint]);//display ""
      else{
 	     TM1639_Write_OneByte(segNumber_Low[0x10]);
 
@@ -831,7 +835,7 @@ void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t twobit,uint8_t sel)
 	 TM1639_Start();
      TM1639_Write_OneByte(AddrC3H);//0xC7H->GRID8->BIT_2
      if(sel==0)
-     	TM1639_Write_OneByte(segNumber_High[twobit]|seg_h);//WT.EDIT.2025.02.22.//TM1639_Write_OneByte(segNumber_High[twobit]|seg_h);//display ""
+     	TM1639_Write_OneByte(segNumber_High[temp_uint]|seg_h);//WT.EDIT.2025.02.22.//TM1639_Write_OneByte(segNumber_High[twobit]|seg_h);//display ""
      else{
 	    TM1639_Write_OneByte(segNumber_High[0x10]|seg_h);//TM1639_Write_OneByte(segNumber_High[0x10]|seg_h);
 

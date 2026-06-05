@@ -71,6 +71,14 @@ void comparison_value_temperature(void)
 	
 	if(run_t.fan_warning == 1 && run_t.ptc_warning ==1 ) return ;
 
+	if(run_t.set_temperature_f==3){
+	   run_t.set_temperature_f++;
+
+	   SendData_Tx_Data(0x2A, gpro_t.set_up_temperature_value) ;
+		tx_thread_sleep(1);
+
+	}
+
 
 
 	if(real_temp >= target_temp ){
@@ -165,7 +173,7 @@ void direct_comparison_temp(void)
 }
 /******************************************************************************
 * 
-* Function Name: static void Timer_Timing_Donot_Display(void)
+* Function Name: static void Display_Works_Time_Fun(void)
 * Function :function of pointer 
 * Input Ref:NO
 * Return Ref:NO
@@ -289,10 +297,10 @@ static void Timer_Timing_Donot_Display(void)
 
 
     if(run_t.timer_dispTime_hours <0){ 
-    run_t.gTimer_timer_seconds_counter = 57 ;
-    run_t.timer_dispTime_hours=0;
-    run_t.timer_dispTime_minutes=0;
-    power_off_run_handler();
+	    run_t.gTimer_timer_seconds_counter = 57 ;
+	    run_t.timer_dispTime_hours=0;
+	    run_t.timer_dispTime_minutes=0;
+	    power_off_run_handler();
 
     }
 		//dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据

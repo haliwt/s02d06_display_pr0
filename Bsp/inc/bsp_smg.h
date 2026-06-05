@@ -96,7 +96,7 @@ void TM1639_Write_4Bit_TemperatureData(uint8_t threebit,uint8_t fourbit);
 
 void TM1639_Write_4Bit_TimerData(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit,uint8_t sl);
 
-void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t twobit,uint8_t sel);
+void TM1639_Write_2bit_SetUp_TempData(uint8_t onebit,uint8_t sel);
 
 
 void SmgBlink_Colon_Function(uint8_t onebit,uint8_t twobit,uint8_t sel);

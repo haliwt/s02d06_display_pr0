@@ -8,6 +8,7 @@
 #define PERIOD_SET_TIMER           5      //   10ms * 4 = 
 #define PERIOD_SET_DISP_TIMER      6
 #define PERIOD_COMPAR_TEMP         300
+#define PERIOD_SET_TEMP            7
 
 
 // --- 2. 定义分时任务控制结构体 ---
@@ -27,6 +28,7 @@ static void handler_works_time(void);
 static void handler_set_disp_timer(void);
 
 static void handler_comparison_temperature(void);
+static void handler_set_temperature(void);
 
 
 
@@ -39,7 +41,8 @@ TimeSharingTask_t g_tasks[] = {
     {0, PERIOD_WORKS_TIME,           handler_works_time},
     {0, PERIOD_SET_TIMER,            handler_set_timer},
 	{0, PERIOD_SET_DISP_TIMER ,      handler_set_disp_timer},
-    {0, PERIOD_COMPAR_TEMP,          handler_comparison_temperature}
+    {0, PERIOD_COMPAR_TEMP,          handler_comparison_temperature},
+	{0, PERIOD_SET_TEMP,             handler_set_temperature}
   
    
  };
@@ -99,6 +102,7 @@ static void power_on_init_handler(void)
 	gpro_t.set_timer_timing_doing_value = 0;
 	gpro_t.g_manual_shutoff_dry_flag = 0; //allow open dry function .
 	run_t.wifi_led_fast_blink=0;
+	
 
 	gpro_t.set_timer_timing_value_success=0;
 	run_t.timer_dispTime_hours=0;
@@ -194,8 +198,22 @@ static void power_on_cycle_handler(void)
 **/
 static void handler_set_timer(void)
 {
-
+  
   set_timer_value();
+
+}
+
+static void handler_set_temperature(void)
+{
+   
+   if((run_t.set_temperature_f == 1 || run_t.set_temperature_f == 2) && run_t.gTimer_key_temp_timing < 4){
+    
+    TM1639_Write_2bit_SetUp_TempData(gpro_t.set_up_temperature_value, 0);
+   }
+   else if((run_t.set_temperature_f == 1 || run_t.set_temperature_f == 2) && run_t.gTimer_key_temp_timing > 3){
+       run_t.set_temperature_f =3;  
+
+   }
 
 }
 
@@ -203,14 +221,14 @@ static void handler_set_timer(void)
 static void handler_key_short_mode(void)
 {
     
-	if(gpro_t.mode_key_shot_flag ==1  && gpro_t.gTimer_disp_mode_switch <  5){
+	if(gpro_t.mode_key_shot_flag ==1  && gpro_t.gTimer_disp_mode_switch < 4){
         modke_key_short_handler();
 
 	}
-	else if(gpro_t.mode_key_shot_flag ==1 && gpro_t.gTimer_disp_mode_switch > 4){
+	else if(gpro_t.mode_key_shot_flag ==1 && gpro_t.gTimer_disp_mode_switch > 3){
 		gpro_t.gTimer_disp_mode_switch=0;
 	    gpro_t.mode_key_shot_flag = 2;
-	    modke_key_short_handler();
+	   // modke_key_short_handler();
     }
 }
 
@@ -235,6 +253,7 @@ static void handler_smg_disp(void)
 {
 	Led_Panel_OnOff();
 
+    if(gpro_t.mode_key_shot_flag ==1) return ;
 	if((gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3) && gpro_t.key_disp_mode_flag ==0xff){ //WT.EDIT 2025.05.07
 	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
 
@@ -263,12 +282,14 @@ static void handler_smg_disp(void)
 **/
 static void handler_disp_temperature(void)
 {
+    if(run_t.set_temperature_f == 1 || run_t.set_temperature_f == 2) return ;
 	 disp_dht11_value();
 	
 }
 
 static void handler_comparison_temperature(void)
 {
+   if(run_t.set_temperature_f == 1 || run_t.set_temperature_f == 2) return ;
 
 	comparison_value_temperature();
 		 

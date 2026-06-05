@@ -362,14 +362,12 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 
 			 }
-        
-             run_t.gTimer_key_temp_timing=0;
+            run_t.set_temperature_f = 2;
+            run_t.gTimer_key_temp_timing = 0;
+    
+            gpro_t.first_set_ptc_on =0;
 
-			temp_decade  = gpro_t.set_up_temperature_value / 10 ;
-            temp_uint  = gpro_t.set_up_temperature_value % 10; 
-
-             TM1639_Write_2bit_SetUp_TempData(temp_decade,temp_uint,0);
-			 tx_thread_sleep(1);
+             
 	  
 			 
 
@@ -448,10 +446,17 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
 
 	 if(pdata[4]==0x01){
+
+	    if(run_t.gPower_On == power_on){
+
+
+	    }
+		else{
 	 	run_t.gPower_On = power_on;
 		run_t.power_on_step =0;
   
         run_t.power_off_step = 0;
+	    }
         
 
      }
