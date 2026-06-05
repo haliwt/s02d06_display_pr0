@@ -1,13 +1,13 @@
 #include "bsp.h"
 
 // --- 1. 定义任务的时间周期（单位：毫秒，假设基础Tick为1ms） ---
-#define PERIOD_KEY_MODE_STATE      3    // 10ms*3 = 
+#define PERIOD_KEY_MODE_STATE      4    // 10ms*3 = 
 #define PERIOD_DISP_TIME           100    // 10ms*100 = 
-#define PERIOD_DISP_TEMP           50    //  10ms*150 =
+#define PERIOD_DISP_TEMP           80    //  10ms*150 =
 #define PERIOD_WORKS_TIME          200    //  10ms*250 = 
 #define PERIOD_SET_TIMER           4    //   10ms * 4 = 
-#define PERIOD_SET_DISP_TIMER      4
-#define PERIOD_COMPAR_TEMP         150
+#define PERIOD_SET_DISP_TIMER      5
+#define PERIOD_COMPAR_TEMP         300
 
 
 // --- 2. 定义分时任务控制结构体 ---
@@ -91,7 +91,6 @@ static void power_on_init_handler(void)
    static uint8_t  step_state,counter_version;
  
     run_t.gTimer_time_colon =0;
-	run_t.set_temperature_decade_value=40;
 
 	run_t.gTimer_detect_mb_receive_flag =0;
 	Power_On_Fun();
@@ -122,12 +121,13 @@ static void power_on_init_handler(void)
 	   run_t.gTimer_timing_seconds_counter =0;
 
 	}
+	gpro_t.set_up_temperature_value = 40;
 
 	gpro_t.gTimer_two_hours_seconds =0;
 	gpro_t.two_work_hours_flag = 0;
 	
 	gpro_t.key_disp_mode_flag = 0xff;
-	gpro_t.ai_flag = ai_mode; //don't AI
+	gpro_t.ai_flag = ai_mode; // AI
 	key_t.disp_smg_mode_flag=disp_works_times;
 	gpro_t.fan_run_one_minute =0; 
 	gpro_t.gTimer_counter_one_minute =0;

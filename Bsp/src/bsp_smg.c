@@ -357,7 +357,7 @@ void TM1639_Write_4Bit_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8
 ********************************************************************************************************/
 void TM1639_Write_4Bit_Set_Time(uint8_t onebit,uint8_t twobit,uint8_t threebit,uint8_t fourbit)
 {
-
+   uint8_t sl = 0;
 	
 	 TM1639_STB_SetLow();
 	 TM1639_Write_OneByte(0X40);//To Address of fixed reg 0x44

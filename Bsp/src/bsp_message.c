@@ -22,6 +22,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 {
     
    static uint8_t power_on_counter;
+   uint8_t temp_decade, temp_uint;
     switch(pdata[2]){
 
      case 0:
@@ -34,8 +35,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
             run_t.gPower_On = power_on;
             run_t.power_on_step =0;
-            //gpro_t.receive_copy_cmd = 1;
-            power_on_handler();
+            run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
+            run_t.power_off_step = 0;
             SendWifiData_Answer_Cmd(0x01 ,0x01);//SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
 			tx_thread_sleep(1);
            }
@@ -368,7 +369,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 
 	  case 0x2A: //main board set temperature value 
 	  
-          
+         
 		  if(pdata[3] == 0x0F){ //is data.
 		  
 			if(pdata[4]== 0x01){ // one only data 
@@ -377,10 +378,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
 				
 			gpro_t.set_up_temperature_value =pdata[5];//warning
 	  
-			 gpro_t.g_manual_shutoff_dry_flag = 0 ;//  allow open dry function
-             
-
-			 if(gpro_t.set_up_temperature_value <= run_t.gReal_humtemp[1] ){
+		
+            if(gpro_t.set_up_temperature_value <= run_t.gReal_humtemp[1] ){
                  run_t.gDry =0 ;//&& run_t.gPlasma ==1  && run_t.gUltransonic==1
                  LED_DRY_OFF();
 
@@ -394,10 +393,10 @@ void receive_data_from_mainboard(uint8_t *pdata)
         
              run_t.gTimer_key_temp_timing=0;
 
-			 run_t.set_temperature_decade_value = gpro_t.set_up_temperature_value / 10 ;
-             run_t.set_temperature_unit_value  =gpro_t.set_up_temperature_value % 10; //
+			temp_decade  = gpro_t.set_up_temperature_value / 10 ;
+            temp_uint  = gpro_t.set_up_temperature_value % 10; 
 
-             TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
+             TM1639_Write_2bit_SetUp_TempData(temp_decade,temp_uint,0);
 			 tx_thread_sleep(1);
 	  
 			 
@@ -479,7 +478,6 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 	 if(pdata[4]==0x01){
 	 	run_t.gPower_On = power_on;
 		run_t.power_on_step =0;
-        //power_on_handler();
         run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
         run_t.power_off_step = 0;
         

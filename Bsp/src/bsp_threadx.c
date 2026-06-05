@@ -209,7 +209,7 @@ static void vTaskUiPro(ULONG thread_input)
 *	priority: 3  (数值越小优先级越低，这个跟uCOS相反)
 *
 **********************************************************************************************************/
-uint8_t counter_power_flag;
+uint8_t counter_power_flag ;
 static void vTaskStart(ULONG thread_input)
 {
 	
@@ -238,7 +238,7 @@ static void vTaskStart(ULONG thread_input)
 			  counter_power_flag++;
 			 
 		  }
-		  else if(power_cnt > 0 ){
+		  else if(power_cnt > 0 && POWER_KEY_VALUE()==KEY_UP){
 				  tx_event_flags_set(&key_event, KEY_POWER_SHORT, TX_OR);
 	
 			  power_cnt = 0;

@@ -51,18 +51,18 @@ void SetDataTemperatureValue(void)
  **********************************************************************************/
 void set_temperature_value(int8_t delta) 
 {
-    uint8_t new_temp;
+   
+     uint8_t temp_decade, temp_uint;
 
-
-	 new_temp = gpro_t.set_up_temperature_value + delta;
-	 if (new_temp < 20) new_temp = 20;
-     if (new_temp > 40) new_temp = 40;
+	 gpro_t.set_up_temperature_value = gpro_t.set_up_temperature_value + delta;
+	 if (gpro_t.set_up_temperature_value < 20) gpro_t.set_up_temperature_value = 20;
+     if (gpro_t.set_up_temperature_value > 40) gpro_t.set_up_temperature_value = 40;
   
 
-	gpro_t.set_up_temperature_value = new_temp;
+	
 
-    run_t.set_temperature_decade_value = new_temp / 10;
-    run_t.set_temperature_unit_value   = new_temp % 10;
+    temp_decade = gpro_t.set_up_temperature_value / 10;
+    temp_uint   = gpro_t.set_up_temperature_value % 10;
 
     run_t.set_temperature_f = 1;
     run_t.gTimer_key_temp_timing       = 0;
@@ -71,7 +71,7 @@ void set_temperature_value(int8_t delta)
 
 
 
-    TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
+    TM1639_Write_2bit_SetUp_TempData(temp_decade,temp_uint, 0);
 	
 }
 
