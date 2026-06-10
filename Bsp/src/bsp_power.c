@@ -329,16 +329,10 @@ static void handler_comparison_temperature(void)
 
 static void handler_works_time(void)
 {
-	static uint8_t counter_version = 0;
-	  	
+	
 	 twoHours_works_timing();
      
-	 
-
 }
-
-
-
 
 /**********************************************************************
 *

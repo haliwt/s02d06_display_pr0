@@ -211,7 +211,7 @@ void twoHours_works_timing(void)
 {
    static uint8_t counter_send;
    #if 1
-   if(gpro_t.gTimer_work_counter_minutes>11 &&  gpro_t.two_work_hours_flag ==0){
+   if(gpro_t.gTimer_work_counter_minutes>5 &&  gpro_t.two_work_hours_flag ==0){
 
    #else
 
@@ -227,43 +227,51 @@ void twoHours_works_timing(void)
 	  tx_thread_sleep(1);
      
    }
-   else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_work_counter_minutes > 9){
+   #if 1
+   	  else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_work_counter_minutes > 2){
+
+   #else 
+	  else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_work_counter_minutes > 9){
+
+   #endif 
+   
    	    gpro_t.gTimer_work_counter_minutes=0;
         gpro_t.gTimer_two_hours_seconds =0;
 		gpro_t.two_work_hours_flag = 0;
         gpro_t.fan_run_one_minute =3; //one minute is flag .
         SendData_Set_Command(0x19,0x0);
-	    tx_thread_sleep(1);
+	    tx_thread_sleep(3);
 	    //SendData_Set_Command(0x18,0x0);//fan run .
 	    //tx_thread_sleep(1);
    }
 
-   if(gpro_t.two_work_hours_flag == 1)counter_send++;
+  if(gpro_t.two_work_hours_flag == 1)counter_send++;
 
    
   if(gpro_t.fan_run_one_minute==1 && gpro_t.gTimer_counter_one_minute >59){
-		  gpro_t.fan_run_one_minute++;
+		  gpro_t.fan_run_one_minute=2;
 		  SendData_Set_Command(0x18,0x01);//fan stop run .
-		  tx_thread_sleep(1);
- }
- else if(gpro_t.fan_run_one_minute==3){
+		  tx_thread_sleep(3);
+   }
+   else if(gpro_t.fan_run_one_minute==3){
 	
 		   gpro_t.fan_run_one_minute++;
 		   SendData_Set_Command(0x18,0x0);//fan run .
-		   tx_thread_sleep(1);
+		   tx_thread_sleep(3);
 	
-	 }
-	 else if(gpro_t.two_work_hours_flag ==1 && counter_send >5 &&	gpro_t.fan_run_one_minute ==2){
+   }
+   else if(gpro_t.two_work_hours_flag ==1 && counter_send >5 &&	gpro_t.fan_run_one_minute ==2){
 		 counter_send=0;
 	
 		 SendData_Set_Command(0x19,0x01);
-		 tx_thread_sleep(2);
-		 if(gpro_t.fan_run_one_minute==2){
-			SendData_Set_Command(0x18,0x01);//fan stop run .
-			tx_thread_sleep(1);
-		 }
+		 tx_thread_sleep(3);
+
+   	}
+		 
+		  
+		 
 	
-	 }
+	 
 }
 
 
