@@ -129,6 +129,7 @@ static void power_on_init_handler(void)
 	gpro_t.set_up_temperature_value = 40;
 
 	gpro_t.gTimer_two_hours_seconds =0;
+	gpro_t.gTimer_work_counter_minutes=0;
 	gpro_t.two_work_hours_flag = 0;
 	
 	gpro_t.key_disp_mode_flag = 0xff;
@@ -138,8 +139,9 @@ static void power_on_init_handler(void)
 	gpro_t.gTimer_counter_one_minute =0;
     Display_DHT11_Value();
 	
-	// SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
-	// tx_thread_sleep(1);
+	SendData_Set_Command(0xF0,0x02); //notice thi is new version
+	tx_thread_sleep(1);
+
 	boot_tick = tx_time_get();
     for (i = 0; i < TASK_NUM; i++) {
         g_tasks[i].last_tick = boot_tick;
@@ -168,6 +170,7 @@ static void power_on_cycle_handler(void)
 
        // 获取当前系统的绝对时间戳
       uint32_t current_tick = tx_time_get();
+	 #if 0
 
       // 第二步：通过时间片轮询核心算法，分时调用各个功能模块
 	   for (uint8_t i = 0; i < TASK_NUM; i++) {
@@ -184,6 +187,33 @@ static void power_on_cycle_handler(void)
 	   }
 
 	   }
+	   #else 
+	    for (uint8_t i = 0; i < TASK_NUM; i++) 
+    {
+        if ((current_tick - g_tasks[i].last_tick) >= g_tasks[i].period) 
+        {
+            // 【工业级进化：防轰炸饱和截断】
+            // 如果卡顿/被高优先级抢占的时间超过了 2 个周期，直接对齐当前时间，放弃追赶
+            if ((current_tick - g_tasks[i].last_tick) > (g_tasks[i].period * 2)) 
+            {
+                g_tasks[i].last_tick = current_tick;
+            }
+            else 
+            {
+                // 如果只是正常范围内的轻微抖动，滚动累加周期，死锁锁相，消除长期长跑漂移
+                g_tasks[i].last_tick += g_tasks[i].period;
+            }
+            
+            // 触发对应周期的执行函数（确保不为 NULL，防止空指针崩溃）
+            if (g_tasks[i].task_handler != NULL)
+            {
+                g_tasks[i].task_handler(); 
+            }
+        }
+    }
+
+
+	   #endif 
 
 
 }
@@ -211,8 +241,10 @@ static void handler_set_temperature(void)
     TM1639_Write_2bit_SetUp_TempData(gpro_t.set_up_temperature_value, 0);
    }
    else if((run_t.set_temperature_f == 1 || run_t.set_temperature_f == 2) && run_t.gTimer_key_temp_timing > 3){
-       run_t.set_temperature_f =3;  
-
+       run_t.set_temperature_f =3; 
+	   SendData_Tx_Data(0x2A, gpro_t.set_up_temperature_value) ;
+       tx_thread_sleep(1);
+	   
    }
 
 }
@@ -300,11 +332,7 @@ static void handler_works_time(void)
 	static uint8_t counter_version = 0;
 	  	
 	 twoHours_works_timing();
-      if(counter_version < 5){
-			counter_version ++;
-		    SendData_Set_Command(0x0F,0x02); //notice thi is new version
-		    tx_thread_sleep(1);
-     }
+     
 	 
 
 }

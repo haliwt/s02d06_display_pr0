@@ -158,14 +158,14 @@ void direct_comparison_temp(void)
 
 		run_t.gDry = 0;
 	     LED_DRY_OFF();
-		SendData_Set_Command(0x22,0x00); //close ptc 
+		SendData_Set_Command(0x23,0x00); //close ptc 
 		tx_thread_sleep(1);
 	}
 	else{
 
 		run_t.gDry = 1;
 	     LED_DRY_ON();
-		SendData_Set_Command(0x22,0x01); //open ptc 
+		SendData_Set_Command(0x23,0x01); //open ptc 
 		tx_thread_sleep(1);
 
 

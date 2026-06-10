@@ -76,8 +76,8 @@ void modke_key_short_handler(void)
 		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 		key_t.disp_smg_mode_flag = disp_works_times;
 		gpro_t.key_disp_mode_flag =0xff;
-		SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
-		tx_thread_sleep(1);
+		//SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
+		//tx_thread_sleep(1);
     
    }
    else if(gpro_t.set_timer_timing_value_success==1 && gpro_t.key_disp_mode_flag == no_ai_mode){ 
@@ -86,8 +86,8 @@ void modke_key_short_handler(void)
 		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 	    key_t.disp_smg_mode_flag = disp_timer_times;
 	    gpro_t.key_disp_mode_flag =0xff;
-		SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
-		tx_thread_sleep(1);
+		//SendData_Set_Command(0x07,0x02); //reverse switch don't displayb "AI"
+		//tx_thread_sleep(1);
 
    }
    else if(gpro_t.key_disp_mode_flag == ai_mode){
@@ -96,8 +96,8 @@ void modke_key_short_handler(void)
         Display_Timing(run_t.works_dispTime_hours,run_t.works_dispTime_minutes,0);
         key_t.disp_smg_mode_flag = disp_works_times;
         gpro_t.key_disp_mode_flag =0xff;
-		SendData_Set_Command(0x07,0x01); //reverse switch don't displayb "AI"
-		tx_thread_sleep(1);
+		//SendData_Set_Command(0x07,0x01); //reverse switch don't displayb "AI"
+		//tx_thread_sleep(1);
 			
 			 
 
@@ -114,7 +114,7 @@ void modke_key_short_handler(void)
 ******************************************************************************/
 void power_off_run_handler(void)
 {
-    static uint8_t power_on_off_flag,counter_flag = 0;
+    static uint8_t power_on_off_flag,counter_flag = 0,counter_version=0;
     switch(run_t.power_off_step){
      case 0://2
 	  
@@ -141,6 +141,7 @@ void power_off_run_handler(void)
 
        case 1://4
 
+			
 
             if(run_t.gTimer_fan_continue < 61 && run_t.gFan_RunContinue == 1 && power_on_off_flag !=0){
                    
@@ -158,6 +159,7 @@ void power_off_run_handler(void)
 
 			}
 
+          
 
 		  
             Breath_Led();
@@ -167,6 +169,7 @@ void power_off_run_handler(void)
 		 break;
 
 		 case 2:
+			counter_version ++;
 
 		 	if(run_t.gTimer_display_dht11 > 2){
                run_t.gTimer_display_dht11 =0;
@@ -184,6 +187,11 @@ void power_off_run_handler(void)
 
 			}
 
+              if(counter_version > 3){
+			   counter_version =0; 
+		        SendData_Set_Command(0xF0,0x02); //notice thi is new version
+		        tx_thread_sleep(1);
+             }
 		    run_t.power_off_step = 1;
 
 		 break;
@@ -202,9 +210,15 @@ void power_off_run_handler(void)
 void twoHours_works_timing(void)
 {
    static uint8_t counter_send;
+   #if 1
+   if(gpro_t.gTimer_work_counter_minutes>11 &&  gpro_t.two_work_hours_flag ==0){
 
-   if(gpro_t.gTimer_two_hours_seconds > 7119 &&  gpro_t.two_work_hours_flag ==0){
-         
+   #else
+
+    if(gpro_t.gTimer_two_hours_seconds > 119 &&	gpro_t.two_work_hours_flag ==0){
+
+   #endif 
+      gpro_t.gTimer_work_counter_minutes  =0; 
       gpro_t.gTimer_two_hours_seconds =0;
 	  gpro_t.two_work_hours_flag = 1;
       gpro_t.fan_run_one_minute =1; //one minute is flag .
@@ -213,7 +227,8 @@ void twoHours_works_timing(void)
 	  tx_thread_sleep(1);
      
    }
-   else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_two_hours_seconds > 600){
+   else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_work_counter_minutes > 9){
+   	    gpro_t.gTimer_work_counter_minutes=0;
         gpro_t.gTimer_two_hours_seconds =0;
 		gpro_t.two_work_hours_flag = 0;
         gpro_t.fan_run_one_minute =3; //one minute is flag .
@@ -242,7 +257,7 @@ void twoHours_works_timing(void)
 		 counter_send=0;
 	
 		 SendData_Set_Command(0x19,0x01);
-		 tx_thread_sleep(1);
+		 tx_thread_sleep(2);
 		 if(gpro_t.fan_run_one_minute==2){
 			SendData_Set_Command(0x18,0x01);//fan stop run .
 			tx_thread_sleep(1);

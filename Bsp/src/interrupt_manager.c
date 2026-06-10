@@ -55,16 +55,16 @@ void tim17_isr_callback_hanlder(void)
 
       gpro_t.gTimer_mode_long_key_counter++;
 	
-      gpro_t.gTimer_two_hours_seconds++;
+     
 	   gpro_t.gTimer_set_temp_counter ++;
 	   gpro_t.gTimer_counter_one_minute++;
-	   
+	   gpro_t.gTimer_disp_mode_switch++;
+        gpro_t.gTimer_two_hours_seconds++;
+	    if(gpro_t.gTimer_two_hours_seconds >59){
+		    gpro_t.gTimer_two_hours_seconds =0;
+            gpro_t.gTimer_work_counter_minutes ++ ;
 
-   
-	 
-
-	  gpro_t.gTimer_disp_mode_switch++;
-
+		}
        
        
 	 }

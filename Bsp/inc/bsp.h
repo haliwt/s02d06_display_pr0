@@ -127,6 +127,7 @@ typedef struct _pro_t{
 
  
  volatile  uint8_t gTimer_counter_one_minute;
+ volatile  uint8_t gTimer_work_counter_minutes;
    
  volatile  uint16_t gTimer_two_hours_seconds;
 
