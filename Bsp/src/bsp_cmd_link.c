@@ -16,10 +16,14 @@ volatile uint8_t transferSize;
 void usart1_dma_send(uint8_t *txbuf,uint16_t txlen)
 {
 
-   
+   if(txbuf == NULL || txlen ==0) return ;
 
 
     LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_1);
+	
+	LL_DMA_ClearFlag_GI1(DMA1);
+	LL_DMA_ClearFlag_TC1(DMA1);
+	LL_DMA_ClearFlag_TE1(DMA1);
 
     LL_DMA_ConfigAddresses(DMA1,LL_DMA_CHANNEL_1,
                             (uint32_t)txbuf,
@@ -32,8 +36,8 @@ void usart1_dma_send(uint8_t *txbuf,uint16_t txlen)
 
    // LL_USART_EnableDMAReq_TX(USART1);
 
-	LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PDATAALIGN_BYTE);
-	LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MDATAALIGN_BYTE);
+	//LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PDATAALIGN_BYTE);
+	//LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MDATAALIGN_BYTE);
 	
 	LL_USART_EnableDMAReq_TX(USART1);
 	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_1);

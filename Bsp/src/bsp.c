@@ -210,7 +210,7 @@ void power_off_run_handler(void)
 void twoHours_works_timing(void)
 {
   
-   #if 1
+   #if 0
    if(gpro_t.gTimer_work_counter_minutes>5 &&  gpro_t.two_work_hours_flag ==0){
 
    #else
@@ -227,7 +227,7 @@ void twoHours_works_timing(void)
 	  tx_thread_sleep(2);
      
    }
-   #if 1
+   #if 0
    	  else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_work_counter_minutes > 2){
 
    #else 
