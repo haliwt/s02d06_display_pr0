@@ -25,7 +25,7 @@
 
 
 #define STACK_SIZE_DECODER  768//640//512//384//256//256//
-#define STACK_SIZE_UI   1024//1536//1024//896//1024//384//256
+#define STACK_SIZE_UI   1280//1536//1024//896//1024//384//256
 #define STACK_SIZE_KEY  512//256
 #define STACK_SIZE_EVENT   512//256
 
@@ -375,7 +375,7 @@ static void vTaskStart(ULONG thread_input)
 		 else if(flags & KEY_UP_SHORT){
 		 if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
 			 	SendData_Set_Command(0x06,0x01);
-			    tx_thread_sleep(1);
+			    tx_thread_sleep(5);
 				gpro_t.gTimer_set_temp_counter = 0;
 			
 				key_add_fun();
@@ -385,7 +385,7 @@ static void vTaskStart(ULONG thread_input)
 		 else if(flags & KEY_DOWN_SHORT){
 		 	if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){
 			 	SendData_Set_Command(0x06,0x01);
-			    tx_thread_sleep(1);
+			    tx_thread_sleep(5);
 				gpro_t.gTimer_set_temp_counter = 0;
 				key_dec_fun();
 		 	}
