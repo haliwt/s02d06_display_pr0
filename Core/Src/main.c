@@ -23,6 +23,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "iwdg.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -95,10 +96,11 @@ int main(void)
   MX_DMA_Init();
   MX_USART1_UART_Init();
   MX_TIM17_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
    bsp_init();
    
-  
+   LL_IWDG_ReloadCounter(IWDG);
 
    
   /* USER CODE END 2 */

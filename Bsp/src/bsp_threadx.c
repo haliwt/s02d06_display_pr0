@@ -194,6 +194,7 @@ static void vTaskUiPro(ULONG thread_input)
 	    power_off_run_handler();
 
 	  }
+	 LL_IWDG_ReloadCounter(IWDG);
         #if DEBUG_ENABLE
               debug_stack_ui_check();
           #endif 
