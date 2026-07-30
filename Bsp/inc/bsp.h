@@ -105,6 +105,7 @@ typedef struct _pro_t{
   
    uint8_t answer_signal_flag;
    uint8_t set_timer_first_smg_blink_flag;
+   uint8_t boot_done;
 
    uint8_t send_ack_cmd;
    uint8_t receive_copy_cmd;

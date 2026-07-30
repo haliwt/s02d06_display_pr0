@@ -72,7 +72,7 @@ typedef struct __RUN{
    
    uint8_t keyAdd_continue;
    uint8_t keyDec_continue;
-   uint8_t power_on_step;
+  
    uint8_t power_off_step;
   
 

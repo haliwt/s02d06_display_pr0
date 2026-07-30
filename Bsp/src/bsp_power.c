@@ -45,6 +45,7 @@ uint32_t get_timestamp_ms(void)
 	*Return Ref:NO
 	*
 ******************************************************************************/
+#if 0
 void power_on_run_handler(void)
 {
 
@@ -214,7 +215,7 @@ void power_on_run_handler(void)
 }
 
 
-
+#endif 
 
 /**********************************************************************
 *
@@ -364,7 +365,7 @@ static void ui_event_power_on(void)
     ui.ts_version = ui.ts_boot;
     ui.ts_two_hours = ui.ts_boot;
 
-    ui.boot_done = 1;
+    gpro_t.boot_done = 0xfe;
 }
 
 
@@ -518,11 +519,14 @@ static void ui_task_wifi(uint32_t now)
 void ui_task(void)
 {
     uint32_t now = get_timestamp_ms();
+	
+	LL_IWDG_ReloadCounter(IWDG);
 
     // 开机事件（只执行一次）
-    if (!ui.boot_done) {
+    if (gpro_t.boot_done < 0x08) {
         ui_event_power_on();
     }
+	
 
     // 按键事件
     ui_task_keys();
@@ -542,5 +546,7 @@ void ui_task(void)
 	ui_task_colon(now);      // 新增
     ui_task_timer_led(now);  // 新增
     ui_task_wifi(now);       // 新增
+
+	
 }
 

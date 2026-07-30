@@ -24,23 +24,10 @@
 #define KEY_AI_LONG        (1UL << 12)
 
 
-#if 0
-#define POWER_BIT_0	        (1 << 0)
-#define MODE_BIT_1	        (1 << 1)
-#define DEC_BIT_2           (1 << 2)
-#define ADD_BIT_3           (1 << 3)
 
-#define MOUSE_BIT_4           (1 << 4)
-#define PLASMA_BIT_5        (1 << 5)
-#define DRY_BIT_6           (1<< 6)
-#define AI_BIT_7            ( 1<< 7)
-
-#define MODE_LONG_KEY_8         (1 << 8)
-#define DECODER_BIT_9          (1<< 9)
-#endif 
 
 #define STACK_SIZE_UI     768//512//1792//1536//1024//1664 
-#define STACK_SIZE_KEY    256//512
+#define STACK_SIZE_KEY    512//512
 #define STACK_SIZE_DEC    512//
 #define STACK_SIZE_EVENT  512
 
@@ -174,7 +161,7 @@ static void ui_thread_entry(ULONG thread_input)
        }
     }
 	 else{
-
+        LL_IWDG_ReloadCounter(IWDG);
 	    power_off_run_handler();
 
 	  }
@@ -191,11 +178,24 @@ static void ui_thread_entry(ULONG thread_input)
 *	priority: 3  (数值越小优先级越低，这个跟uCOS相反)
 *
 **********************************************************************************************************/
+uint16_t mode_cnt = 0;
+uint16_t up_cnt = 0;
+uint16_t down_cnt = 0;
+uint16_t power_cnt = 0;
+uint16_t  plasma_cnt  =0 ;
+uint16_t  ptc_cnt =0;
+uint16_t  mouse_cnt = 0;
+uint16_t  ai_cnt = 0;
+
+const uint16_t LONG_PRESS_TIME = 40;   //20ms * 100= 2000ms
+
+
+
 static void key_thread_entry(ULONG thread_input)
 {
 	
     (void)thread_input;
-
+#if 0
 	static uint16_t mode_cnt = 0;
     static uint16_t up_cnt = 0;
     static uint16_t down_cnt = 0;
@@ -206,7 +206,7 @@ static void key_thread_entry(ULONG thread_input)
 	static uint16_t  ai_cnt = 0;
 
     const uint16_t LONG_PRESS_TIME = 40;   //20ms * 100= 2000ms
-
+   #endif 
 
 
 	

@@ -107,6 +107,8 @@ void Error_Handler(void);
 #define KEY_ADD_Pin LL_GPIO_PIN_12
 #define KEY_ADD_GPIO_Port GPIOA
 
+
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

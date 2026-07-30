@@ -17,8 +17,7 @@ uint8_t  first_set_temperature_value;
 
 void bsp_init(void)
 {
-
-    run_t.power_on_step =0;
+    gpro_t.boot_done = 0;
     run_t.gPower_On = power_off;
 
 #if Enable_EventRecorder == 1  
@@ -33,11 +32,7 @@ void bsp_init(void)
 void power_on_handler(void)
 {
 
-	run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
 
-	run_t.gPower_On = power_on;
-	run_t.power_on_step =0;
-	run_t.power_off_step = 0;
 	
 }
 
@@ -45,7 +40,7 @@ void power_off_handler(void)
 {
 
     run_t.gPower_On = power_off;
-	run_t.power_on_step =0L;
+	gpro_t.boot_done = 0;
 
  }
 
@@ -120,7 +115,7 @@ void power_off_run_handler(void)
 	  
 		 run_t.ptc_warning =0;
 		 run_t.fan_warning =0;
-		 run_t.power_on_step =0;
+		
          run_t.gFan_RunContinue =1;
 	     run_t.gTimer_fan_continue=0;
          run_t.gTimer_detect_mb_receive_flag=0;

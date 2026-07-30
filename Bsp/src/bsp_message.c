@@ -33,8 +33,8 @@ void receive_data_from_mainboard(uint8_t *pdata)
            if(pdata[3] == 0x01){ //power on
 
             run_t.gPower_On = power_on;
-            run_t.power_on_step =0;
-            //gpro_t.receive_copy_cmd = 1;
+            gpro_t.boot_done = 0;
+       
             power_on_handler();
             SendWifiData_Answer_Cmd(0x01 ,0x01);//SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
 			tx_thread_sleep(2);
@@ -42,7 +42,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
            else{ //power off
 
             run_t.gPower_On = power_off;
-            run_t.power_on_step =0;
+            gpro_t.boot_done = 0;
             SendWifiData_Answer_Cmd(0x01,0x0);
 			tx_thread_sleep(2);
            
@@ -65,7 +65,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		    else{
                 run_t.connect_wifi_state = wifi_connect_success;
 				run_t.gPower_On = power_off;
-                run_t.power_on_step =0;
+                gpro_t.boot_done = 0;
 
 			}
            
@@ -478,8 +478,10 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
 	 if(pdata[4]==0x01){
 	 	run_t.gPower_On = power_on;
-		run_t.power_on_step =0;
-        power_on_handler();
+		gpro_t.boot_done=0;//run_t.power_on_step =0;
+        run_t.gTimer_set_temp_times=0; //conflict with send temperatur value
+
+	    run_t.power_off_step = 0;
         
 
      }

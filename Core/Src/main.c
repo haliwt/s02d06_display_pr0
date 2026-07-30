@@ -97,6 +97,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM17_Init();
   MX_IWDG_Init();
+  LL_IWDG_ReloadCounter(IWDG);
   /* USER CODE BEGIN 2 */
    bsp_init();
    tx_kernel_enter();

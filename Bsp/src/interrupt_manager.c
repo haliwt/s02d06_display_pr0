@@ -5,8 +5,8 @@
 
 /*******************************************************************************
 	*
-	*Function Name:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-	*Function : timing 10ms interrupt call back function 
+	*Function Name:
+	*Function : timer 17 is 10ms 
 	*
 	*
 *******************************************************************************/
@@ -20,7 +20,7 @@ void tim17_isr_callback_hanlder(void)
     run_t.gTimer_smg_blink_times++;
 	gpro_t.gTimer_4bitsmg_blink_times++;
 	
-    if(tm0>999){ //100 *10ms = 1000ms = 1s
+    if(tm0>99){ //100 *10ms = 1000ms = 1s
 		tm0=0;
 	
 
