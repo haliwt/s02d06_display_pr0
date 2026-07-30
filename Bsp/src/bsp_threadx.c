@@ -435,7 +435,7 @@ static void key_event_entry(ULONG thread_input)
        	//key_t.key_add_flag++;
 		SendData_Set_Command(0x06,0x01);
 	    tx_thread_sleep(2);
-		gpro_t.gTimer_set_temp_counter = 0;
+	
 		key_add_fun();
 		 }
 	}
@@ -444,7 +444,7 @@ static void key_event_entry(ULONG thread_input)
 	   	  //key_t.key_dec_flag++;
 		  SendData_Set_Command(0x06,0x01);
 		  tx_thread_sleep(2);
-		  gpro_t.gTimer_set_temp_counter = 0;
+	
 		  key_dec_fun();
 		 }
 

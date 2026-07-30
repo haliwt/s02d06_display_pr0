@@ -66,7 +66,7 @@ static void DisplayPanel_DHT11_Value(void)
 void disp_dht11_value(void)
 {
   static uint8_t send_counter;
-  if(gpro_t.set_timer_timing_doing_value==1) return ;
+  if(run_t.set_temperature_special_flag ==1) return ;
 
        	Display_DHT11_Value();
 

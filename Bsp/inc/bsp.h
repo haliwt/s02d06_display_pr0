@@ -130,7 +130,7 @@ volatile    uint8_t gTimer_disp_mode_switch;
 
 
 
-volatile    uint8_t  gTimer_set_temp_counter ;
+
 
  
 volatile    uint8_t gTimer_counter_one_minute;

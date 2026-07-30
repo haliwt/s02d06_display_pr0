@@ -329,7 +329,7 @@ void disp_smg_blink_set_tempeature_value(void)
               gpro_t.g_manual_shutoff_dry_flag=0; //WT.EDIT 2025.05.28
               run_t.set_temperature_special_flag =0;
               
-              }
+        }
 		  
 }
 
