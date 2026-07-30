@@ -13,7 +13,7 @@
 void tim17_isr_callback_hanlder(void)
 {
   static uint16_t tm0;
-  static uint8_t tm1;
+  
 
     tm0++;
 	
@@ -22,7 +22,7 @@ void tim17_isr_callback_hanlder(void)
 	
     if(tm0>999){ //100 *10ms = 1000ms = 1s
 		tm0=0;
-		tm1++;
+	
 
         run_t.gTimer_error_digital++;
 		run_t.gTimer_run_ico++;

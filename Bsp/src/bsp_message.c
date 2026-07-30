@@ -37,14 +37,14 @@ void receive_data_from_mainboard(uint8_t *pdata)
             //gpro_t.receive_copy_cmd = 1;
             power_on_handler();
             SendWifiData_Answer_Cmd(0x01 ,0x01);//SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
-			osDelay(50);
+			tx_thread_sleep(2);
            }
            else{ //power off
 
             run_t.gPower_On = power_off;
             run_t.power_on_step =0;
             SendWifiData_Answer_Cmd(0x01,0x0);
-			osDelay(50);
+			tx_thread_sleep(2);
            
            }
           
@@ -129,7 +129,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
             LED_DRY_ON();
 	        gpro_t.g_manual_shutoff_dry_flag=0;
 	       SendWifiData_Answer_Cmd(0x02,0x0);
-			osDelay(50);
+			tx_thread_sleep(2);
         }
         else if(pdata[3] == 0x0){
 
@@ -137,7 +137,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		    LED_DRY_OFF();
             gpro_t.g_manual_shutoff_dry_flag=1;
 		    SendWifiData_Answer_Cmd(0x02,0x0);
-		    osDelay(50);
+		    tx_thread_sleep(2);
 
         }
     	
@@ -398,7 +398,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
              run_t.set_temperature_unit_value  =gpro_t.set_up_temperature_value % 10; //
 
              TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
-			 vTaskDelay(1000);
+			 tx_thread_sleep(100);//vTaskDelay(1000);
 	  
 			 
 

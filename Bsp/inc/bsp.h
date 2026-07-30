@@ -8,8 +8,13 @@
 
 #include "usart.h"
 #include "dma.h"
+#include "app_threadx.h"
+#include "iwdg.h"
+#include "tim.h"
+#include "gpio.h"
 
 
+//BSP FUNTION
 #include "bsp_smg.h"
 #include "bsp_cmd_link.h"
 #include "bsp_run.h"
@@ -28,18 +33,16 @@
 
 #include "bsp_key_app.h"
 #include "bsp_message.h"
-#include "bsp_freertos.h"
+#include "bsp_threadx.h"
 
 
 
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "cmsis_os.h"
 
 
 
-#define  USE_FreeRTOS      1
+
+#define  USE_Threadx      1
 
 #define DEBUG_FALG   Enable_EventRecorder
 
@@ -51,11 +54,9 @@
 #endif
 
 
-#if USE_FreeRTOS == 1
-	//#include "FreeRTOS.h"
-	///#include "task.h"
-	#define DISABLE_INT()    taskENTER_CRITICAL()
-	#define ENABLE_INT()     taskEXIT_CRITICAL()
+#if USE_Threadx == 1
+	#define DISABLE_INT()    TX_INTERRUPT_DISABLE
+    #define ENABLE_INT()     TX_INTERRUPT_RESTORE
 #else
 	/* ����ȫ���жϵĺ� */
 	#define ENABLE_INT()	__set_PRIMASK(0)	/* ʹ��ȫ���ж� */

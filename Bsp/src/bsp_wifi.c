@@ -14,7 +14,7 @@ void wifi_connect_state_fun(void)
         if(run_t.gTimer_wifi_connect_counter <120){
            
             LED_WIFI_TOGGLE() ;
-            osDelay(50);
+            tx_thread_sleep(2);
         }
         else{
             run_t.wifi_led_fast_blink =0;

@@ -162,7 +162,7 @@ void Set_TimerTiming_Number_Value(void)
         	 //run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
         	 //run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
         	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-			 vTaskDelay(200);
+			 tx_thread_sleep(20);//vTaskDelay(200);
 			 
 
 		}
@@ -179,9 +179,9 @@ void Set_TimerTiming_Number_Value(void)
 			}
 
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-			vTaskDelay(200);
+			tx_thread_sleep(20);//vTaskDelay(200);
 			SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
-			osDelay(100);
+			tx_thread_sleep(2);
 
 
 		}
@@ -193,9 +193,9 @@ void Set_TimerTiming_Number_Value(void)
 					run_t.timer_dispTime_hours = 0 ;
 				    run_t.timer_dispTime_minutes = 0;
 		            Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-					vTaskDelay(200);
+					tx_thread_sleep(20);//vTaskDelay(200);
 					SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
-					osDelay(100);
+					tx_thread_sleep(2);
 		
 		
 		}

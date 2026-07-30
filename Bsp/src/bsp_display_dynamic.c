@@ -75,7 +75,7 @@ void disp_dht11_value(void)
 		if(send_counter > 6){
 			send_counter =0;
           SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
-	       vTaskDelay(pdMS_TO_TICKS(100));
+	      tx_thread_sleep(2);
 		}
      
 	}
@@ -122,7 +122,7 @@ void Display_SetTemperature_Value(void)
 			    if(ptc_off_flag != run_t.gDry){
 			   	   ptc_off_flag =  run_t.gDry;
 			      SendData_Set_Command(0x22,0x00); //close ptc 
-	              vTaskDelay(pdMS_TO_TICKS(100));
+	             tx_thread_sleep(2);
 
                	}
 			    
@@ -143,7 +143,7 @@ void Display_SetTemperature_Value(void)
 			    if(ptc_on_flag != run_t.gDry){
 			   	   ptc_on_flag = run_t.gDry;
 	               SendData_Set_Command(0x22,0x01); //open ptc 
-	               vTaskDelay(pdMS_TO_TICKS(100));
+	              tx_thread_sleep(2);
 			    }
 	          
             
@@ -155,7 +155,7 @@ void Display_SetTemperature_Value(void)
 		          if(ptc_on_flag != run_t.gDry){
 			   	   ptc_on_flag = run_t.gDry;
 	            	SendData_Set_Command(0x22,0x01); //open ptc 
-	            	vTaskDelay(pdMS_TO_TICKS(100));
+	            	tx_thread_sleep(2);//vTaskDelay(pdMS_TO_TICKS(100));
 			     }
 	          
 			}
@@ -175,7 +175,7 @@ void Display_SetTemperature_Value(void)
 	            if(ptc_off_flag != run_t.gDry ){
 			   	   ptc_off_flag = run_t.gDry ;
                		SendData_Set_Command(0x22,0x00); //close ptc 
-               		vTaskDelay(pdMS_TO_TICKS(100));
+               		tx_thread_sleep(2);//vTaskDelay(pdMS_TO_TICKS(100));
 			     }
           }
           else if(gpro_t.first_rcoder_ptc_on_flag  == 1 &&  run_t.gReal_humtemp[1] < 38 ){
@@ -186,7 +186,7 @@ void Display_SetTemperature_Value(void)
 			   if(ptc_on_flag != run_t.gDry ){
 		   	       ptc_on_flag = run_t.gDry ;
 	               SendData_Set_Command(0x22,0x01); //open ptc 
-	               vTaskDelay(pdMS_TO_TICKS(100));
+	              tx_thread_sleep(2);
 
 		     	}
           }
@@ -197,7 +197,7 @@ void Display_SetTemperature_Value(void)
 		        if(ptc_on_flag != run_t.gDry ){
 			   	     ptc_on_flag = run_t.gDry ;
 				    SendData_Set_Command(0x22,0x01); //open ptc  
-				    vTaskDelay(pdMS_TO_TICKS(100));
+				   tx_thread_sleep(2);
 			     }
 		 }
       
@@ -343,7 +343,7 @@ static void Timer_Timing_Donot_Display(void)
     }
 		//dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据
 		sendCmdNote_to_threeData(0x6B,run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter); // cmd=0x1A, 数据长度=3
-		osDelay(100);		
+		tx_thread_sleep(2);		
   }
 
 }
@@ -376,7 +376,7 @@ static void WorksTime_DonotDisplay_Fun(void)
 		if(run_t.connect_wifi_state == wifi_connect_null){
 			//dataToSend[3] = {run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter}; // 要发送的 3 个数据
 		   sendCmdNote_to_threeData(0x6C, run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter); // cmd=0x1A, 数据长度=3
-			osDelay(100);
+			tx_thread_sleep(2);
         }
   }
 }
@@ -457,12 +457,12 @@ void Display_SmgTiming_Value(void)
 				gpro_t.send_ack_cmd = check_ack_power_off;//ack_power_off;
 			
 				SendData_PowerOnOff(0);//power off
-                vTaskDelay(100);
+                tx_thread_sleep(2);
 			}
 
 			//dataToSend[3] = {run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter}; // 要发送的 3 个数据
 			sendCmdNote_to_threeData(0x6B,run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes, run_t.gTimer_timer_seconds_counter); // cmd=0x1A, 数据长度=3
-			osDelay(100);
+			tx_thread_sleep(2);
 		}
 
 		Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
@@ -490,7 +490,7 @@ void Display_SmgTiming_Value(void)
                 if(run_t.connect_wifi_state == wifi_connect_null){
 				//dataToSend[3] = {run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter}; // 要发送的 3 个数据
 				sendCmdNote_to_threeData(0x6C,run_t.works_dispTime_hours,run_t.works_dispTime_minutes, run_t.gTimer_timing_seconds_counter); // cmd=0x1A, 数据长度=3
-				osDelay(100);
+				tx_thread_sleep(2);
                 }
            }
   

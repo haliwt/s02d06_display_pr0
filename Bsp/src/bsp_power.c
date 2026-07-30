@@ -1,12 +1,41 @@
 #include "bsp.h"
 
+#define THREADX_TICK_MS 10
+
+
 RUN_T run_t;
 
+typedef struct {
+
+    uint8_t boot_done;            // 开机流程是否完成
+    uint32_t ts_boot;             // 开机时间戳
+
+    uint32_t ts_ui;               // UI 刷新周期
+    uint32_t ts_dht11;            // DHT11 刷新周期
+    uint32_t ts_version;          // 版本号发送周期
+    uint32_t ts_two_hours;        // 两小时计时周期
+
+    uint32_t ts_key;              // 按键去抖周期
+    uint32_t ts_blink;            // 温度闪烁周期
+
+	uint32_t ts_colon;     // 时间冒号闪烁
+    uint32_t ts_timer_led; // 定时器 LED 闪烁
+    uint32_t ts_wifi;      // WiFi 状态刷新
+
+} ui_t;
+
+static ui_t ui;
 
 
 uint8_t power_on_off_flag;
 
 void Power_Off(void);
+
+uint32_t get_timestamp_ms(void)
+{
+    return tx_time_get()* THREADX_TICK_MS;;   // 返回 tick 数
+}
+
 
 /******************************************************************************
 	*
@@ -67,7 +96,7 @@ void power_on_run_handler(void)
 			gpro_t.gTimer_counter_one_minute =0;
 
 			 SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
-	         vTaskDelay(pdMS_TO_TICKS(100));
+	        tx_thread_sleep(2);
 			
 			run_t.power_on_step= 1;
 
@@ -174,7 +203,7 @@ void power_on_run_handler(void)
         if(counter_version > 20){
 			counter_version =0;
 		    SendData_Set_Command(0x0F,0x02); //notice thi is new version
-		    vTaskDelay(pdMS_TO_TICKS(50));
+		    tx_thread_sleep(2);//vTaskDelay(pdMS_TO_TICKS(50));
         }
 	  run_t.power_on_step=1;
 
@@ -291,4 +320,227 @@ void Power_Off_Fun(void)
   
 } 
 
+
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void ui_event_power_on(void)
+{
+    Power_On_Fun();
+
+    run_t.gTimer_time_colon = 0;
+    run_t.set_temperature_decade_value = 40;
+    run_t.gTimer_detect_mb_receive_flag = 0;
+    run_t.gTimer_display_dht11 = 20;
+
+    gpro_t.set_timer_timing_doing_value = 0;
+    gpro_t.g_manual_shutoff_dry_flag = 0;
+    run_t.wifi_led_fast_blink = 0;
+
+    run_t.timer_dispTime_hours = 0;
+    run_t.timer_dispTime_minutes = 0;
+    run_t.works_dispTime_hours = 0;
+    run_t.works_dispTime_minutes = 0;
+    run_t.gTimer_timing_seconds_counter = 0;
+
+    gpro_t.gTimer_two_hours_seconds = 0;
+    gpro_t.two_work_hours_flag = 0;
+
+    gpro_t.set_temp_value_success = 0;
+    gpro_t.key_disp_mode_flag = 0xff;
+    gpro_t.ai_flag = ai_mode;
+    key_t.disp_smg_mode_flag = disp_works_times;
+
+    gpro_t.fan_run_one_minute = 0;
+    gpro_t.gTimer_counter_one_minute = 0;
+
+    SendData_Set_Command(0x11,0x01);
+
+    ui.ts_boot = get_timestamp_ms();
+    ui.ts_ui = ui.ts_boot;
+    ui.ts_dht11 = ui.ts_boot;
+    ui.ts_version = ui.ts_boot;
+    ui.ts_two_hours = ui.ts_boot;
+
+    ui.boot_done = 1;
+}
+
+
+/**
+*@brief 
+*@param
+*@notice
+**/
+
+static void ui_task_dht11(uint32_t now)
+{
+    if (now - ui.ts_dht11 >= 200) {
+        disp_dht11_value();
+        ui.ts_dht11 = now;
+    }
+}
+
+/**
+*@brief 
+*@param
+*@notice
+**/
+
+static void ui_task_two_hours(uint32_t now)
+{
+    if (now - ui.ts_two_hours >= 1000) {
+        twoHours_works_timing();
+        ui.ts_two_hours = now;
+    }
+}
+/**
+*@brief 
+*@param
+*@notice
+**/
+
+static void ui_task_version(uint32_t now)
+{
+    if (now - ui.ts_version >= 2000) {
+        SendData_Set_Command(0x0F,0x02);
+        ui.ts_version = now;
+    }
+}
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void ui_task_keys(void)
+{
+   #if 0
+	if (gpro_t.mode_key_shot_flag == 1) {
+        mode_key_short_fun();
+        gpro_t.mode_key_shot_flag = 0;
+    }
+   #endif 
+    if (gpro_t.set_timer_timing_doing_value == 1 &&
+        run_t.ptc_warning == 0 &&
+        run_t.fan_warning == 0) {
+
+        Set_TimerTiming_Number_Value();
+    }
+
+    if ((gpro_t.set_timer_timing_doing_value == 0 ||
+         gpro_t.set_timer_timing_doing_value == 3) &&
+        run_t.set_temperature_special_flag > 0 &&
+        run_t.set_temperature_special_flag != 0xff) {
+
+        disp_smg_blink_set_tempeature_value();
+    }
+}
+
+
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void ui_task_refresh(uint32_t now)
+{
+    // UI 刷新周期：50ms
+    if (now - ui.ts_ui < 50)
+        return;
+
+    ui.ts_ui = now;
+
+    // 1. 有告警时优先显示告警
+    if (run_t.ptc_warning || run_t.fan_warning) {
+        Warning_Error_Numbers_Fun();
+        return;
+    }
+
+    // 2. 定时器正在设置时显示定时器数值
+    if (gpro_t.set_timer_timing_doing_value == 1) {
+        Set_TimerTiming_Number_Value();
+        return;
+    }
+
+    // 3. 特殊温度设置闪烁显示
+    if ((gpro_t.set_timer_timing_doing_value == 0 ||
+         gpro_t.set_timer_timing_doing_value == 3) &&
+        run_t.set_temperature_special_flag > 0 &&
+        run_t.set_temperature_special_flag != 0xff) {
+
+        disp_smg_blink_set_tempeature_value();
+        return;
+    }
+
+    // 4. 正常显示工作时间（你原来的 Display_SmgTiming_Value）
+    if ((gpro_t.set_timer_timing_doing_value == 0 ||
+         gpro_t.set_timer_timing_doing_value == 3) &&
+        gpro_t.key_disp_mode_flag == 0xff) {
+
+        Display_SmgTiming_Value();
+        return;
+    }
+}
+
+static void ui_task_colon(uint32_t now)
+{
+    if (now - ui.ts_colon >= 500) {
+        Display_TimeColon_Blink_Fun();
+        ui.ts_colon = now;
+    }
+}
+
+static void ui_task_timer_led(uint32_t now)
+{
+    if (now - ui.ts_timer_led >= 200) {
+        set_timer_fun_led_blink();
+        ui.ts_timer_led = now;
+    }
+}
+
+static void ui_task_wifi(uint32_t now)
+{
+    if (now - ui.ts_wifi >= 300) {
+        wifi_connect_state_fun();
+        ui.ts_wifi = now;
+    }
+}
+
+/************************************************************************
+	*
+	*Function Name: static void Power_Off_Fun(void)
+	*
+	*
+	*
+	*
+************************************************************************/
+void ui_task(void)
+{
+    uint32_t now = get_timestamp_ms();
+
+    // 开机事件（只执行一次）
+    if (!ui.boot_done) {
+        ui_event_power_on();
+    }
+
+    // 按键事件
+    ui_task_keys();
+
+    // UI 刷新
+    ui_task_refresh(now);
+
+    // DHT11 显示
+    ui_task_dht11(now);
+
+    // 两小时计时
+    ui_task_two_hours(now);
+
+    // 版本号发送
+    ui_task_version(now);
+
+	ui_task_colon(now);      // 新增
+    ui_task_timer_led(now);  // 新增
+    ui_task_wifi(now);       // 新增
+}
 

@@ -17,9 +17,10 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include "tx_api.h"
 #include "main.h"
-#include "cmsis_os.h"
 #include "dma.h"
+#include "iwdg.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -54,7 +55,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -96,19 +96,13 @@ int main(void)
   MX_DMA_Init();
   MX_USART1_UART_Init();
   MX_TIM17_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
    bsp_init();
-   
-  freeRTOS_Handler();
+   tx_kernel_enter();
+   /* USER CODE END 2 */
 
-   
-  /* USER CODE END 2 */
-
-  /* Call init function for freertos objects (in cmsis_os2.c) */
- // MX_FREERTOS_Init();
-
-  /* Start scheduler */
- // osKernelStart();
+  
 
   /* We should never get here as control is now taken by the scheduler */
 
@@ -137,6 +131,12 @@ void SystemClock_Config(void)
   /* HSI configuration and activation */
   LL_RCC_HSI_Enable();
   while(LL_RCC_HSI_IsReady() != 1)
+  {
+  }
+
+  /* LSI configuration and activation */
+  LL_RCC_LSI_Enable();
+  while(LL_RCC_LSI_IsReady() != 1)
   {
   }
 

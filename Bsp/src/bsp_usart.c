@@ -45,7 +45,25 @@ void USART1_IRQHandler(void)
     }
 
     // 清除错误标志
-    if (LL_USART_IsActiveFlag_ORE(USART1)) LL_USART_ClearFlag_ORE(USART1);
+   // if (LL_USART_IsActiveFlag_ORE(USART1)) LL_USART_ClearFlag_ORE(USART1);
+    if (LL_USART_IsActiveFlag_ORE(USART1))
+    {
+        /* 
+           【核心解锁步骤】
+           必须先强行读取一次数据寄存器（DR）。
+           这一步是为了清空移位寄存器和硬件缓冲区，向外设硬件发出“允许继续接收”信号。
+           如果不读 DR，单纯清除标志位，硬件的接收移位状态机依然处于锁死状态。
+        */
+        volatile uint32_t dummy_read = USART1->RDR; 
+        
+        // 使用 volatile 防止这行没用的读取代码被编译器优化掉
+        ((void)dummy_read); 
+        
+        /* 
+           可以增加一个错误计数器，方便你在 ThreadX 任务中监控串口健康度
+           g_uart1_error_count.ore_count++; 
+        */
+    }
     if (LL_USART_IsActiveFlag_FE(USART1))  LL_USART_ClearFlag_FE(USART1);
     if (LL_USART_IsActiveFlag_NE(USART1))  LL_USART_ClearFlag_NE(USART1);
 
@@ -98,7 +116,7 @@ static void read_isr_usart1_data(uint8_t data)
 
                 gl_tMsg.bcc_check_code=data;
 
-                vTaskDecoder_USART1_handler();
+                tx_thread_semaphore_isr();// vTaskDecoder_USART1_handler();
                   
         break;
 

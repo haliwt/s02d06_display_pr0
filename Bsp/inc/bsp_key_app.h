@@ -40,6 +40,22 @@ void handle_mode_key_long_press(void);
 
 void power_key_handler(void) ;
 
+void mode_key_handler(void);
 
+
+void handle_mode_key_long_press(void);
+
+void key_dec_fun(void);
+
+void key_add_fun(void);
+
+
+void mouse_key_handler(void) ;
+
+void dry_key_handler(void) ;
+
+void plasma_key_handler(void) ;
+
+void power_key_handler(void) ;
 
 #endif /* BSP_INC_BSP_KEY_APP_H_ */
