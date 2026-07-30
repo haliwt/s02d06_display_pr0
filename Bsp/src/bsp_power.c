@@ -2,8 +2,20 @@
 
 #define THREADX_TICK_MS 10
 
+#define DEFAULT_TEMP    40 
 
 RUN_T run_t;
+
+
+
+typedef enum{
+
+  PTC_STATE_OFF = 0,
+  PTC_STATE_ON  = 1
+}PTC_State;
+
+static PTC_State ptc_state = PTC_STATE_OFF;
+
 
 typedef struct {
 
@@ -21,6 +33,7 @@ typedef struct {
 	uint32_t ts_colon;     // 时间冒号闪烁
     uint32_t ts_timer_led; // 定时器 LED 闪烁
     uint32_t ts_wifi;      // WiFi 状态刷新
+    uint32_t ts_compare_temp;    //
 
 } ui_t;
 
@@ -31,9 +44,19 @@ uint8_t power_on_off_flag;
 
 void Power_Off(void);
 
+
+static void set_temperature_compare_value_fun(void);
+/******************************************************************************
+	*
+	*Function Name:void RunPocess_Command_Handler(void)
+	*Funcion: display pannel run of process 
+	*Input Ref: NO
+	*Return Ref:NO
+	*
+******************************************************************************/
 uint32_t get_timestamp_ms(void)
 {
-    return tx_time_get()* THREADX_TICK_MS;;   // 返回 tick 数
+    return tx_time_get()* THREADX_TICK_MS;   // 返回 tick 数
 }
 
 
@@ -276,7 +299,7 @@ void Power_On_Fun(void)
 	
     run_t.gTimer_timer_seconds_counter=0;
     gpro_t.set_timer_timing_value_success =0 ;
-    gpro_t.set_temp_value_success = 0;
+   
     run_t.timer_dispTime_hours =0;
 	run_t.timer_dispTime_minutes=0;
 		
@@ -333,7 +356,7 @@ static void ui_event_power_on(void)
 
     run_t.gTimer_time_colon = 0;
     run_t.set_temperature_decade_value = 40;
-    run_t.gTimer_detect_mb_receive_flag = 0;
+
     run_t.gTimer_display_dht11 = 20;
 
     gpro_t.set_timer_timing_doing_value = 0;
@@ -348,11 +371,14 @@ static void ui_event_power_on(void)
 
     gpro_t.gTimer_two_hours_seconds = 0;
     gpro_t.two_work_hours_flag = 0;
+	
 
-    gpro_t.set_temp_value_success = 0;
+
     gpro_t.key_disp_mode_flag = 0xff;
     gpro_t.ai_flag = ai_mode;
     key_t.disp_smg_mode_flag = disp_works_times;
+
+	gpro_t.first_ptc_on=0;
 
     gpro_t.fan_run_one_minute = 0;
     gpro_t.gTimer_counter_one_minute = 0;
@@ -377,7 +403,7 @@ static void ui_event_power_on(void)
 
 static void ui_task_dht11(uint32_t now)
 {
-    if (now - ui.ts_dht11 >= 200) {
+    if (now - ui.ts_dht11 >= 300) {
         disp_dht11_value();
         ui.ts_dht11 = now;
     }
@@ -416,26 +442,14 @@ static void ui_task_version(uint32_t now)
 **/
 static void ui_task_keys(void)
 {
-   #if 0
-	if (gpro_t.mode_key_shot_flag == 1) {
-        mode_key_short_fun();
-        gpro_t.mode_key_shot_flag = 0;
-    }
-   #endif 
-    if (gpro_t.set_timer_timing_doing_value == 1 &&
-        run_t.ptc_warning == 0 &&
-        run_t.fan_warning == 0) {
+ 
+    if (gpro_t.set_timer_timing_doing_value == 1 &&  run_t.ptc_warning == 0 &&  run_t.fan_warning == 0) {
 
         Set_TimerTiming_Number_Value();
     }
-
-    if ((gpro_t.set_timer_timing_doing_value == 0 ||
-         gpro_t.set_timer_timing_doing_value == 3) &&
-        run_t.set_temperature_special_flag > 0 &&
-        run_t.set_temperature_special_flag != 0xff) {
-
-        disp_smg_blink_set_tempeature_value();
-    }
+    
+     disp_smg_blink_set_tempeature_value();
+   
 }
 
 
@@ -458,30 +472,23 @@ static void ui_task_refresh(uint32_t now)
         return;
     }
 
-    // 2. 定时器正在设置时显示定时器数值
-    if (gpro_t.set_timer_timing_doing_value == 1) {
-        Set_TimerTiming_Number_Value();
-        return;
-    }
 
     // 3. 特殊温度设置闪烁显示
-    if ((gpro_t.set_timer_timing_doing_value == 0 ||
-         gpro_t.set_timer_timing_doing_value == 3) &&
-        run_t.set_temperature_special_flag > 0 &&
-        run_t.set_temperature_special_flag != 0xff) {
+    if (gpro_t.set_timer_timing_doing_value == 0 && run_t.set_temperature_special_flag ==1 ) {
 
         disp_smg_blink_set_tempeature_value();
         return;
     }
 
     // 4. 正常显示工作时间（你原来的 Display_SmgTiming_Value）
-    if ((gpro_t.set_timer_timing_doing_value == 0 ||
-         gpro_t.set_timer_timing_doing_value == 3) &&
-        gpro_t.key_disp_mode_flag == 0xff) {
+    if (gpro_t.set_timer_timing_doing_value == 0){
+             
 
         Display_SmgTiming_Value();
         return;
     }
+
+	
 }
 
 static void ui_task_colon(uint32_t now)
@@ -506,6 +513,18 @@ static void ui_task_wifi(uint32_t now)
         wifi_connect_state_fun();
         ui.ts_wifi = now;
     }
+}
+
+static void ui_task_compare_temperature_value(uint32_t now)
+{
+      if(now -ui.ts_compare_temp > 3000){
+
+	     set_temperature_compare_value_fun();
+	     ui.ts_compare_temp  = now;
+
+	  }
+
+
 }
 
 /************************************************************************
@@ -546,6 +565,96 @@ void ui_task(void)
 	ui_task_colon(now);      // 新增
     ui_task_timer_led(now);  // 新增
     ui_task_wifi(now);       // 新增
+
+	ui_task_compare_temperature_value(now);
+
+	
+}
+
+
+/**************************************************************************************************
+*
+*Function Name:void set_temperature_compare_value_fun(void)
+*Function:
+*Input Ref:
+*Return Ref:
+*
+*****************************************************************************************************/
+static void set_temperature_compare_value_fun(void)
+{
+    static uint8_t counter;
+	uint8_t target_temp,real_temp;
+
+    if(run_t.fan_warning ==1 || run_t.ptc_warning ==1 || gpro_t.g_manual_shutoff_dry_flag == 1\
+		|| run_t.set_temperature_special_flag ==1)return ;
+
+
+	real_temp = run_t.gReal_humtemp[1];//gpro_t.temp_real_value;
+	target_temp = gpro_t.set_up_temperature_value;//gpro_t.key_set_temperature;
+   
+
+    
+
+	if(real_temp >= target_temp){
+
+           run_t.gDry = 0;
+		   LED_DRY_OFF();
+	       
+		  ptc_state = PTC_STATE_OFF ;
+	      gpro_t.first_set_ptc_on  = 1;
+		  SendData_Set_Command(0x22,1);
+	      tx_thread_sleep(2);
+  
+		  return ;
+	}
+
+	if(ptc_state == PTC_STATE_OFF){
+
+	    if(gpro_t.first_ptc_on==0 || gpro_t.first_ptc_on==1){
+
+			if(real_temp < target_temp){
+
+			   if(gpro_t.g_manual_shutoff_dry_flag==0){
+	               run_t.gDry = 1;
+				    LED_DRY_ON();
+				   ptc_state = PTC_STATE_ON ;
+				   if(gpro_t.first_ptc_on==1)gpro_t.first_set_ptc_on  = 2;
+				   
+				   SendData_Set_Command(0x22,1);
+				   tx_thread_sleep(2);
+			   	}
+			}
+		}
+		else{
+            if(real_temp < (target_temp -2)){
+
+			  if(gpro_t.g_manual_shutoff_dry_flag==0){
+
+                run_t.gDry = 1;
+				LED_DRY_ON();
+	       
+				ptc_state = PTC_STATE_ON ;
+			   SendData_Set_Command(0x22,1);
+			   tx_thread_sleep(2);
+			  	}
+
+			}
+
+
+		}
+
+	}
+	else{
+        if(real_temp >= target_temp){
+            run_t.gDry = 0;
+			 LED_DRY_OFF();
+	        ptc_state = PTC_STATE_OFF ;
+		   SendData_Set_Command(0x22,0);
+	       tx_thread_sleep(2);
+		}
+
+	}
+
 
 	
 }

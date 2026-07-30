@@ -158,14 +158,14 @@ typedef struct __RUN{
    uint8_t wifi_led_fast_blink ;
 
 
-   uint8_t gTimer_key_timing;
+  
    uint8_t power_on_recoder_times;
 
    //timer timing 
-   uint8_t gTimer_set_temp_times;
+ 
 
-   int8_t temporary_timer_dispTime_hours;
-   int8_t temporary_timer_dispTime_minutes;
+ 
+
 
   volatile int8_t timer_dispTime_hours;
   volatile int8_t timer_dispTime_minutes;
@@ -191,18 +191,20 @@ typedef struct __RUN{
    volatile   uint8_t minutes_one_unit_bit;
    uint8_t set_temperature_special_flag;
    uint8_t set_timer_special_value;
-   uint8_t gTimer_run_ico;
-   uint8_t gTimer_fan_continue;
-   uint8_t gTimer_detect_mb_receive_flag;
-   uint8_t gTimer_wifi_connect_counter;
+
+ volatile  uint8_t gTimer_fan_continue;
+
+  volatile uint8_t gTimer_wifi_connect_counter;
  
  
-  
+  volatile  uint8_t gTimer_set_temp_times;
+
+  volatile  uint8_t gTimer_key_timing;
 	
   
-    uint8_t gTimes_minutes_temp;
-	uint16_t gTimer_error_digital ;
-    uint16_t gTimer_smg_blink_times;
+  volatile  uint8_t gTimes_minutes_temp;
+	volatile uint8_t gTimer_error_digital ;
+ 
    
   
 

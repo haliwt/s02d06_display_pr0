@@ -32,6 +32,22 @@ void USART1_IRQHandler(void)
 {
    volatile uint8_t data ;
 
+
+     // 1. 优先处理异常错误 (ORE / FE / NE)，做防御性闭环，防止 ISR 死锁
+    if (LL_USART_IsActiveFlag_ORE(USART1) || 
+        LL_USART_IsActiveFlag_FE(USART1)  || 
+        LL_USART_IsActiveFlag_NE(USART1))
+    {
+        // 【核心操作】必须先强行读取 RDR 寄存器，丢弃脏数据，释放硬件接收锁
+        volatile uint8_t dummy_read = LL_USART_ReceiveData8(USART1);
+        (void)dummy_read; // 消除未引用变量警告
+
+        // 【核心操作】针对性地清除错误标志位
+        LL_USART_ClearFlag_ORE(USART1);
+        LL_USART_ClearFlag_FE(USART1);
+        LL_USART_ClearFlag_NE(USART1);
+    }
+
 	if (LL_USART_IsActiveFlag_RXNE_RXFNE(USART1))
     {
         data = LL_USART_ReceiveData8(USART1); 
@@ -43,7 +59,8 @@ void USART1_IRQHandler(void)
        
      
     }
-
+}
+#if 0
     // 清除错误标志
    // if (LL_USART_IsActiveFlag_ORE(USART1)) LL_USART_ClearFlag_ORE(USART1);
     if (LL_USART_IsActiveFlag_ORE(USART1))
@@ -67,7 +84,7 @@ void USART1_IRQHandler(void)
     if (LL_USART_IsActiveFlag_FE(USART1))  LL_USART_ClearFlag_FE(USART1);
     if (LL_USART_IsActiveFlag_NE(USART1))  LL_USART_ClearFlag_NE(USART1);
 
-}
+#endif 
 /**
 
 **/

@@ -154,11 +154,11 @@ static void ui_thread_entry(ULONG thread_input)
        ///wifi_connect_state_fun();
 	  
 	 
-       if(power_on_theFirst_times < 10 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){
-         power_on_theFirst_times ++;
-         Display_DHT11_Value();
+//       if(power_on_theFirst_times < 10 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){
+//         power_on_theFirst_times ++;
+//         Display_DHT11_Value();
 
-       }
+//       }
     }
 	 else{
         LL_IWDG_ReloadCounter(IWDG);
@@ -405,67 +405,82 @@ static void key_event_entry(ULONG thread_input)
 
 	}
     else if(flags & KEY_MODE_SHORT){
-
-          key_t.key_mode_flag++;
-          gpro_t.mode_Key_long_counter=0;
-	      SendData_Set_Command(0x06,0x01);
-	      tx_thread_sleep(2);
-          mode_key_handler();
-		  mode_key_short_fun();
+          if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
+	         
+	   
+		      SendData_Set_Command(0x06,0x01);
+		      tx_thread_sleep(2);
+	          mode_key_handler();
+			  mode_key_short_fun();
+          }
 		  
 	}
 	else if(flags & KEY_MODE_LONG){
+		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 
          SendData_Set_Command(0x06,0x01);
 	     tx_thread_sleep(2);
 
 		 gpro_t.set_timer_timing_doing_value = 1;
+		 gpro_t.set_timer_first_smg_blink_flag=1;
 		 gpro_t.key_add_dec_pressed_flag =0;
+		 run_t.set_temperature_special_flag =0;
 		 run_t.gTimer_key_timing = 0;
-		 run_t.gTimer_smg_blink_times =0;
-		 gpro_t.set_timer_first_smg_blink_flag=0;
-		 gpro_t.mode_key_shot_flag=0xff;
+	
+		}
 
 	}
 	else if( flags & KEY_UP_SHORT){
-       	key_t.key_add_flag++;
+		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
+       	//key_t.key_add_flag++;
 		SendData_Set_Command(0x06,0x01);
 	    tx_thread_sleep(2);
 		gpro_t.gTimer_set_temp_counter = 0;
 		key_add_fun();
+		 }
 	}
 	else if( flags & KEY_DOWN_SHORT){
-   	  key_t.key_dec_flag++;
-	  SendData_Set_Command(0x06,0x01);
-	  tx_thread_sleep(2);
-	  gpro_t.gTimer_set_temp_counter = 0;
-	  key_dec_fun();
+		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
+	   	  //key_t.key_dec_flag++;
+		  SendData_Set_Command(0x06,0x01);
+		  tx_thread_sleep(2);
+		  gpro_t.gTimer_set_temp_counter = 0;
+		  key_dec_fun();
+		 }
 
 	}
 	else if(flags & KEY_PLASMA_SHORT){
+		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 		
-		plasma_key_handler() ;
+		   plasma_key_handler() ;
+		 }
 
 	}
-	else if(flags & KEY_MOUSE_SHORT) {
+	else if(flags & KEY_MOUSE_SHORT){
+		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 	
-		mouse_key_handler() ;
+			mouse_key_handler() ;
+		 }
 	}
-	else if(flags & KEY_DRY_SHORT) {
+	else if(flags & KEY_DRY_SHORT){
+
+	    if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 		
-		dry_key_handler() ;
+			dry_key_handler() ;
+
+	    }
 
 	}
     else if( flags & KEY_AI_LONG){
        
-    
+         if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 	     // 处理WiFi键
        
 	     SendData_Set_Command(0x05,0x01); // link wifi of command .
           tx_thread_sleep(2);
           run_t.connect_wifi_state = wifi_connect_null;
            run_t.gTimer_wifi_connect_counter =0; //120s counte start
-           
+         }
 
 	 }
 	
@@ -474,35 +489,7 @@ static void key_event_entry(ULONG thread_input)
 	}
 }
 
-#if 0
-	
-	if(gpro_t.mode_Key_long_counter==200 && gpro_t.gTimer_mode_long_key_counter > 1){
-           gpro_t.mode_key_shot_flag =0xff;
 
-           gpro_t.mode_Key_long_counter=0;
-
-	
-	}
-	
-    if(gpro_t.done_set_temp_flag == 1 && gpro_t.gTimer_set_temp_counter > 2 ){
-
-	     gpro_t.done_set_temp_flag = 0;
-
-	     if(gpro_t.set_up_temperature_value > run_t.gReal_humtemp[1]){
-              
-              run_t.gDry = 1;
-			  LED_DRY_ON();
-		 }
-		 else{
-
-             run_t.gDry =0;
-			 LED_DRY_OFF();
-		 }
-		 
-         sendCmdNote_to_Data(0x2A,gpro_t.set_up_temperature_value);
-         tx_thread_sleep(2);
-
-#endif 
 
 
 

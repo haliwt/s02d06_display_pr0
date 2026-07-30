@@ -17,7 +17,7 @@ void tim17_isr_callback_hanlder(void)
 
     tm0++;
 	
-    run_t.gTimer_smg_blink_times++;
+   
 	gpro_t.gTimer_4bitsmg_blink_times++;
 	
     if(tm0>99){ //100 *10ms = 1000ms = 1s
@@ -25,12 +25,12 @@ void tim17_isr_callback_hanlder(void)
 	
 
         run_t.gTimer_error_digital++;
-		run_t.gTimer_run_ico++;
+		
 	    run_t.gTimer_colon++;
 		run_t.gTimer_display_dht11++;
 		
 		run_t.gTimer_fan_continue++;
-        run_t.gTimer_detect_mb_receive_flag++;
+       
 		run_t.gTimer_time_colon++ ;
 		//--------------//
 
@@ -48,16 +48,12 @@ void tim17_isr_callback_hanlder(void)
       
 
 
-      gpro_t.gTimer_mode_long_key_counter++;
+    
 	
-      gpro_t.gTimer_two_hours_seconds++;
+       gpro_t.gTimer_two_hours_seconds++;
 	   gpro_t.gTimer_set_temp_counter ++;
 	   gpro_t.gTimer_counter_one_minute++;
-	   
-
-   
-	 
-	  gpro_t.gTimer_wifi_led_blink ++;
+	   gpro_t.gTimer_wifi_led_blink ++;
 	  gpro_t.gTimer_disp_mode_switch++;
 
        

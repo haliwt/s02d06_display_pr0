@@ -141,59 +141,75 @@ uint8_t KEY_Scan(void)
 *****************************************************************/
 void Set_TimerTiming_Number_Value(void)
 {
-  static uint8_t default_numbers =0xff;
-   if(gpro_t.set_timer_timing_doing_value==1){
-   //set timer timing value 
-    if(run_t.gTimer_key_timing > 3){
-		run_t.gTimer_key_timing =0;		
-		gpro_t.set_timer_timing_doing_value ++ ;
-	    run_t.gTimer_timer_seconds_counter=0;
-	
-	 }
-
-    }
-
-    if(gpro_t.set_timer_timing_doing_value==2){ //stup up value by ajust
-    	gpro_t.set_timer_timing_doing_value++;
-		//don't input ADD ad DEC key of none numbers
+  
+   // switch(gpro_t.set_timer_first_smg_blink_flag)
+     if(gpro_t.set_timer_first_smg_blink_flag ==1){
+            
+        //以前已经设置过定时模式,现在显示之前的定时时间
 		if(gpro_t.set_timer_timing_value_success  == disp_timer_times && gpro_t.key_add_dec_pressed_flag ==0){
              run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
         	 run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
-        	 //run_t.minutes_one_decade_bit = run_t.timer_dispTime_minutes /10;
-        	 //run_t.minutes_one_unit_bit = run_t.timer_dispTime_minutes %10;
-        	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-			 tx_thread_sleep(20);//vTaskDelay(200);
-			 
+        	 
+        	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);//display numbers
+			 tx_thread_sleep(30);//vTaskDelay(200);
+			 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);//don't display numbers
 
 		}
-		else if(run_t.temporary_timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
+		else{
+			
+             run_t.hours_two_decade_bit = 0;//run_t.timer_dispTime_hours/10,
+        	 run_t.hours_two_unit_bit  = 0;//run_t.timer_dispTime_hours %10;
+
+			 run_t.timer_dispTime_hours =0;
+			 run_t.timer_dispTime_minutes =0;
+        	 
+        	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);//display numbers
+			 tx_thread_sleep(30);//vTaskDelay(200);
+			 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);//don't display numbers
+
+
+		}
+
+		gpro_t.set_timer_first_smg_blink_flag++;
+     }
+	 else if(gpro_t.set_timer_first_smg_blink_flag==2 && run_t.gTimer_key_timing > 2){
+
+
+	     if( run_t.timer_dispTime_hours >0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
 			gpro_t.set_timer_timing_value_success  = disp_timer_times;
 			key_t.disp_smg_mode_flag = disp_timer_times;
 			run_t.gTimer_timer_seconds_counter = 0;
 
-			run_t.timer_dispTime_hours = run_t.temporary_timer_dispTime_hours ;
-			if(default_numbers != gpro_t.input_numbers_flag){
-				default_numbers = gpro_t.input_numbers_flag;
-			     run_t.timer_dispTime_minutes = 0;
 
-			}
 
+			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);
+			tx_thread_sleep(30);//vTaskDelay(200);
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-			tx_thread_sleep(20);//vTaskDelay(200);
-			SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
+			
+		
+		    gpro_t.set_timer_first_smg_blink_flag ++;
+		    gpro_t.set_timer_timing_doing_value =0;
+
+			
+		    SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
 			tx_thread_sleep(2);
 
 
 		}
-		else if(run_t.temporary_timer_dispTime_hours == 0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
+		else if(run_t.timer_dispTime_hours  == 0 && gpro_t.key_add_dec_pressed_flag ==1){ //set up timer numbers value 
 					gpro_t.set_timer_timing_value_success  = disp_works_times;
 					key_t.disp_smg_mode_flag = disp_works_times;
 					run_t.gTimer_timer_seconds_counter = 0;
 		
-					run_t.timer_dispTime_hours = 0 ;
-				    run_t.timer_dispTime_minutes = 0;
-		            Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
-					tx_thread_sleep(20);//vTaskDelay(200);
+			
+		            Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);
+					tx_thread_sleep(30);//vTaskDelay(200);
+					Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
+					
+					gpro_t.set_timer_first_smg_blink_flag ++;
+					gpro_t.set_timer_timing_doing_value =0;
+
+					
 					SendData_Tx_Data(0x2B, run_t.timer_dispTime_hours) ;
 					tx_thread_sleep(2);
 		
@@ -203,17 +219,26 @@ void Set_TimerTiming_Number_Value(void)
 			
 			run_t.timer_dispTime_hours = 0 ;
 			run_t.timer_dispTime_minutes = 0;
+			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);
+			tx_thread_sleep(30);//vTaskDelay(200);
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
+            gpro_t.set_timer_first_smg_blink_flag ++;
+			gpro_t.set_timer_timing_doing_value =0;
+
+					
 			gpro_t.set_timer_timing_value_success  = 0;
             key_t.disp_smg_mode_flag = disp_works_times;
 
 
 		}
 
+	 	}
+ }
 
-    }
-}
+
+
+
 /***********************************************************************************
 	 *
 	 * Function Name:void set_timer_fun_led_blink(void)
@@ -224,6 +249,7 @@ void Set_TimerTiming_Number_Value(void)
 ************************************************************************************/
 void set_timer_fun_led_blink(void)
 {
+   #if 0
    static uint8_t time_smg_blink;
  
    if(gpro_t.set_timer_timing_doing_value==1){
@@ -267,7 +293,7 @@ void set_timer_fun_led_blink(void)
     }
 
    }
-  
+  #endif 
 }
 
 
@@ -283,63 +309,35 @@ void set_timer_fun_led_blink(void)
 void disp_smg_blink_set_tempeature_value(void)
 {
      static uint8_t counter_times;
+
+	 if(gpro_t.set_timer_timing_doing_value == 1) return ;
 	  //waiting for 4 s 
-	  if(run_t.gTimer_key_temp_timing > 1 && run_t.set_temperature_special_flag ==1 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){
+	  if(run_t.gTimer_key_temp_timing > 2 && run_t.set_temperature_special_flag ==1){
 			
-			
-			run_t.set_temperature_special_flag =2;
-			run_t.gTimer_set_temp_times =0; //couter time of smg blink timing 
+		  counter_times++ ;  
 
-	 }
-	 //temperature of smg of LED blink .
-	  if(run_t.set_temperature_special_flag ==2 && (gpro_t.set_timer_timing_doing_value==0 ||gpro_t.set_timer_timing_doing_value==3)){
-	  	
-	  	 
-		  if(run_t.gTimer_set_temp_times  > 0  && run_t.set_temperature_special_flag !=0xff){ // 15ms * 4 =60ms
-                 run_t.gTimer_set_temp_times=0;
-                 counter_times++ ;  
-// cancel display temperature SMG number led blink function.
-//                 every_times ++;
-//          if(every_times ==1){
-//               
-//		        TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,1);
-//          }
-//		  else{
-//		  	   every_times=0;
-			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
-
-		  }
+		  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
+       }
 
 
-		  
-       
-   
-
-           if(counter_times > 1){
+	   if(counter_times > 1){
 			 
-           		counter_times=0;
-          
-			 gpro_t.set_temp_value_success=1;
-			 
-	         run_t.set_temperature_special_flag =0xff;
-			  run_t.gTimer_temp_delay = 70; //at once shut down ptc  funciton
-			  run_t.gTimer_display_dht11 = 90;
-		   
-			  TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
+           	  counter_times=0;
+             // TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value,run_t.set_temperature_unit_value,0);
 		      
 			  Display_DHT11_Value();
               gpro_t.g_manual_shutoff_dry_flag=0; //WT.EDIT 2025.05.28
-
-		
-			
-			  
+              run_t.set_temperature_special_flag =0;
               
-             }
+              }
 		  
-	     }
-
-
 }
+
+
+
+
+
+
 
 
 /****************************************************************

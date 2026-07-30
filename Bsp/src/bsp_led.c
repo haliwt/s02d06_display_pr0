@@ -70,8 +70,7 @@ void Panel_Led_OnOff_Function(void)
 {
 
   // static uint8_t ai_changed_flag;
-   if(run_t.gTimer_run_ico > 0){ //30* 10ms =300ms
-		run_t.gTimer_run_ico=0;
+
 		
 	  LED_POWER_ON();
 
@@ -115,7 +114,7 @@ void Panel_Led_OnOff_Function(void)
 	 	TIME_LED_OnOff(0);
 
     
-	}
+	
 }
 /***************************************************************
 *

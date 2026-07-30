@@ -66,9 +66,8 @@ static void DisplayPanel_DHT11_Value(void)
 void disp_dht11_value(void)
 {
   static uint8_t send_counter;
-  if(gpro_t.set_timer_timing_doing_value==1 || gpro_t.set_timer_timing_doing_value==2) return ;
-  if(run_t.gTimer_display_dht11 > 2){
-	    run_t.gTimer_display_dht11=0;
+  if(gpro_t.set_timer_timing_doing_value==1) return ;
+
        	Display_DHT11_Value();
 
 		send_counter++;
@@ -78,7 +77,7 @@ void disp_dht11_value(void)
 	      tx_thread_sleep(2);
 		}
      
-	}
+	
 
 }
 
@@ -97,6 +96,7 @@ void Led_Panel_OnOff(void)
 	*
 	*
 *******************************************************/
+#if 0
 void Display_SetTemperature_Value(void)
 {
         static uint8_t ptc_on_flag =0xff,ptc_off_flag=0xff;	
@@ -208,7 +208,7 @@ void Display_SetTemperature_Value(void)
  }
 
 
-
+#endif 
 /******************************************************************************
 * 
 * Function Name: static void Timer_Timing_Donot_Display(void)

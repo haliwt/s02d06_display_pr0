@@ -58,4 +58,7 @@ void plasma_key_handler(void) ;
 
 void power_key_handler(void) ;
 
+void direct_temperature_compraison_handler(void);
+
+
 #endif /* BSP_INC_BSP_KEY_APP_H_ */

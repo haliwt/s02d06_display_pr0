@@ -33,7 +33,6 @@ void SetDataTemperatureValue(void)
     if(set_temp_flag ==1){
 	 set_temp_flag++;
 
-     //SendData_Tx_Data(0x11,gpro_t.set_up_temperature_value);
      SendData_ToMainboard_Data(0x2A,&gpro_t.set_up_temperature_value,0x01);
      tx_thread_sleep(2);
 	}  
@@ -50,19 +49,11 @@ void SetDataTemperatureValue(void)
 void set_temperature_value(int8_t delta) 
 {
     uint8_t new_temp;
-	static uint8_t temperature_init_value;
 
-	if(temperature_init_value == 0 && gpro_t.set_temp_value_success==0){
-        temperature_init_value++;
-        gpro_t.set_up_temperature_value = (delta > 0) ? 20 : 40;
-	    new_temp = gpro_t.set_up_temperature_value;
-    }
-	else{
-
-	   	new_temp = gpro_t.set_up_temperature_value + delta;
-	    if (new_temp < 20) new_temp = 20;
-        if (new_temp > 40) new_temp = 40;
-   }
+     new_temp = gpro_t.set_up_temperature_value + delta;
+	 if (new_temp < 20) new_temp = 20;
+     if (new_temp > 40) new_temp = 40;
+   
 
 	gpro_t.set_up_temperature_value = new_temp;
 
@@ -74,12 +65,10 @@ void set_temperature_value(int8_t delta)
     gpro_t.g_manual_shutoff_dry_flag   = 0;
     set_temp_flag                      = 1;
 
-    //SendData_ToMainboard_Data(0x2A,&new_temp,0x01);
-    //tx_thread_sleep(2);
-    gpro_t.done_set_temp_flag = 1;
+  
 
     TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
-	
+	direct_temperature_compraison_handler();
 }
 
 
@@ -93,31 +82,24 @@ void set_temperature_value(int8_t delta)
 *******************************************************/
 void adjust_timer_minutes(int8_t delta_min) 
 {
-    int8_t total_hour = run_t.temporary_timer_dispTime_hours ;
-	//uint8_t copy_total_hour;
-    total_hour += delta_min;
+  
+    run_t.timer_dispTime_minutes=0;
+    run_t.timer_dispTime_hours += delta_min;//run_t.timer_dispTime_minutes
 
-   if(total_hour > 24){
-         total_hour =0;
+	if(run_t.timer_dispTime_hours > 24){
+         run_t.timer_dispTime_hours =24;
    	}
-	else if (total_hour < 0) {
-        total_hour = 24 ;  // 循环处理负值
+	else if (run_t.timer_dispTime_hours < 0) {
+        run_t.timer_dispTime_hours = 0 ;  // 循环处理负值
     }
 
-   // total_hour %= 24 ;  // 保证在一天范围内
-
-    run_t.temporary_timer_dispTime_hours   = total_hour;
-    run_t.temporary_timer_dispTime_minutes = 0;
-
-    run_t.hours_two_decade_bit    = run_t.temporary_timer_dispTime_hours / 10;
-    run_t.hours_two_unit_bit      = run_t.temporary_timer_dispTime_hours % 10;
+	run_t.hours_two_decade_bit    = run_t.timer_dispTime_hours / 10;
+    run_t.hours_two_unit_bit      = run_t.timer_dispTime_hours % 10;
     run_t.minutes_one_decade_bit  = 0;
     run_t.minutes_one_unit_bit    = 0;
-	gpro_t.input_numbers_flag++;
 
-	//copy_total_hour=(uint8_t)total_hour;
-	//SendData_ToMainboard_Data(0x4C,&copy_total_hour,0x01);
-	//osDelay(5);
+
+	Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
     
 }
@@ -269,15 +251,14 @@ void key_add_fun(void)
 
 	    case 3:
 		case 0:  // 设置温度增加
-            //SendData_Buzzer();
-			//tx_thread_sleep(2);
+            
             set_temperature_value(+1);
+		   
 		    
             break;
 
         case 1:  // 设置定时增加（每次加60分钟）
-           // SendData_Buzzer();
-			//tx_thread_sleep(2);
+         
             run_t.gTimer_key_timing = 0;
             gpro_t.key_add_dec_pressed_flag = 1;
             adjust_timer_minutes(1);  // 固定每次加60分钟
@@ -305,14 +286,12 @@ void key_dec_fun(void)
 
         case 3:
 		case 0:  // 设置温度减少
-           // SendData_Buzzer();
-		   // tx_thread_sleep(2);
+          
             set_temperature_value(-1);
             break;
 
         case 1:  // 设置定时减少（每次减60分钟）
-          //  SendData_Buzzer();
-			// tx_thread_sleep(2);
+         
             run_t.gTimer_key_timing = 0;
             gpro_t.key_add_dec_pressed_flag = 1;
             adjust_timer_minutes(-1);  // 固定每次减60分钟
@@ -330,15 +309,7 @@ void key_dec_fun(void)
 void mode_key_handler(void)
 {
 
- //  gpro_t.mode_Key_long_counter=0;
-   if(gpro_t.mode_key_shot_flag == 0xFE){
-   	#if DEBUG_FALG
-      printf("mode_key_shot_flag = 0xFE \r\n");
-	#endif 
-
-   }
-   else{
-   gpro_t.mode_key_shot_flag = 1;     
+     
    gpro_t.gTimer_disp_mode_switch=0;
    if(gpro_t.ai_flag == ai_mode){
        gpro_t.key_disp_mode_flag = no_ai_mode;
@@ -356,26 +327,55 @@ void mode_key_handler(void)
    
     // SendData_Buzzer();
 	// tx_thread_sleep(2);
-   	}
+ }
 		  
-}
+
 
 // Helper function for long press actions
-void handle_mode_key_long_press(void)
-{
-    key_t.key_mode_flag = 0;
-	gpro_t.set_timer_timing_doing_value = 1;
-	gpro_t.key_add_dec_pressed_flag =0;
-	run_t.gTimer_key_timing = 0;
-	run_t.gTimer_smg_blink_times =0;
-	gpro_t.set_timer_first_smg_blink_flag=0;
-        
-     gpro_t.mode_key_shot_flag=0xff;
-
-    SendData_Buzzer();
-    tx_thread_sleep(2);
+//void handle_mode_key_long_press(void)
+//{
     
+//	gpro_t.set_timer_timing_doing_value = 1;
+//	gpro_t.set_timer_first_smg_blink_flag=1;
+//	gpro_t.key_add_dec_pressed_flag =0;
+//	run_t.gTimer_key_timing = 0;
+//    SendData_Buzzer();
+//    tx_thread_sleep(2);
+    
+//}
+
+/****************************************************************
+	*
+	*Function Name :void direct_temperature_comparison_handler(void)
+	*Function : 
+	*Input Parameters :NO
+	*Retrurn Parameter :NO
+	*
+*****************************************************************/
+void direct_temperature_compraison_handler(void)
+{
+	if(gpro_t.set_up_temperature_value > run_t.gReal_humtemp[1]){
+ 
+	   run_t.gDry = 1; //gpro_t.gPtc=1;
+	   LED_DRY_ON();
+	   SendData_Set_Command(0x23,1);
+	   tx_thread_sleep(2);
+
+	}
+	else{
+
+		run_t.gDry =0;//gpro_t.gPtc =0 ;//gctl_t.gDry =0;
+
+		LED_DRY_OFF();//PTC_SetLow();
+	    SendData_Set_Command(0x23,0);
+		tx_thread_sleep(2);
+
+		
+	}
+
 }
+
+
  
 /****************************************************************
 	*

@@ -61,9 +61,9 @@ static void  wifi_ico_fast_blink(void)
 
    static uint8_t ai_led_blink;
     if(gpro_t.set_timer_timing_doing_value==1 || gpro_t.set_timer_timing_doing_value==3){
-    if(run_t.gTimer_smg_blink_times > 100){
+  
 
-        run_t.gTimer_smg_blink_times=0;
+      
         ai_led_blink ++;
 
         if(ai_led_blink ==1){
@@ -76,7 +76,7 @@ static void  wifi_ico_fast_blink(void)
        
            }
           
-       }
+       
   }
 
 }

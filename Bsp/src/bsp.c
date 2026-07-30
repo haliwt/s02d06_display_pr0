@@ -118,7 +118,7 @@ void power_off_run_handler(void)
 		
          run_t.gFan_RunContinue =1;
 	     run_t.gTimer_fan_continue=0;
-         run_t.gTimer_detect_mb_receive_flag=0;
+   
 
           Power_Off_Led_Off();
 		 gpro_t.smartphone_app_timer_power_on_flag =0;
