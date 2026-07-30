@@ -144,16 +144,16 @@ void Set_TimerTiming_Number_Value(void)
   
    // switch(gpro_t.set_timer_first_smg_blink_flag)
      if(gpro_t.set_timer_first_smg_blink_flag ==1){
+		gpro_t.set_timer_first_smg_blink_flag++;
             
         //以前已经设置过定时模式,现在显示之前的定时时间
 		if(gpro_t.set_timer_timing_value_success  == disp_timer_times && gpro_t.key_add_dec_pressed_flag ==0){
              run_t.hours_two_decade_bit = run_t.timer_dispTime_hours/10,
         	 run_t.hours_two_unit_bit  = run_t.timer_dispTime_hours %10;
         	 
-        	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);//display numbers
-			 tx_thread_sleep(30);//vTaskDelay(200);
+        	
 			 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);//don't display numbers
-
+		    
 		}
 		else{
 			
@@ -162,15 +162,11 @@ void Set_TimerTiming_Number_Value(void)
 
 			 run_t.timer_dispTime_hours =0;
 			 run_t.timer_dispTime_minutes =0;
-        	 
-        	 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);//display numbers
-			 tx_thread_sleep(30);//vTaskDelay(200);
+        	
 			 Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);//don't display numbers
+       }
 
-
-		}
-
-		gpro_t.set_timer_first_smg_blink_flag++;
+		
      }
 	 else if(gpro_t.set_timer_first_smg_blink_flag==2 && run_t.gTimer_key_timing > 2){
 
@@ -182,8 +178,7 @@ void Set_TimerTiming_Number_Value(void)
 
 
 
-			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);
-			tx_thread_sleep(30);//vTaskDelay(200);
+	
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 			
 		
@@ -202,8 +197,7 @@ void Set_TimerTiming_Number_Value(void)
 					run_t.gTimer_timer_seconds_counter = 0;
 		
 			
-		            Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);
-					tx_thread_sleep(30);//vTaskDelay(200);
+		 
 					Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 					
 					gpro_t.set_timer_first_smg_blink_flag ++;
@@ -219,8 +213,7 @@ void Set_TimerTiming_Number_Value(void)
 			
 			run_t.timer_dispTime_hours = 0 ;
 			run_t.timer_dispTime_minutes = 0;
-			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,1);
-			tx_thread_sleep(30);//vTaskDelay(200);
+		
 			Display_Timing(run_t.timer_dispTime_hours,run_t.timer_dispTime_minutes,0);
 
             gpro_t.set_timer_first_smg_blink_flag ++;

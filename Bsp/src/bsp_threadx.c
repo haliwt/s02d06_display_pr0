@@ -61,11 +61,10 @@ static void app_threadx_handler(void);
 
 static void tx_thread_stack_error_handler(TX_THREAD * thread_ptr);
 
-uint8_t ucKeyCode;
-uint8_t uckey_number;
-uint8_t key_power_flag,decoder_flag ;
-uint8_t check_code;
-uint8_t keyvalue;
+
+
+
+
 /**
 *@brief 
 *@param
@@ -232,7 +231,7 @@ static void key_thread_entry(ULONG thread_input)
 		else if(MODEL_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){   /* 接收到消息，检测那个位被按下 */
 			mode_cnt++;
 			if(mode_cnt == LONG_PRESS_TIME){
-
+           
 			tx_event_flags_set(&key_event, KEY_MODE_LONG, TX_OR);
 
 			}
@@ -243,7 +242,7 @@ static void key_thread_entry(ULONG thread_input)
 			    tx_event_flags_set(&key_event, KEY_MODE_SHORT, TX_OR);
 			}
 			mode_cnt = 0;
-
+          
 		}
 		else if(DEC_KEY_VALUE() == KEY_DOWN && run_t.gPower_On == power_on){
 
@@ -322,58 +321,6 @@ static void key_thread_entry(ULONG thread_input)
 
  }
 
-	  #if 0
-
-		if(gpro_t.mode_Key_long_counter < 200){
-
-		     gpro_t.mode_Key_long_counter++;
-
-	    if( run_t.wifi_led_fast_blink==1 && gpro_t.mode_Key_long_counter > 30 &&  gpro_t.mode_Key_long_counter < 200){
-			 gpro_t.mode_Key_long_counter=200;
-			 gpro_t.gTimer_mode_long_key_counter=0;
-
-		      gpro_t.set_timer_timing_doing_value = 1;
-			   gpro_t.key_add_dec_pressed_flag =0;
-			   run_t.gTimer_key_timing = 0;
-			   run_t.gTimer_smg_blink_times =0;
-			   gpro_t.set_timer_first_smg_blink_flag=0;
-			    gpro_t.mode_key_shot_flag=0xff;
-
-			  SendData_Set_Command(0x06,0x01);
-	          tx_thread_sleep(2);
-		    
-
-
-	    }
-	    else if(gpro_t.mode_Key_long_counter > 79 && gpro_t.mode_Key_long_counter < 200 && run_t.wifi_led_fast_blink==0){
-
-		     gpro_t.mode_Key_long_counter=200;
-			 key_t.key_mode_flag = 0;
-		     gpro_t.gTimer_mode_long_key_counter=0;
-		
-		     gpro_t.set_timer_timing_doing_value = 1;
-			   gpro_t.key_add_dec_pressed_flag =0;
-			   run_t.gTimer_key_timing = 0;
-			   run_t.gTimer_smg_blink_times =0;
-			   gpro_t.set_timer_first_smg_blink_flag=0;
-			    gpro_t.mode_key_shot_flag=0xff;
-
-			    SendData_Set_Command(0x06,0x01);
-	             tx_thread_sleep(2);
-		
-			 
-           }
-        }
-
-		if(gpro_t.mode_Key_long_counter==200) key_t.key_mode_flag = 0;
-		else
-           key_t.key_mode_flag = 1;
-       #endif  
-		 
-   
-
-
-
 /**********************************************************************************************************
 *
 *	Function Name: 
@@ -418,14 +365,16 @@ static void key_event_entry(ULONG thread_input)
 	else if(flags & KEY_MODE_LONG){
 		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 
-         SendData_Set_Command(0x06,0x01);
-	     tx_thread_sleep(2);
+		
+	         SendData_Set_Command(0x06,0x01);
+		     tx_thread_sleep(2);
 
-		 gpro_t.set_timer_timing_doing_value = 1;
-		 gpro_t.set_timer_first_smg_blink_flag=1;
-		 gpro_t.key_add_dec_pressed_flag =0;
-		 run_t.set_temperature_special_flag =0;
-		 run_t.gTimer_key_timing = 0;
+			 gpro_t.set_timer_timing_doing_value = 1;
+			 gpro_t.set_timer_first_smg_blink_flag=1;
+			 gpro_t.key_add_dec_pressed_flag =0;
+			 run_t.set_temperature_special_flag =0;
+			 run_t.gTimer_key_timing = 0;
+		 
 	
 		}
 

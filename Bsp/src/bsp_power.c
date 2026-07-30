@@ -493,7 +493,9 @@ static void ui_task_refresh(uint32_t now)
 
 static void ui_task_colon(uint32_t now)
 {
-    if (now - ui.ts_colon >= 500) {
+
+    if(gpro_t.set_timer_timing_doing_value == 1) return ;
+	if (now - ui.ts_colon >= 500) {
         Display_TimeColon_Blink_Fun();
         ui.ts_colon = now;
     }
