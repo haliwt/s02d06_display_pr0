@@ -26,7 +26,7 @@
 
 
 
-#define STACK_SIZE_UI     768//512//1792//1536//1024//1664 
+#define STACK_SIZE_UI     1024//512//1792//1536//1024//1664 
 #define STACK_SIZE_KEY    256//512
 #define STACK_SIZE_DEC    512//
 #define STACK_SIZE_EVENT  512
@@ -344,8 +344,8 @@ static void key_event_entry(ULONG thread_input)
 	}
     else if(flags & KEY_MODE_SHORT){
           if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
-	         SendData_Set_Command(0x06,0x01);
-		      tx_thread_sleep(2);
+	         SendData_Set_Command_Safe(0x06,0x01);//SendData_Set_Command(0x06,0x01);
+		      //tx_thread_sleep(2);
 	          mode_key_handler();
 			
           }
@@ -355,8 +355,8 @@ static void key_event_entry(ULONG thread_input)
 		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 
 		
-	         SendData_Set_Command(0x06,0x01);
-		     tx_thread_sleep(2);
+	         SendData_Set_Command_Safe(0x06,0x01);//SendData_Set_Command(0x06,0x01);
+		     ///tx_thread_sleep(2);
 
 			 gpro_t.set_timer_timing_doing_value = 1;
 			 gpro_t.set_timer_first_smg_blink_flag=1;
@@ -371,8 +371,8 @@ static void key_event_entry(ULONG thread_input)
 	else if( flags & KEY_UP_SHORT){
 		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
        	//key_t.key_add_flag++;
-		SendData_Set_Command(0x06,0x01);
-	    tx_thread_sleep(2);
+		SendData_Set_Command_Safe(0x06,0x01);//SendData_Set_Command(0x06,0x01);
+	    //tx_thread_sleep(2);
 	
 		key_add_fun();
 		 }
@@ -380,8 +380,8 @@ static void key_event_entry(ULONG thread_input)
 	else if( flags & KEY_DOWN_SHORT){
 		 if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 	   	  //key_t.key_dec_flag++;
-		  SendData_Set_Command(0x06,0x01);
-		  tx_thread_sleep(2);
+		  SendData_Set_Command_Safe(0x06,0x01);//SendData_Set_Command(0x06,0x01);
+		  //tx_thread_sleep(2);
 	
 		  key_dec_fun();
 		 }
@@ -414,8 +414,8 @@ static void key_event_entry(ULONG thread_input)
          if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
 	     // 处理WiFi键
        
-	     SendData_Set_Command(0x05,0x01); // link wifi of command .
-          tx_thread_sleep(2);
+	      SendData_Set_Command_Safe(0x05,0x01);//SendData_Set_Command(0x05,0x01); // link wifi of command .
+          //tx_thread_sleep(2);
           run_t.connect_wifi_state = wifi_connect_null;
            run_t.gTimer_wifi_connect_counter =0; //120s counte start
          }
@@ -450,8 +450,8 @@ void app_threadx_handler(void)
   					0,
   					stack_decoder_pro,
   					STACK_SIZE_DEC,
-  					2,
-  					2,
+  					3,
+  					3,
   					TX_NO_TIME_SLICE,
   					TX_AUTO_START);
 
@@ -462,8 +462,8 @@ void app_threadx_handler(void)
    					0,
    					stack_ui_pro,
    					STACK_SIZE_UI,
-   					3,
-   					3,
+   					4,
+   					4,
    					TX_NO_TIME_SLICE,
    					TX_AUTO_START);
 
@@ -473,8 +473,8 @@ void app_threadx_handler(void)
 					0,
 					stack_key_pro,
 					STACK_SIZE_KEY,
-					0,
-					0,
+					1,
+					1,
 					TX_NO_TIME_SLICE,
 					TX_AUTO_START);
 	
@@ -484,8 +484,8 @@ void app_threadx_handler(void)
 					  0,							/* 传递给任务的参数 */
 					  stack_key_event,				/* 堆栈基地址 */
 					  STACK_SIZE_EVENT,				/* 堆栈空间大小 */  
-					  1,							/* 任务优先级*/
-					  1,							/* 任务抢占阀值 */
+					  2,							/* 任务优先级*/
+					  2,							/* 任务抢占阀值 */
 					  TX_NO_TIME_SLICE, 			/* 不开启时间片 */
 					  TX_AUTO_START);				/* 创建后立即启动 */
    

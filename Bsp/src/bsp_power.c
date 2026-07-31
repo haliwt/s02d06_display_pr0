@@ -37,7 +37,7 @@ static task_t g_ui_tasks[] = {
     { task_dht11_display,      MS_TO_TICKS(300),  0 }, // 300ms DHT11刷新
     { task_compare_temp,       MS_TO_TICKS(3000), 0 }, // 3s 控温比较
     { task_two_hours_timing,   MS_TO_TICKS(1200), 0 }, // 1s 运行计时
-    { task_send_version,       MS_TO_TICKS(2000), 0 }, // 2s 发送版本号
+    { task_send_version,       MS_TO_TICKS(30000), 0 }, // 1minutes  发送版本号
 };
 
 #define TASK_NUM (sizeof(g_ui_tasks) / sizeof(task_t))
@@ -536,7 +536,7 @@ static void task_two_hours_timing(void)
 **/
 static void task_send_version(void)
 {
-	 SendData_Set_Command(0x0F,0x02);
+	 SendData_Set_Command_Safe(0xF0,0x02);//SendData_Set_Command(0xF0,0x02);
 	 
 }
 /**

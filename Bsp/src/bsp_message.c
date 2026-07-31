@@ -36,15 +36,15 @@ void receive_data_from_mainboard(uint8_t *pdata)
             gpro_t.boot_done = 0;
        
             power_on_handler();
-            SendWifiData_Answer_Cmd(0x01 ,0x01);//SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
-			tx_thread_sleep(2);
+             SendData_Answer_Command_Safe(0x01,1);//SendWifiData_Answer_Cmd(0x01 ,0x01);//SendData_Set_Command(0x11,0x01); //0x11 :send to main has the second display board exit.
+			//tx_thread_sleep(2);
            }
            else{ //power off
 
             run_t.gPower_On = power_off;
             gpro_t.boot_done = 0;
-            SendWifiData_Answer_Cmd(0x01,0x0);
-			tx_thread_sleep(2);
+             SendData_Answer_Command_Safe(0x01,0);//SendWifiData_Answer_Cmd(0x01,0x0);
+			//tx_thread_sleep(2);
            
            }
           

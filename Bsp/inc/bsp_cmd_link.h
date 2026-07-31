@@ -48,6 +48,9 @@ void sendCmdNote_to_Data(uint8_t cmd ,uint8_t tdata);
 
 uint8_t SendData_Set_Command_Safe(uint8_t cmd, uint8_t val);
 
+uint8_t SendData_Answer_Command_Safe(uint8_t cmd, uint8_t val);
+
+
 #endif 
 
 

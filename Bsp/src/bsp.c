@@ -177,8 +177,13 @@ void power_off_run_handler(void)
 void twoHours_works_timing(void)
 {
    
+   #if 1
+    if(gpro_t.gTimer_two_hours_seconds > 240 &&  gpro_t.two_work_hours_flag ==0){
 
+   #else
    if(gpro_t.gTimer_two_hours_seconds > 7199 &&  gpro_t.two_work_hours_flag ==0){
+
+   #endif 
          
       gpro_t.gTimer_two_hours_seconds =0;
 	  gpro_t.two_work_hours_flag = 1;
@@ -189,7 +194,14 @@ void twoHours_works_timing(void)
 	  tx_thread_sleep(2);
      
    }
-   else if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_two_hours_seconds > 600){
+
+   #if 1
+      if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_two_hours_seconds > 180){
+
+   #else
+   if(gpro_t.two_work_hours_flag == 1 && gpro_t.gTimer_two_hours_seconds > 600){
+
+   #endif 
         gpro_t.gTimer_two_hours_seconds =0;
 		gpro_t.two_work_hours_flag = 0;
         gpro_t.fan_run_one_minute =3; //one minute is flag .

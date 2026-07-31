@@ -321,6 +321,24 @@ uint8_t SendData_Set_Command_Safe(uint8_t cmd, uint8_t val)
     last_send_tick = now_tick;
     return 1; // 发送成功
 }
+// SendData_Set_Command 内部或外层封装
+uint8_t SendData_Answer_Command_Safe(uint8_t cmd, uint8_t val)
+{
+    static uint32_t last_send_tick = 0;
+    uint32_t now_tick = tx_time_get();
+
+    // 如果距离上次发送不到 20ms (2个Tick)，拒绝发送或返回失败，保护接收方
+    if (now_tick - last_send_tick < 2) {
+        return 0; // 发送失败/被截断
+    }
+
+    // 真正执行串口发送 (比如物理串口发送函数)
+    SendWifiData_Answer_Cmd(cmd, val);
+
+    // 更新上次发送时间
+    last_send_tick = now_tick;
+    return 1; // 发送成功
+}
 
 
 /****************************************************************************************************
