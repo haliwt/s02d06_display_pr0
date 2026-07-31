@@ -21,6 +21,7 @@ typedef struct {
 
 
 // 任务函数前置声明
+static void task_ui_key(void);
 static void task_keys_and_refresh(void);
 static void task_dht11_display(void);
 static void task_two_hours_timing(void);
@@ -30,6 +31,7 @@ static void task_compare_temp(void);
 
 // 任务配置表 (Table-Driven)
 static task_t g_ui_tasks[] = {
+    { task_ui_key,             MS_TO_TICKS(10),   0 }, // 100m  
     { task_keys_and_refresh,   MS_TO_TICKS(50),   0 }, // 50ms 刷新UI和按键
     { task_blink_colon,        MS_TO_TICKS(500),  0 }, // 500ms 冒号闪烁
     { task_dht11_display,      MS_TO_TICKS(300),  0 }, // 300ms DHT11刷新
@@ -437,6 +439,38 @@ void ui_task(void)
 
 #else
 
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void task_ui_key(void)
+{
+   if(gpro_t.key_model_short_flag == 1 &&  gpro_t.gTimer_disp_mode_switch < 3){
+
+         mode_key_short_fun();
+         return ;
+   }
+
+   if(gpro_t.key_model_short_flag == 1 &&  gpro_t.gTimer_disp_mode_switch > 2){
+
+      gpro_t.key_model_short_flag  =0;
+
+   }
+
+   if (gpro_t.set_timer_timing_doing_value == 1 &&  run_t.ptc_warning == 0 &&  run_t.fan_warning == 0) {
+
+        Set_TimerTiming_Number_Value();
+
+	    return ;
+    }
+    
+     disp_smg_blink_set_tempeature_value();
+
+
+
+
+}
 
 
 /**
