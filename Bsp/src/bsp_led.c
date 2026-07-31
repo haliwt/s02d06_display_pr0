@@ -124,7 +124,16 @@ void Panel_Led_OnOff_Function(void)
 *
 *
 **************************************************************/
+void led_power_on_handler(void)
+{
 
+    LED_POWER_ON();
+	LED_TIME_ON();
+	LED_PLASMA_ON();
+	LED_DRY_ON();
+	LED_MOUSE_ON();   
+	
+}
 
 /***************************************************************
 *

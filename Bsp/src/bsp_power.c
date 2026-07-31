@@ -135,6 +135,7 @@ void Power_On_Fun(void)
 		run_t.gDry =1;
         run_t.gMouse = 1;
 		run_t.ai_model_flag =ai_mode;
+		
 
    	}
     else{
@@ -143,7 +144,9 @@ void Power_On_Fun(void)
 
 	}
 	run_t.time_led_flag=1;
+	gpro_t.set_up_temperature_value =40;
 	Power_ON_Led();
+	
 
 	run_t.fan_warning=0;
 	run_t.ptc_warning=0;
