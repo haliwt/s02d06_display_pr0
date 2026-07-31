@@ -91,7 +91,7 @@ typedef enum{
 typedef struct _pro_t{
 
    
-   uint8_t set_timer_timing_value_success;
+   bool set_timer_timing_value_success;
    uint8_t set_timer_timing_doing_value;
  
    uint8_t set_up_temperature_value;
@@ -100,7 +100,7 @@ typedef struct _pro_t{
    uint8_t first_set_ptc_on;
    uint8_t first_rcoder_ptc_on_flag;
 
-   uint8_t two_work_hours_flag;
+   bool two_work_hours_flag;
 
   
    uint8_t answer_signal_flag;
@@ -110,37 +110,31 @@ typedef struct _pro_t{
 
    uint8_t send_ack_cmd;
    uint8_t receive_copy_cmd;
-   uint8_t g_manual_shutoff_dry_flag;
+   bool g_manual_shutoff_dry_flag;
+   bool key_model_short_flag;
+   bool answer_two_works_flag;
   
   
    uint8_t DMA_txComplete;
    uint8_t main_board_set_timer_flag ;
 
    uint8_t key_disp_mode_flag ;
-   uint8_t ai_flag ;
+   bool ai_flag ;
    uint8_t fan_run_one_minute; 
   
   
    uint8_t g_time_disp_colon_flag;
    uint8_t smartphone_app_timer_power_on_flag;
-   uint8_t key_add_dec_pressed_flag;
+   bool key_add_dec_pressed_flag;
    
-volatile    uint8_t gTimer_wifi_led_blink ;
-volatile    uint8_t gTimer_disp_mode_switch;
+	volatile    uint8_t gTimer_wifi_led_blink ;
+	volatile    uint8_t gTimer_disp_mode_switch;
 
+	volatile    uint8_t gTimer_counter_one_minute;
+	   
+	 volatile   uint16_t gTimer_two_hours_seconds;
 
-
-
-
- 
-volatile    uint8_t gTimer_counter_one_minute;
-   
- volatile   uint16_t gTimer_two_hours_seconds;
-
-   
-
-
-volatile   uint16_t gTimer_4bitsmg_blink_times;
+	volatile   uint16_t gTimer_4bitsmg_blink_times;
   
    
 

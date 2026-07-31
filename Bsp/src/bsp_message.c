@@ -199,7 +199,7 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		
 	  if(pdata[4]== 0x01){
            recoder_counter++;
-	      //  gpro_t.mode_key_shot_flag = 1;     
+	       gpro_t.key_model_short_flag  =1;
 		   gpro_t.gTimer_disp_mode_switch=0;
 		   gpro_t.key_disp_mode_flag = ai_mode;
 
@@ -582,6 +582,22 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 
         }
      break;
+
+	 case 0x19:
+		 if(pdata[4] == 1){  //buzzer answer command
+		 
+			gpro_t.answer_two_works_flag=1;	
+		 
+		}
+		else if(pdata[4] == 0){
+				  
+		    gpro_t.answer_two_works_flag=0;	
+		 
+		}
+
+        
+
+	 break;
     }
 
 

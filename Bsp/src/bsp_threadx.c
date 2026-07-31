@@ -353,12 +353,10 @@ static void key_event_entry(ULONG thread_input)
 	}
     else if(flags & KEY_MODE_SHORT){
           if(run_t.ptc_warning==0 && run_t.fan_warning ==0){
-	         
-	   
-		      SendData_Set_Command(0x06,0x01);
+	         SendData_Set_Command(0x06,0x01);
 		      tx_thread_sleep(2);
 	          mode_key_handler();
-			  mode_key_short_fun();
+			
           }
 		  
 	}
@@ -372,7 +370,7 @@ static void key_event_entry(ULONG thread_input)
 			 gpro_t.set_timer_timing_doing_value = 1;
 			 gpro_t.set_timer_first_smg_blink_flag=1;
 			 gpro_t.key_add_dec_pressed_flag =0;
-			 run_t.set_temperature_special_flag =0;
+			 run_t.set_temperature_special_flag =0; //cancel up,down key be selected temp adjust
 			 run_t.gTimer_key_timing = 0;
 		 
 	

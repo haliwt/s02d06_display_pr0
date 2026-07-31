@@ -442,10 +442,27 @@ static void ui_task_version(uint32_t now)
 **/
 static void ui_task_keys(void)
 {
- 
-    if (gpro_t.set_timer_timing_doing_value == 1 &&  run_t.ptc_warning == 0 &&  run_t.fan_warning == 0) {
+
+    
+   if(gpro_t.key_model_short_flag == 1 &&  gpro_t.gTimer_disp_mode_switch < 3){
+
+         mode_key_short_fun();
+         return ;
+   }
+
+   if(gpro_t.key_model_short_flag == 1 &&  gpro_t.gTimer_disp_mode_switch > 2){
+
+      gpro_t.key_model_short_flag  =0;
+
+   }
+
+
+
+	if (gpro_t.set_timer_timing_doing_value == 1 &&  run_t.ptc_warning == 0 &&  run_t.fan_warning == 0) {
 
         Set_TimerTiming_Number_Value();
+
+	    return ;
     }
     
      disp_smg_blink_set_tempeature_value();
@@ -483,7 +500,8 @@ static void ui_task_refresh(uint32_t now)
     // 4. 正常显示工作时间（你原来的 Display_SmgTiming_Value）
     if (gpro_t.set_timer_timing_doing_value == 0){
              
-
+        if(gpro_t.key_model_short_flag == 1) return;
+		
         Display_SmgTiming_Value();
         return;
     }
@@ -565,8 +583,8 @@ void ui_task(void)
     ui_task_version(now);
 
 	ui_task_colon(now);      // 新增
-    ui_task_timer_led(now);  // 新增
-    ui_task_wifi(now);       // 新增
+   // ui_task_timer_led(now);  // 新增
+   // ui_task_wifi(now);       // 新增
 
 	ui_task_compare_temperature_value(now);
 

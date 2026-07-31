@@ -311,6 +311,7 @@ void mode_key_handler(void)
 
      
    gpro_t.gTimer_disp_mode_switch=0;
+   gpro_t.key_model_short_flag = 1;
    if(gpro_t.ai_flag == ai_mode){
        gpro_t.key_disp_mode_flag = no_ai_mode;
    }

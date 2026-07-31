@@ -11,23 +11,10 @@ void (*display_fan_speed_value)(uint8_t fan_level);
 
 
 
-
-
-//static void DisplayPanel_DHT11_Value(void);
-
 static void Display_Works_Time_Fun(void);
 static void WorksTime_DonotDisplay_Fun(void);
 static void Timer_Timing_Donot_Display(void);
 
-//static void Smg_DisplayFan_Level_Value_Fun(uint8_t fan_level);
-
-
-//
-//void Smg_DisplayFan_Speed_Level_Init(void)
-//{
-//      Smg_DisplayFan_Leve(Smg_DisplayFan_Level_Value_Fun);
-//
-//}
 
 
 
@@ -38,22 +25,7 @@ static void Timer_Timing_Donot_Display(void);
 *
 *
 ******************************************************************************/
-#if 0
-static void DisplayPanel_DHT11_Value(void)
-{
-  if(run_t.first_power_on_times==1){
-      run_t.first_power_on_times++;
-       Display_DHT11_Value();
-  
-  }
-  if(run_t.gTimer_display_dht11 > 9){
-	    run_t.gTimer_display_dht11=0;
-       	Display_DHT11_Value();
-        compare_temp_value();
-     
-	}
-}
-#endif 
+
 
 /*******************************************************
 	*
@@ -88,127 +60,6 @@ void Led_Panel_OnOff(void)
 {
 	Panel_Led_OnOff_Function() ;
 }
-/*******************************************************
-	*
-	*Function Name: static void disp_dht11_value(void)
-	*Function : display pannel display conetent
-	*
-	*
-	*
-*******************************************************/
-#if 0
-void Display_SetTemperature_Value(void)
-{
-        static uint8_t ptc_on_flag =0xff,ptc_off_flag=0xff;	
-	if(run_t.fan_warning == 1 && run_t.ptc_warning ==1) return ;
-
-	if(run_t.gReal_humtemp[1] >60 ) return ;
-
-	if(run_t.gTimer_temp_delay >6 &&  gpro_t.g_manual_shutoff_dry_flag==0){
-	      run_t.gTimer_temp_delay=0;
-
-	switch(gpro_t.set_temp_value_success){
-
-	case 1:
-    // disp_smg_blink_set_tempeature_value= run_t.set_temperature_decade_value*10+ run_t.set_temperature_unit_value;
-		  if(gpro_t.set_up_temperature_value <= run_t.gReal_humtemp[1] || run_t.gReal_humtemp[1] >39){//envirment temperature
-	  
-			   run_t.gDry = 0;
-			   LED_DRY_OFF();
-               if(gpro_t.first_set_ptc_on==0)gpro_t.first_set_ptc_on=1;  //the first open ptc heating //WT.DEDIT 2028.08.27 modify this flow codes
-			   else if(gpro_t.first_set_ptc_on==2)gpro_t.first_set_ptc_on=3;
-			   else if(gpro_t.first_set_ptc_on==4)gpro_t.first_set_ptc_on=5;
-
-			    if(ptc_off_flag != run_t.gDry){
-			   	   ptc_off_flag =  run_t.gDry;
-			      SendData_Set_Command(0x22,0x00); //close ptc 
-	             tx_thread_sleep(2);
-
-               	}
-			    
-			    
-                
-		  }
-		  else {
-
-               if(gpro_t.first_set_ptc_on==1 || gpro_t.first_set_ptc_on==0){//the first open ptc heating //WT.DEDIT 2028.08.27 modify this flow codes
-	          
-                if(gpro_t.first_set_ptc_on==1)gpro_t.first_set_ptc_on=2;
-				else if(gpro_t.first_set_ptc_on==0)gpro_t.first_set_ptc_on=4;
-				run_t.gDry = 1;
-			    LED_DRY_ON();
-	       
-			 
-			   
-			    if(ptc_on_flag != run_t.gDry){
-			   	   ptc_on_flag = run_t.gDry;
-	               SendData_Set_Command(0x22,0x01); //open ptc 
-	              tx_thread_sleep(2);
-			    }
-	          
-            
-	       }
-		   else if((gpro_t.first_set_ptc_on==3 || gpro_t.first_set_ptc_on==5) && (gpro_t.set_up_temperature_value -3) >= run_t.gReal_humtemp[1]){//WT.DEDIT 2028.08.27 modify this flow codes
-
-				 run_t.gDry = 1;
-	             LED_DRY_ON();
-		          if(ptc_on_flag != run_t.gDry){
-			   	   ptc_on_flag = run_t.gDry;
-	            	SendData_Set_Command(0x22,0x01); //open ptc 
-	            	tx_thread_sleep(2);//vTaskDelay(pdMS_TO_TICKS(100));
-			     }
-	          
-			}
-           }
-	  
-	    
-	
-	break;
-
-	case 0:
-         if(run_t.gReal_humtemp[1] > 39){ // must be clouse ptc.
-    
-               gpro_t.first_rcoder_ptc_on_flag  = 1;
-               run_t.gDry = 0;
-		       LED_DRY_OFF();
-			
-	            if(ptc_off_flag != run_t.gDry ){
-			   	   ptc_off_flag = run_t.gDry ;
-               		SendData_Set_Command(0x22,0x00); //close ptc 
-               		tx_thread_sleep(2);//vTaskDelay(pdMS_TO_TICKS(100));
-			     }
-          }
-          else if(gpro_t.first_rcoder_ptc_on_flag  == 1 &&  run_t.gReal_humtemp[1] < 38 ){
-               
-               
-               run_t.gDry  = 1;
-			   LED_DRY_ON();
-			   if(ptc_on_flag != run_t.gDry ){
-		   	       ptc_on_flag = run_t.gDry ;
-	               SendData_Set_Command(0x22,0x01); //open ptc 
-	              tx_thread_sleep(2);
-
-		     	}
-          }
-          else if(gpro_t.first_rcoder_ptc_on_flag == 0 && run_t.gReal_humtemp[1] < 40 ){ //WT.EDIT 2025.10.31
-
-	            run_t.gDry  = 1;
-		        LED_DRY_ON();
-		        if(ptc_on_flag != run_t.gDry ){
-			   	     ptc_on_flag = run_t.gDry ;
-				    SendData_Set_Command(0x22,0x01); //open ptc  
-				   tx_thread_sleep(2);
-			     }
-		 }
-      
-	break;
-	}
-
-	}
- }
-
-
-#endif 
 /******************************************************************************
 * 
 * Function Name: static void Timer_Timing_Donot_Display(void)

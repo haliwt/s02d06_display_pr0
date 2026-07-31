@@ -178,12 +178,13 @@ void twoHours_works_timing(void)
 {
    static uint8_t counter_send;
 
-   if(gpro_t.gTimer_two_hours_seconds > 7119 &&  gpro_t.two_work_hours_flag ==0){
+   if(gpro_t.gTimer_two_hours_seconds > 7199 &&  gpro_t.two_work_hours_flag ==0){
          
       gpro_t.gTimer_two_hours_seconds =0;
 	  gpro_t.two_work_hours_flag = 1;
       gpro_t.fan_run_one_minute =1; //one minute is flag .
 	  gpro_t.gTimer_counter_one_minute =0;
+	  gpro_t.answer_two_works_flag=0; //WT.EDIT 2026-07-31
       SendData_Set_Command(0x19,0x01) ;//works two hours ,then have a rest 10 minutes.
 	  tx_thread_sleep(2);
      
@@ -194,36 +195,23 @@ void twoHours_works_timing(void)
         gpro_t.fan_run_one_minute =3; //one minute is flag .
         SendData_Set_Command(0x19,0x0);
 	    tx_thread_sleep(2);
-	     SendData_Set_Command(0x18,0x0);//fan run .
-	    tx_thread_sleep(2);
+	    
    }
 
-   if(gpro_t.two_work_hours_flag == 1)counter_send++;
+ 
 
-   
-  if(gpro_t.fan_run_one_minute==1 && gpro_t.gTimer_counter_one_minute >59){
-		  gpro_t.fan_run_one_minute++;
-		  SendData_Set_Command(0x18,0x01);//fan stop run .
+    if(gpro_t.two_work_hours_flag ==1 && gpro_t.gTimer_counter_one_minute > 2){
+		gpro_t.gTimer_counter_one_minute=0;
+		if(gpro_t.answer_two_works_flag ==1){
+
+
+	   }
+	   else{ 
+	      SendData_Set_Command(0x19,0x01);
 		  tx_thread_sleep(2);
- }
- else if(gpro_t.fan_run_one_minute==3){
-	
-		   gpro_t.fan_run_one_minute++;
-		   SendData_Set_Command(0x18,0x0);//fan run .
-		   tx_thread_sleep(2);
-	
-	 }
-	 else if(gpro_t.two_work_hours_flag ==1 && counter_send >5 &&	gpro_t.fan_run_one_minute ==2){
-		 counter_send=0;
-	
-		 SendData_Set_Command(0x19,0x01);
-		 tx_thread_sleep(2);
-		 if(gpro_t.fan_run_one_minute==2){
-			SendData_Set_Command(0x18,0x01);//fan stop run .
-			tx_thread_sleep(2);
-		 }
-	
-	 }
+		 
+	   	}
+	}
 }
 
 
