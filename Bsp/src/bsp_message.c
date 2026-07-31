@@ -192,6 +192,14 @@ void receive_data_from_mainboard(uint8_t *pdata)
 			run_t.gTimer_wifi_connect_counter =0; //120s counte start
 			 
 		}
+		else if(pdata[3] == 0){
+
+           //run_t.wifi_led_fast_blink=1;
+		   //run_t.connect_wifi_state = wifi_connect_null;
+		  // run_t.gTimer_wifi_connect_counter =0; //120s counte start
+
+
+		}
 		
     break;
 
@@ -312,21 +320,13 @@ void receive_data_from_mainboard(uint8_t *pdata)
 		    
              run_t.wifi_led_fast_blink = 0;
 			 run_t.connect_wifi_state = wifi_connect_success;
-			// run_t.gTimer_wifi_connect_counter =0; //120s counte start
-		
-			  
-	  
 		}
-		else{ //close
+		else if(pdata[3] == 0){ //close
 	  
 		      
 			 run_t.connect_wifi_state = wifi_connect_null;
-			 //run_t.gTimer_wifi_connect_counter =0; //120s counte start
-	  
 		}
 	    
-	    
-  
 	  break;
 
 
@@ -551,12 +551,12 @@ static void copy_cmd_data_from_mainboard(uint8_t *pdata )
 	
 			  
 	  
-	   }
-	  else{ //close
+	  }
+	  else if(pdata[4] == 0){ //close
 	  
-			   run_t.connect_wifi_state = wifi_connect_null;
-	            run_t.wifi_led_fast_blink=0;
-			    run_t.display_beijing_time_flag =0;
+			  run_t.connect_wifi_state = wifi_connect_null;
+	          run_t.wifi_led_fast_blink=0;
+			  run_t.display_beijing_time_flag =0;
 	  
 		}
 

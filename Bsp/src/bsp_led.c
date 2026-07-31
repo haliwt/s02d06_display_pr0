@@ -246,13 +246,10 @@ void Power_ON_Led(void)
    LED_MOUSE_ON();
    LED_POWER_ON();
    SMG_POWER_ON();
-	 if(run_t.connect_wifi_state == wifi_connect_success){
+   if(run_t.connect_wifi_state == wifi_connect_success){
 	        LED_WIFI_ON();
-	 }
-	 else{
-		 LED_WIFI_OFF();
+    }
 	 
-	 }
    	}
     else{
 	  LED_TIME_ON();
@@ -266,5 +263,40 @@ void Power_ON_Led(void)
 
 }
 
+//if(run_t.gTimer_wifi_connect_counter <120){
+
+/**
+*@brief 
+*@param
+*@notice
+**/
+void wifi_connect_state_fun(void)
+{
+
+    static uint8_t led_blink_counter;
+
+	if(run_t.wifi_led_fast_blink==1 && run_t.connect_wifi_state == wifi_connect_null && run_t.gPower_On ==1){
+    
+        LED_WIFI_TOGGLE() ;
+    }
+	else{
+       if(run_t.connect_wifi_state == wifi_connect_null && run_t.gPower_On ==1){
+              led_blink_counter ++ ;
+			  if(led_blink_counter > 9){
+				  led_blink_counter=0;
+
+			      LED_WIFI_TOGGLE() ;
+
+			  }
+
+       }
+       else if(run_t.connect_wifi_state == wifi_connect_success && run_t.gPower_On ==1){
+	  
+          LED_WIFI_ON();
+      }
+
+    }
+
+}
 
 

@@ -49,10 +49,7 @@ extern void (*panel_led_fun)(void);
 
 void Panel_Led_OnOff_RunCmd(void (*panelledHandler)(void));
 
-//void KeyLed_Power_On(void);
 
-
-//void ALL_LED_Off(void);
 
 void Panel_Led_OnOff_Function(void);
 
@@ -64,6 +61,8 @@ void Power_Off_Led_Off(void);
 
 void Power_ON_Led(void);
 
+
+void wifi_connect_state_fun(void);
 
 
 

@@ -17,7 +17,6 @@
 //BSP FUNTION
 #include "bsp_smg.h"
 #include "bsp_cmd_link.h"
-#include "bsp_run.h"
 #include "bsp_key.h"
 #include "bsp_led.h"
 #include "bsp_fan.h"
@@ -25,7 +24,6 @@
 #include "bsp_display.h"
 #include "interrupt_manager.h"
 #include "bsp_delay.h"
-#include "bsp_wifi.h"
 #include "bsp_power.h"
 #include "bsp_usart.h"
 
@@ -134,7 +132,7 @@ typedef struct _pro_t{
 	   
 	 volatile   uint16_t gTimer_two_hours_seconds;
 
-	volatile   uint16_t gTimer_4bitsmg_blink_times;
+//	volatile   uint16_t gTimer_4bitsmg_blink_times;
   
    
 

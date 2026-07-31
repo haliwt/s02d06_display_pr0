@@ -4,7 +4,44 @@
 
 #define DEFAULT_TEMP    40 
 
+// 假设 ThreadX 1 Tick = 10ms (THREADX_TICK_MS = 10)
+#define MS_TO_TICKS(ms)  ((ms) / THREADX_TICK_MS)
+
+
 RUN_T run_t;
+
+typedef void (*task_handler_t)(void);
+
+typedef struct {
+    task_handler_t task_handler; // 任务回调函数
+    uint32_t period;              // 运行周期 (Ticks)
+    uint32_t last_tick;           // 上次运行时间 (Ticks)
+} task_t;
+
+
+
+// 任务函数前置声明
+static void task_keys_and_refresh(void);
+static void task_dht11_display(void);
+static void task_two_hours_timing(void);
+static void task_send_version(void);
+static void task_blink_colon(void);
+static void task_compare_temp(void);
+
+// 任务配置表 (Table-Driven)
+static task_t g_ui_tasks[] = {
+    { task_keys_and_refresh,   MS_TO_TICKS(50),   0 }, // 50ms 刷新UI和按键
+    { task_blink_colon,        MS_TO_TICKS(500),  0 }, // 500ms 冒号闪烁
+    { task_dht11_display,      MS_TO_TICKS(300),  0 }, // 300ms DHT11刷新
+    { task_compare_temp,       MS_TO_TICKS(3000), 0 }, // 3s 控温比较
+    { task_two_hours_timing,   MS_TO_TICKS(1200), 0 }, // 1s 运行计时
+    { task_send_version,       MS_TO_TICKS(2000), 0 }, // 2s 发送版本号
+};
+
+#define TASK_NUM (sizeof(g_ui_tasks) / sizeof(task_t))
+
+
+
 
 
 
@@ -58,188 +95,6 @@ uint32_t get_timestamp_ms(void)
 {
     return tx_time_get()* THREADX_TICK_MS;   // 返回 tick 数
 }
-
-
-/******************************************************************************
-	*
-	*Function Name:void RunPocess_Command_Handler(void)
-	*Funcion: display pannel run of process 
-	*Input Ref: NO
-	*Return Ref:NO
-	*
-******************************************************************************/
-#if 0
-void power_on_run_handler(void)
-{
-
-   static uint8_t  step_state,counter_version;
-   switch(run_t.power_on_step){
-
-      case 0:
-          
-	  
-           run_t.gTimer_time_colon =0;
-	       run_t.set_temperature_decade_value=40;
-           
-            run_t.gTimer_detect_mb_receive_flag =0;
-			Power_On_Fun();
-			run_t.gTimer_display_dht11 = 20; //at once display temperature and humidity value.
-			gpro_t.set_timer_timing_doing_value = 0;
-            gpro_t.g_manual_shutoff_dry_flag = 0; //allow open dry function .
-            run_t.wifi_led_fast_blink=0;
-		
-			gpro_t.set_timer_timing_value_success=0;
-			run_t.timer_dispTime_hours=0;
-		    run_t.timer_dispTime_minutes=0;
-
-			if(run_t.connect_wifi_state == wifi_connect_success){
-
-                   if(run_t.display_beijing_time_flag ==0){
-						run_t.works_dispTime_hours=0;
-						run_t.works_dispTime_minutes=0;
-						run_t.gTimer_timing_seconds_counter =0;
-					    
-
-				    }
-
-			}
-			else{
-			   
-    		   run_t.works_dispTime_hours=0;
-			   run_t.works_dispTime_minutes=0;
-			   run_t.gTimer_timing_seconds_counter =0;
-
-			}
-			gpro_t.gTimer_two_hours_seconds =0;
-	        gpro_t.two_work_hours_flag = 0;
-			gpro_t.set_temp_value_success=0;
-			gpro_t.key_disp_mode_flag = 0xff;
-		    gpro_t.ai_flag = ai_mode; //don't AI
-		    key_t.disp_smg_mode_flag=disp_works_times;
-			gpro_t.fan_run_one_minute =0; 
-			gpro_t.gTimer_counter_one_minute =0;
-
-			 SendData_Set_Command(0x11,0x01); //notice thi is outside connect display board
-	        tx_thread_sleep(2);
-			
-			run_t.power_on_step= 1;
-
-
-            
-	  break;
-
-      case 1:
-
-              if(gpro_t.mode_key_shot_flag ==1){
-
-                  if(gpro_t.gTimer_disp_mode_switch <  3){
-				  	
-			          mode_key_short_fun();
-
-                  }
-				  else{
-				     gpro_t.mode_key_shot_flag++;
-
-
-				  }
-
-			  }
-              else if(gpro_t.set_timer_timing_doing_value == 1 && run_t.ptc_warning ==0 && run_t.fan_warning ==0){
-
-                   Set_TimerTiming_Number_Value();
-                   
-              }
-              else if((gpro_t.set_timer_timing_doing_value == 0 ||gpro_t.set_timer_timing_doing_value == 3 )&&  run_t.set_temperature_special_flag   >0 &&  run_t.set_temperature_special_flag != 0xff ){
-
-                   disp_smg_blink_set_tempeature_value();
-	              
-						
-             }
-             else{
-
-              switch(step_state){
-
-					case 0:
-						Led_Panel_OnOff();
-					    step_state=1;
-					break;
-
-					case 1:
-
-						 
-               			// disp_dht11_value();
-                       
-				        step_state=2;
-	                    
-				   break;
-                    
-                    case 2: //display 1:   timing times  2: timer times.
-
-					    if(gpro_t.mode_key_shot_flag == 1){
-                              if(gpro_t.gTimer_disp_mode_switch > 2){
-							  	gpro_t.gTimer_disp_mode_switch=0;
-								gpro_t.mode_key_shot_flag++;
-                                mode_key_short_fun();
-
-                              }
-					    }
-                        else if((gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3) && gpro_t.key_disp_mode_flag ==0xff){ //WT.EDIT 2025.05.07
-                        if(run_t.ptc_warning ==0 && run_t.fan_warning ==0){ //read main board ptc_warning of ref.
-                            
-							   Display_SmgTiming_Value();
-
-                            
-
-                         }
-                        else{
-
-                            Warning_Error_Numbers_Fun();
-
-                        }
-                        
-                        }
-
-                     step_state=0;
-                    break;
-
-              }
-            
-             }
-
-			 run_t.power_on_step=2;
-      break;
-
-	  case 2:
-	    Display_SetTemperature_Value();
-
-	   run_t.power_on_step=3;
-
-	  break;
-
-	  case 3:
-          disp_dht11_value();
-		   run_t.power_on_step=4;
-	  break;
-
-	  case 4:
-	  	
-	  	twoHours_works_timing();
-        if(counter_version > 20){
-			counter_version =0;
-		    SendData_Set_Command(0x0F,0x02); //notice thi is new version
-		    tx_thread_sleep(2);//vTaskDelay(pdMS_TO_TICKS(50));
-        }
-	  run_t.power_on_step=1;
-
-	  break;
-	  	
-
-	}
-}
-
-
-#endif 
-
 /**********************************************************************
 *
 *Functin Name: void Display_DHT11_Value(void)
@@ -255,10 +110,9 @@ void Power_Off(void)
 	run_t.gPlasma=0;
 	run_t.gDry=0;
 	run_t.gMouse =0;
-	//run_t.gWifi_led = 0;
+	
 			
 }
-
 
 /**********************************************************************
 *
@@ -286,11 +140,7 @@ void Power_On_Fun(void)
 	    run_t.ai_model_flag =ai_mode;
 
 	}
-
-  
-    
-
-    run_t.time_led_flag=1;
+	run_t.time_led_flag=1;
 	Power_ON_Led();
 
 	run_t.fan_warning=0;
@@ -333,15 +183,9 @@ void Power_On_Fun(void)
 ************************************************************************/
 void Power_Off_Fun(void)
 {
-	
- 
-		run_t.gPlasma=0;
-		run_t.gDry =0;
-		run_t.gMouse = 0;
-		
-       
-
-  
+	run_t.gPlasma=0;
+	run_t.gDry =0;
+	run_t.gMouse = 0;
 } 
 
 
@@ -395,6 +239,8 @@ static void ui_event_power_on(void)
 }
 
 
+#if 0
+
 /**
 *@brief 
 *@param
@@ -417,7 +263,7 @@ static void ui_task_dht11(uint32_t now)
 
 static void ui_task_two_hours(uint32_t now)
 {
-    if (now - ui.ts_two_hours >= 1000) {
+    if (now - ui.ts_two_hours >= 2000) {
         twoHours_works_timing();
         ui.ts_two_hours = now;
     }
@@ -456,9 +302,7 @@ static void ui_task_keys(void)
 
    }
 
-
-
-	if (gpro_t.set_timer_timing_doing_value == 1 &&  run_t.ptc_warning == 0 &&  run_t.fan_warning == 0) {
+   if (gpro_t.set_timer_timing_doing_value == 1 &&  run_t.ptc_warning == 0 &&  run_t.fan_warning == 0) {
 
         Set_TimerTiming_Number_Value();
 
@@ -591,18 +435,167 @@ void ui_task(void)
 	
 }
 
+#else
 
-/**************************************************************************************************
+
+
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void task_keys_and_refresh(void)
+{
+	
+	// 1. 有告警时优先显示告警
+		if (run_t.ptc_warning || run_t.fan_warning) {
+			Warning_Error_Numbers_Fun();
+			return;
+		}
+	
+	
+		// 3. 特殊温度设置闪烁显示
+		if (gpro_t.set_timer_timing_doing_value == 0 && run_t.set_temperature_special_flag ==1 ) {
+	
+			disp_smg_blink_set_tempeature_value();
+			return;
+		}
+	
+		// 4. 正常显示工作时间（你原来的 Display_SmgTiming_Value）
+		if (gpro_t.set_timer_timing_doing_value == 0){
+				 
+			if(gpro_t.key_model_short_flag == 1) return;
+			
+			Display_SmgTiming_Value();
+			return;
+		}
+
+}
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void task_dht11_display(void)
+{
+    disp_dht11_value();
+
+}
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void task_two_hours_timing(void)
+{
+	 twoHours_works_timing();
+
+}
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void task_send_version(void)
+{
+	 SendData_Set_Command(0x0F,0x02);
+	 
+}
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void task_blink_colon(void)
+{
+    Display_TimeColon_Blink_Fun();
+	if(run_t.wifi_led_fast_blink==1 && run_t.connect_wifi_state == wifi_connect_null && run_t.gTimer_wifi_connect_counter > 125 ){
+	    run_t.wifi_led_fast_blink=0;
+
+	}
+	if(run_t.wifi_led_fast_blink==1 && run_t.connect_wifi_state == wifi_connect_success){
+
+	    run_t.wifi_led_fast_blink=0;
+
+	}
+}
+/**
+*@brief 
+*@param
+*@notice
+**/
+static void task_compare_temp(void)
+{
+    set_temperature_compare_value_fun();
+
+}
+
+/************************************************************************************************
+*
+*Function Name:void power_on_cycle_handler(void)
+*Function:
+*Input Ref:
+*Return Ref:
+*
+*************************************************************************************************/
+void ui_task(void)
+{
+	uint32_t current_tick = tx_time_get();
+	uint8_t i ;
+	uint32_t init_tick;
+
+   LL_IWDG_ReloadCounter(IWDG);
+
+    // 开机事件（只执行一次）
+    if (gpro_t.boot_done < 0x08) {
+        ui_event_power_on();
+		// 2. 初始化所有任务的 last_tick 镜像
+	    init_tick = tx_time_get();
+	    for (i = 0; i < TASK_NUM; i++) {
+	        g_ui_tasks[i].last_tick = init_tick;
+	    }
+    }
+	else{
+	
+
+	for (uint8_t i = 0; i < TASK_NUM; i++) {
+		if ((current_tick - g_ui_tasks[i].last_tick) >= g_ui_tasks[i].period){
+			// 防饱和截断：若卡顿超过 2 个周期，直接重置到当前 tick，放弃追赶
+			if ((current_tick - g_ui_tasks[i].last_tick) > (g_ui_tasks[i].period * 2)) 
+			{
+				g_ui_tasks[i].last_tick = current_tick;
+			} 
+			else 
+			{
+				// 锁相滚动累加，消除长期运行漂移
+				g_ui_tasks[i].last_tick += g_ui_tasks[i].period;
+			}
+
+			// 执行任务回调
+			if (g_ui_tasks[i].task_handler != NULL) 
+			{
+				g_ui_tasks[i].task_handler();
+			}
+		}
+	}
+
+	}
+}
+
+#endif
+
+
+/************************************************************************************************
 *
 *Function Name:void set_temperature_compare_value_fun(void)
 *Function:
 *Input Ref:
 *Return Ref:
 *
-*****************************************************************************************************/
+*************************************************************************************************/
 static void set_temperature_compare_value_fun(void)
 {
-    static uint8_t counter;
+   // static uint8_t counter;
 	uint8_t target_temp,real_temp;
 
     if(run_t.fan_warning ==1 || run_t.ptc_warning ==1 || gpro_t.g_manual_shutoff_dry_flag == 1\

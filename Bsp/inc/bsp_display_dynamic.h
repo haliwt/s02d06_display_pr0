@@ -33,7 +33,6 @@ void Display_SetTemperature_Value(void);
 
 void Display_SmgTiming_Value(void);
 
-void Led_Panel_OnOff(void);
 
 void disp_dht11_value(void);
 

@@ -12,13 +12,20 @@
 *******************************************************************************/
 void tim17_isr_callback_hanlder(void)
 {
-  static uint16_t tm0;
+  static uint8_t tm0,tm1;
   
 
     tm0++;
+	tm1++;
+
+    if(tm1 > 9){ //10ms *10 =100ms
+		tm1=0;
+	  wifi_connect_state_fun();
+
+    }
 	
    
-	gpro_t.gTimer_4bitsmg_blink_times++;
+//	gpro_t.gTimer_4bitsmg_blink_times++;
 	
     if(tm0>99){ //100 *10ms = 1000ms = 1s
 		tm0=0;
@@ -45,12 +52,7 @@ void tim17_isr_callback_hanlder(void)
 		run_t.gTimer_set_temp_times++;
 
         //usart
-      
-
-
-    
-	
-       gpro_t.gTimer_two_hours_seconds++;
+      gpro_t.gTimer_two_hours_seconds++;
 	
 	   gpro_t.gTimer_counter_one_minute++;
 	   gpro_t.gTimer_wifi_led_blink ++;

@@ -176,7 +176,7 @@ void power_off_run_handler(void)
 *******************************************************/
 void twoHours_works_timing(void)
 {
-   static uint8_t counter_send;
+   
 
    if(gpro_t.gTimer_two_hours_seconds > 7199 &&  gpro_t.two_work_hours_flag ==0){
          
