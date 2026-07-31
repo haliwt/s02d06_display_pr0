@@ -93,6 +93,7 @@ typedef struct _pro_t{
    uint8_t set_timer_timing_doing_value;
  
    uint8_t set_up_temperature_value;
+
   
 
    uint8_t first_set_ptc_on;
@@ -132,7 +133,7 @@ typedef struct _pro_t{
 	   
 	 volatile   uint16_t gTimer_two_hours_seconds;
 
-//	volatile   uint16_t gTimer_4bitsmg_blink_times;
+
   
    
 

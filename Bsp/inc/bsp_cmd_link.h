@@ -46,6 +46,7 @@ void sendCmdNote_to_threeData(uint8_t cmd ,uint8_t h,uint8_t m,uint8_t s);
 
 void sendCmdNote_to_Data(uint8_t cmd ,uint8_t tdata);
 
+uint8_t SendData_Set_Command_Safe(uint8_t cmd, uint8_t val);
 
 #endif 
 

@@ -13,7 +13,7 @@ KEY_T_TYPEDEF key_t;
 
 
 
-uint8_t  set_temp_flag;
+
 
 
 typedef struct {
@@ -21,24 +21,6 @@ typedef struct {
     uint8_t threshold;
     void (*onPress)(void);
 } KeyHandler;
-
-/*********************************************************************************
- * 
- * Function Name:void ai_on_off_handler(void)
- * 
- * 
- **********************************************************************************/
-void SetDataTemperatureValue(void)
-{
-    if(set_temp_flag ==1){
-	 set_temp_flag++;
-
-     SendData_ToMainboard_Data(0x2A,&gpro_t.set_up_temperature_value,0x01);
-     tx_thread_sleep(2);
-	}  
-
-
-}
 
 /*********************************************************************************
  * 
@@ -63,9 +45,8 @@ void set_temperature_value(int8_t delta)
     run_t.set_temperature_special_flag = 1;
     run_t.gTimer_key_temp_timing       = 0;
     gpro_t.g_manual_shutoff_dry_flag   = 0;
-    set_temp_flag                      = 1;
-
-  
+   
+	
 
     TM1639_Write_2bit_SetUp_TempData(run_t.set_temperature_decade_value, run_t.set_temperature_unit_value, 0);
 	direct_temperature_compraison_handler();
@@ -359,8 +340,8 @@ void direct_temperature_compraison_handler(void)
  
 	   run_t.gDry = 1; //gpro_t.gPtc=1;
 	   LED_DRY_ON();
-	   SendData_Set_Command(0x23,1);
-	   tx_thread_sleep(2);
+	   SendData_Set_Command_Safe(0x23,1);//SendData_Set_Command(0x23,1);
+	
 
 	}
 	else{
@@ -368,8 +349,8 @@ void direct_temperature_compraison_handler(void)
 		run_t.gDry =0;//gpro_t.gPtc =0 ;//gctl_t.gDry =0;
 
 		LED_DRY_OFF();//PTC_SetLow();
-	    SendData_Set_Command(0x23,0);
-		tx_thread_sleep(2);
+	    SendData_Set_Command_Safe(0x23,0);//SendData_Set_Command(0x23,0);
+	
 
 		
 	}

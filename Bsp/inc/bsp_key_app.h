@@ -29,7 +29,7 @@ extern KEY_T_TYPEDEF key_t;
 
 void process_keys(void) ;
 
-void SetDataTemperatureValue(void);
+
 
 void mode_key_handler(void);
 

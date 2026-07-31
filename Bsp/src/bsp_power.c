@@ -449,7 +449,8 @@ void ui_task(void)
 **/
 static void task_ui_key(void)
 {
-   if(gpro_t.key_model_short_flag == 1 &&  gpro_t.gTimer_disp_mode_switch < 3){
+
+  if(gpro_t.key_model_short_flag == 1 &&  gpro_t.gTimer_disp_mode_switch < 3){
 
          mode_key_short_fun();
          return ;
@@ -581,7 +582,6 @@ void ui_task(void)
 	uint8_t i ;
 	uint32_t init_tick;
 
-   LL_IWDG_ReloadCounter(IWDG);
 
     // 开机事件（只执行一次）
     if (gpro_t.boot_done < 0x08) {
@@ -593,6 +593,9 @@ void ui_task(void)
 	    }
     }
 	else{
+
+
+
 	
 
 	for (uint8_t i = 0; i < TASK_NUM; i++) {
@@ -652,7 +655,7 @@ static void set_temperature_compare_value_fun(void)
 	       
 		  ptc_state = PTC_STATE_OFF ;
 	      gpro_t.first_set_ptc_on  = 1;
-		  SendData_Set_Command(0x22,1);
+		  SendData_Set_Command(0x22,0);
 	      tx_thread_sleep(2);
   
 		  return ;

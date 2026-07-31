@@ -27,7 +27,7 @@
 
 
 #define STACK_SIZE_UI     768//512//1792//1536//1024//1664 
-#define STACK_SIZE_KEY    512//512
+#define STACK_SIZE_KEY    256//512
 #define STACK_SIZE_DEC    512//
 #define STACK_SIZE_EVENT  512
 
@@ -144,20 +144,11 @@ static void ui_thread_entry(ULONG thread_input)
 	
     if(run_t.gPower_On == power_on){
 		
+	   LL_IWDG_ReloadCounter(IWDG);
 
 	   ui_task();//power_on_run_handler();
      
-       //Display_TimeColon_Blink_Fun();
-	
-      // set_timer_fun_led_blink();
-       ///wifi_connect_state_fun();
-	  
-	 
-//       if(power_on_theFirst_times < 10 && (gpro_t.set_timer_timing_doing_value==0 || gpro_t.set_timer_timing_doing_value==3)){
-//         power_on_theFirst_times ++;
-//         Display_DHT11_Value();
 
-//       }
     }
 	 else{
         LL_IWDG_ReloadCounter(IWDG);
